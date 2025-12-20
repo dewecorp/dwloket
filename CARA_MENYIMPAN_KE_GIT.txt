@@ -1,59 +1,44 @@
 ========================================
-CARA MENYIMPAN PROJECT KE GIT REPOSITORY
+  CARA MENYIMPAN PERUBAHAN KE GIT
 ========================================
 
-LANGKAH MUDAH:
+CARA 1: Menggunakan Script Batch (Paling Mudah)
+-----------------------------------------------
+1. Double-click file: simpan_ke_git.bat
+   - Akan meminta Anda memasukkan pesan commit
+   - Atau tekan Enter untuk menggunakan pesan default
 
-1. PASTIKAN GIT SUDAH TERINSTALL
-   - Jika belum, download dari: https://git-scm.com/download/win
-   - Install Git
-   - Restart komputer (atau restart Command Prompt/PowerShell)
+2. Atau double-click: simpan_sekarang.bat
+   - Langsung commit dengan pesan default (lebih cepat)
 
-2. JALANKAN SCRIPT OTOMATIS
-   - Double-click file: simpan_ke_git.bat
-   - Atau klik kanan > Run as Administrator
-   - Script akan otomatis:
-     * Membuat repository di H:\REPO WEB\dwloket_ok.git
-     * Menghubungkan project ke repository
-     * Menyimpan semua file ke repository
+CARA 2: Menggunakan Git Command Manual
+---------------------------------------
+1. Buka Command Prompt atau PowerShell di folder project
+2. Jalankan perintah berikut:
 
-3. SETELAH SCRIPT SELESAI
-   - Project sudah tersimpan di H:\REPO WEB\dwloket_ok.git
-   - Setiap kali ada perubahan, jalankan script lagi atau gunakan perintah Git
+   git add -A
+   git commit -m "Pesan commit Anda"
+   git push  (jika ada remote repository)
 
-========================================
-CARA MENYIMPAN PERUBAHAN SETELAH INI
-========================================
+CARA 3: Menggunakan VS Code / Cursor
+-------------------------------------
+1. Buka Source Control panel (Ctrl+Shift+G)
+2. Klik tombol "+" untuk stage semua perubahan
+3. Ketik pesan commit di kotak di atas
+4. Klik tombol "Commit" (✓)
+5. Klik "Sync" atau "Push" untuk mengirim ke remote
 
-OPSI 1: Gunakan Script (Mudah)
-   - Jalankan: simpan_ke_git.bat
-   - Ikuti instruksi di layar
+CATATAN PENTING:
+----------------
+- Pastikan file sudah di-save sebelum commit
+- Perubahan yang belum di-commit akan hilang jika:
+  * File di-restore dari git
+  * Project di-reload tanpa save
+  * Hard disk error atau crash
 
-OPSI 2: Manual dengan Command Prompt
-   1. Buka Command Prompt di folder project
-   2. Ketik perintah berikut satu per satu:
-
-      git add .
-      git commit -m "Deskripsi perubahan"
-      git push
-
-OPSI 3: Manual dengan Git Bash
-   1. Klik kanan di folder project > Git Bash Here
-   2. Ketik perintah yang sama seperti Opsi 2
-
-========================================
-CATATAN PENTING
-========================================
-
-- File yang TIDAK disimpan (sudah diatur otomatis):
-  * config/database.php (berisi password database)
-  * File backup (*.sql, *.zip)
-  * File log (*.log)
-  * Folder vendor dan node_modules
-
-- Repository tersimpan di: H:\REPO WEB\dwloket_ok.git
-
-- Jika ada masalah, cek file: GIT_SETUP_INSTRUCTIONS.md
+- Untuk melihat status: git status
+- Untuk melihat perubahan: git diff
+- Untuk melihat history: git log
 
 ========================================
 
