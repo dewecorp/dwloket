@@ -1,0 +1,71 @@
+========================================
+  CARA PUSH KE REPO WEB BACKUP
+========================================
+
+SETUP SUDAH SELESAI!
+-------------------
+✓ Folder "REPO WEB" sudah dibuat di: H:\DATA 5\REPO WEB
+✓ Repository Git sudah diinisialisasi
+✓ Remote 'repo-web' sudah ditambahkan
+✓ Semua commit sudah di-push
+
+CARA MENGGUNAKAN:
+-----------------
+
+CARA 1: Menggunakan Script (Paling Mudah)
+------------------------------------------
+Double-click: push_ke_repo_web.bat
+
+Script ini akan:
+1. Menambahkan semua perubahan
+2. Membuat commit (jika ada perubahan)
+3. Push ke REPO WEB
+
+CARA 2: Manual dengan Git Command
+----------------------------------
+1. Buka Command Prompt atau PowerShell
+2. Masuk ke folder project:
+   cd H:\laragon\www\dwloket_ok
+
+3. Tambahkan perubahan:
+   git add -A
+
+4. Commit (jika ada perubahan):
+   git commit -m "Pesan commit Anda"
+
+5. Push ke REPO WEB:
+   git push repo-web master
+
+CARA 3: Langsung Push (Jika Sudah Commit)
+------------------------------------------
+git push repo-web master
+
+VERIFIKASI:
+-----------
+Untuk cek apakah push berhasil:
+
+1. Cek remote:
+   git remote -v
+
+2. Cek commit di REPO WEB:
+   git log repo-web/master --oneline -5
+
+3. Buka folder REPO WEB:
+   H:\DATA 5\REPO WEB
+
+CATATAN:
+--------
+- REPO WEB adalah backup repository (bare repository)
+- Tidak bisa langsung edit file di sana
+- Hanya untuk backup/mirror
+- Untuk edit, tetap edit di: H:\laragon\www\dwloket_ok
+
+WORKFLOW YANG DISARANKAN:
+--------------------------
+1. Edit file di project folder
+2. Save file
+3. Commit dengan: simpan_sekarang.bat
+4. Push ke backup: push_ke_repo_web.bat
+
+========================================
+
