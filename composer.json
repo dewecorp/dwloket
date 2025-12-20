@@ -1,0 +1,6 @@
+{
+    "require": {
+        "realrashid/sweet-alert": "^4.0",
+        "phpoffice/phpspreadsheet": "^5.3"
+    }
+}

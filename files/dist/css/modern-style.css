@@ -1,0 +1,552 @@
+/* Modern Style for DW Loket Application */
+/* Based on detail_transaksi.php modern design */
+
+/* Modern Card Styles */
+.modern-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 25px;
+}
+
+.modern-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.modern-card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 15px 15px 0 0;
+}
+
+.modern-card-header h4 {
+    margin: 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.modern-card-header h4 i {
+    margin-right: 10px;
+}
+
+.modern-card-body {
+    padding: 25px;
+}
+
+/* Table Modern Styles */
+.modern-table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.modern-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.modern-table thead th {
+    border: none;
+    padding: 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.modern-table tbody tr {
+    transition: background 0.2s;
+}
+
+.modern-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.modern-table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Button Modern Styles */
+.btn-modern {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-modern-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+}
+
+.btn-modern-primary:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #6a3d8f 100%);
+    color: white;
+}
+
+/* Status Badge Modern */
+.status-badge-modern {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.status-success-modern {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-warning-modern {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-info-modern {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.status-danger-modern {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Info Box Modern */
+.info-box-modern {
+    background: #f8f9fa;
+    border-left: 4px solid #667eea;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 10px;
+    line-height: 1.6;
+}
+
+/* Page Header Modern */
+.page-header-modern {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.page-header-modern h4 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Filter Box Modern */
+.filter-box-modern {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+
+.filter-box-modern .form-control,
+.filter-box-modern .form-select {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    transition: all 0.3s;
+}
+
+.filter-box-modern .form-control:focus,
+.filter-box-modern .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Ensure all labels in filter box have same spacing */
+.filter-box-modern .row > div > label {
+    display: block;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+/* Align Tambah button with search input-group */
+.filter-box-modern .align-tambah-btn {
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-box-modern .align-tambah-btn-inner {
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+}
+
+/* Statistic Card Modern */
+.stat-card-modern {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+    padding: 25px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 180px;
+}
+
+.stat-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+}
+
+.stat-card-modern .stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.stat-card-modern .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #212529;
+    margin: 10px 0;
+}
+
+.stat-card-modern .stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
+}
+
+.stat-card-modern small {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+}
+
+/* Ensure stat cards have equal height in row */
+.row.mb-4 > .col-md-3 {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Action Buttons Modern */
+.action-buttons-modern {
+    padding: 20px;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+    border-top: 1px solid #e9ecef;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Quick Action Card */
+.quick-action-card-modern {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+    margin-bottom: 20px;
+}
+
+.quick-action-card-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+}
+
+/* Form Modern Styles */
+.form-modern .form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.form-modern .form-control {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 12px 15px;
+    transition: all 0.3s;
+}
+
+.form-modern .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Badge Modern */
+.badge-modern {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* Price Display Modern */
+.price-display-modern {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #28a745;
+    letter-spacing: 1px;
+}
+
+/* Modal Modern Styles */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    padding: 18px 25px;
+    border-bottom: none;
+}
+
+.modal-header .modal-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.modal-header .modal-title i {
+    margin-right: 10px;
+}
+
+.modal-header .close {
+    color: white;
+    opacity: 0.9;
+    font-size: 1.5rem;
+    text-shadow: none;
+    margin: 0;
+    padding: 0;
+}
+
+.modal-header .close:hover {
+    opacity: 1;
+    color: white;
+}
+
+.modal-body {
+    padding: 25px;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    padding: 15px 25px;
+    background: #f8f9fa;
+    border-radius: 0 0 15px 15px;
+}
+
+.modal-dialog {
+    margin: 1.75rem auto;
+}
+
+.modal-dialog.modal-lg {
+    max-width: 900px;
+}
+
+/* Form dalam Modal */
+.modal-body .form-group label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.modal-body .form-control {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    transition: all 0.3s;
+}
+
+.modal-body .form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.modal-body .form-select {
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    padding: 10px 15px;
+    transition: all 0.3s;
+}
+
+.modal-body .form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+/* Table dalam Modal */
+.modal-body .table {
+    margin-bottom: 0;
+}
+
+.modal-body .modern-table thead {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+/* Export Button Group */
+.filter-box-modern .d-flex.gap-2 {
+    display: flex !important;
+    gap: 8px;
+}
+
+.filter-box-modern .d-flex.gap-2 .btn {
+    flex: 1;
+}
+
+/* Modern Alert Styles */
+.alert-modern {
+    border: none;
+    border-radius: 15px;
+    padding: 20px 25px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+}
+
+.alert-modern .fa {
+    font-size: 1.5rem;
+    margin-right: 15px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.alert-modern strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1.1rem;
+}
+
+.alert-modern .btn {
+    margin-top: 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 20px;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.alert-modern .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.alert-modern.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    color: #856404;
+    border-left: 4px solid #ffc107;
+}
+
+.alert-modern.alert-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-modern.alert-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.alert-modern.alert-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    color: #0c5460;
+    border-left: 4px solid #17a2b8;
+}
+
+.alert-modern .close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    opacity: 0.8;
+    font-size: 1.5rem;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+}
+
+.alert-modern .close:hover {
+    opacity: 1;
+    color: inherit;
+}
+
+.alert-modern-content {
+    flex: 1;
+    padding-right: 40px;
+}
+
+.alert-modern.alert-dismissible {
+    padding-right: 60px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modern-card {
+        border-radius: 10px;
+    }
+
+    .modern-card-header {
+        padding: 20px;
+    }
+
+    .modern-card-body {
+        padding: 20px;
+    }
+
+    .stat-card-modern .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+}
+
+
+
+
+
