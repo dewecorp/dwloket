@@ -5,9 +5,9 @@
 SETUP SUDAH SELESAI!
 -------------------
 ✓ Folder "REPO WEB" sudah dibuat di: H:\DATA 5\REPO WEB
-✓ Repository Git sudah diinisialisasi
+✓ Repository Git sudah di-clone (working copy)
+✓ Semua file source code sudah ada di REPO WEB
 ✓ Remote 'repo-web' sudah ditambahkan
-✓ Semua commit sudah di-push
 
 CARA MENGGUNAKAN:
 -----------------
@@ -48,24 +48,37 @@ Untuk cek apakah push berhasil:
    git remote -v
 
 2. Cek commit di REPO WEB:
-   git log repo-web/master --oneline -5
+   cd "H:\DATA 5\REPO WEB"
+   git log --oneline -5
 
-3. Buka folder REPO WEB:
+3. Buka folder REPO WEB di File Explorer:
    H:\DATA 5\REPO WEB
+
+   Sekarang Anda akan melihat semua file source code!
 
 CATATAN:
 --------
-- REPO WEB adalah backup repository (bare repository)
-- Tidak bisa langsung edit file di sana
-- Hanya untuk backup/mirror
+- REPO WEB sekarang adalah working copy (bukan bare repository)
+- File source code bisa dilihat langsung di folder
+- Bisa di-edit langsung di sana (tapi tidak disarankan)
 - Untuk edit, tetap edit di: H:\laragon\www\dwloket_ok
+- Setelah edit, push dengan: push_ke_repo_web.bat
 
 WORKFLOW YANG DISARANKAN:
 --------------------------
-1. Edit file di project folder
+1. Edit file di project folder: H:\laragon\www\dwloket_ok
 2. Save file
 3. Commit dengan: simpan_sekarang.bat
 4. Push ke backup: push_ke_repo_web.bat
+5. File akan otomatis ter-update di: H:\DATA 5\REPO WEB
+
+UPDATE REPO WEB (Jika Perlu):
+------------------------------
+Jika REPO WEB tidak ter-update, jalankan:
+
+cd "H:\DATA 5\REPO WEB"
+git pull
+
+Atau gunakan script: push_ke_repo_web.bat (akan otomatis update)
 
 ========================================
-

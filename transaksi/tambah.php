@@ -81,15 +81,14 @@ function getJenisBayarStyle($jenis_bayar) {
     return ['icon' => 'fa-money-bill-wave', 'color' => 'secondary'];
 }
 
-// Ambil data jenis pembayaran secara dinamis dari database
-// Setiap kali halaman dimuat, akan mengambil data terbaru dari database
-// Jadi jika ada jenis pembayaran baru yang ditambahkan, otomatis akan muncul di grid
+// Ambil data kategori produk secara dinamis dari database
+$all_kategori = getAllKategori();
+
+// Ambil data jenis pembayaran secara dinamis dari database (untuk form)
 $sql_jenis = $koneksi->query("SELECT * FROM tb_jenisbayar ORDER BY jenis_bayar ASC");
 $jenis_bayar_list = [];
 if ($sql_jenis) {
     while ($row = $sql_jenis->fetch_assoc()) {
-        // Ambil jumlah produk untuk setiap jenis bayar
-        $row['jumlah_produk'] = count(getProdukByIdBayar($row['id_bayar'], true));
         $jenis_bayar_list[] = $row;
     }
 }
@@ -183,10 +182,94 @@ if ($sql_jenis) {
         }
         .produk-item-card {
             transition: all 0.3s;
+            cursor: pointer;
         }
         .produk-item-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-color: #007bff !important;
+        }
+        .produk-item-card.selected {
+            border-color: #28a745 !important;
+            background-color: #f0fff4;
+        }
+        .kategori-card {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .kategori-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .kategori-card.selected {
+            border-color: #28a745 !important;
+            background-color: #f0fff4;
+        }
+        .btn-link {
+            text-decoration: none !important;
+        }
+        .btn-link:hover {
+            text-decoration: none !important;
+        }
+        .btn-link:focus {
+            text-decoration: none !important;
+            box-shadow: none;
+        }
+        .btn-link:hover {
+            color: #007bff !important;
+        }
+        .btn-link:not(.collapsed) {
+            color: #495057;
+            font-weight: 600;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+        }
+        .card-header h5 {
+            margin: 0;
+        }
+        .produk-grid-item {
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .produk-grid-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .produk-grid-item.selected {
+            border-color: #28a745 !important;
+            background-color: #f0fff4;
+            box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        }
+        .produk-grid-item:active {
+            transform: scale(0.98);
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,0,0,.1);
+            border-radius: 50%;
+            border-top-color: #007bff;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* Custom styling untuk toast notification */
+        .swal2-toast-custom {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+            border-radius: 8px !important;
+        }
+        .swal2-toast-custom .swal2-title {
+            font-size: 16px !important;
+            font-weight: 600 !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        .swal2-toast-custom .swal2-html-container {
+            margin: 0 !important;
+            padding: 0 !important;
         }
         </style>
     </head>
@@ -216,37 +299,59 @@ if ($sql_jenis) {
                         </h4>
                     </div>
                     <div class="modern-card-body">
-                        <form action="#" method="POST">
-                            <!-- Jenis Pembayaran Grid - Paling Atas -->
-                            <div class="modern-card mb-4">
+                        <form action="#" method="POST" id="formTambahTransaksi" onsubmit="return validateForm()">
+                            <!-- Grid Kategori - Paling Atas -->
+                            <div class="modern-card mb-4" id="kategori-section">
                                 <div class="modern-card-header">
                                     <h4>
-                                        <i class="fa fa-credit-card"></i> Pilih Jenis Pembayaran <span class="text-danger">*</span>
+                                        <i class="fa fa-folder"></i> Pilih Kategori Produk <span class="text-danger">*</span>
                                     </h4>
                                 </div>
                                 <div class="modern-card-body">
-                                    <input type="hidden" name="jenis" id="jenis" required>
-                                    <div class="row">
-                                        <?php foreach ($jenis_bayar_list as $jenis):
-                                            $style = getJenisBayarStyle($jenis['jenis_bayar']);
-                                        ?>
-                                        <div class="col-md-4 col-sm-6 mb-3">
-                                            <div class="card jenis-bayar-card border-<?=$style['color']?>"
-                                                 data-id-bayar="<?=$jenis['id_bayar']?>"
-                                                 data-jenis-bayar="<?=htmlspecialchars($jenis['jenis_bayar'])?>"
-                                                 style="cursor: pointer !important; user-select: none; position: relative; z-index: 100;"
-                                                 role="button"
-                                                 tabindex="0">
-                                                <div class="card-body text-center">
-                                                    <i class="fa <?=$style['icon']?> fa-3x text-<?=$style['color']?> mb-2"></i>
-                                                    <h6 class="mb-0"><?=htmlspecialchars($jenis['jenis_bayar'])?></h6>
+                                    <div class="row" id="kategori-grid">
+                                        <?php if (!empty($all_kategori)): ?>
+                                            <?php foreach ($all_kategori as $kategori): ?>
+                                            <div class="col-md-4 col-sm-6 mb-3">
+                                                <div class="card kategori-card border"
+                                                     data-kategori="<?=htmlspecialchars($kategori['kategori'])?>"
+                                                     style="cursor: pointer;"
+                                                     role="button"
+                                                     tabindex="0">
+                                                    <div class="card-body text-center">
+                                                        <i class="fa fa-folder-open fa-3x text-primary mb-2"></i>
+                                                        <h6 class="mb-1"><?=htmlspecialchars($kategori['kategori'])?></h6>
+                                                        <small class="text-muted"><?=$kategori['jumlah_produk']?> produk</small>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <?php endforeach; ?>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <div class="col-12">
+                                                <div class="alert alert-info text-center">
+                                                    <i class="fa fa-info-circle"></i> Belum ada kategori produk. Silakan import produk terlebih dahulu.
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Daftar Produk dalam Accordion (akan muncul setelah kategori dipilih) -->
+                            <div class="modern-card mb-4" id="produk-accordion-container" style="display: none;">
+                                <div class="modern-card-header">
+                                    <h4>
+                                        <i class="fa fa-box"></i> Pilih Produk
+                                    </h4>
+                                </div>
+                                <div class="modern-card-body">
+                                    <div class="accordion" id="produkAccordion">
+                                        <!-- Produk akan dimuat di sini via AJAX -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Jenis Pembayaran (Hidden, akan diisi otomatis atau manual) -->
+                            <input type="hidden" name="jenis" id="jenis">
 
                             <!-- Form Pembayaran -->
                             <div class="modern-card">
@@ -286,9 +391,10 @@ if ($sql_jenis) {
                                             </div>
                                             <div class="form-group">
                                                 <label for="ket" class="form-label">
-                                                    <i class="fa fa-comment text-warning"></i> Keterangan
+                                                    <i class="fa fa-comment text-warning"></i> Keterangan / Kode Produk
                                                 </label>
-                                                <input type="text" name="ket" class="form-control" placeholder="Isi Keterangan Transaksi">
+                                                <input type="text" name="ket" id="ket" class="form-control" placeholder="Kode produk akan terisi otomatis saat memilih produk">
+                                                <small class="form-text text-muted">Pilih produk dari kategori di atas untuk mengisi otomatis</small>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
@@ -303,22 +409,10 @@ if ($sql_jenis) {
                                                     <input type="number" name="harga" id="harga" class="form-control" placeholder="0" required>
                                                 </div>
                                                 <small class="form-text text-muted">
-                                                    Atau pilih produk dari daftar di bawah untuk mengisi harga otomatis
+                                                    Pilih produk dari kategori di atas untuk mengisi harga otomatis
                                                 </small>
                                             </div>
 
-                                            <!-- Daftar Produk (akan muncul setelah jenis bayar dipilih) -->
-                                            <div id="produk-list-container" style="display: none;">
-                                                <div class="form-group">
-                                                    <label class="form-label">
-                                                        <i class="fa fa-box text-info"></i> Pilih Produk (Opsional)
-                                                    </label>
-                                                    <div id="produk-list" class="row"></div>
-                                                    <small class="form-text text-muted">
-                                                        Klik produk untuk mengisi harga secara otomatis
-                                                    </small>
-                                                </div>
-                                            </div>
                                             <div class="form-group">
                                                 <label for="status" class="form-label">
                                                     <i class="fa fa-info-circle text-primary"></i> Status
@@ -337,8 +431,11 @@ if ($sql_jenis) {
                             <!-- Tombol Aksi -->
                             <div class="row mt-4">
                                 <div class="col-12">
-                                    <div class="d-flex justify-content-end align-items-center">
-                                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2">
+                                    <div class="d-flex justify-content-end align-items-center flex-wrap" style="gap: 0.5rem;">
+                                        <button type="button" class="btn btn-secondary btn-modern" onclick="resetForm()">
+                                            <i class="fa fa-refresh"></i> Reset Form
+                                        </button>
+                                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern">
                                             <i class="fa fa-arrow-left"></i> Kembali
                                         </a>
                                         <button type="submit" name="simpan" class="btn btn-success btn-modern">
@@ -360,7 +457,19 @@ if ($sql_jenis) {
                 $status = @$_POST['status'];
                 $ket    = @$_POST['ket'];
 
-                $sql = $koneksi->query("INSERT INTO transaksi (tgl, idpel, nama, id_bayar, harga, status, ket ) VALUES ('$tgl', '$idpel', '$nama', '$jenis', '$harga', '$status', '$ket')");
+                // Escape untuk keamanan
+                $tgl = mysqli_real_escape_string($koneksi, $tgl);
+                $idpel = mysqli_real_escape_string($koneksi, $idpel);
+                $nama = mysqli_real_escape_string($koneksi, $nama);
+                $jenis = mysqli_real_escape_string($koneksi, $jenis);
+                $harga = floatval($harga);
+                $status = mysqli_real_escape_string($koneksi, $status);
+                $ket = mysqli_real_escape_string($koneksi, $ket);
+
+                $jenis_sql = ($jenis && $jenis !== '' && $jenis !== '0') ? "'$jenis'" : 'NULL';
+
+                $sql = $koneksi->query("INSERT INTO transaksi (tgl, idpel, nama, id_bayar, harga, status, ket)
+                                        VALUES ('$tgl', '$idpel', '$nama', $jenis_sql, $harga, '$status', '$ket')");
 
                 if ($sql) {
 					// Log aktivitas
@@ -429,99 +538,461 @@ if ($sql_jenis) {
         </div>
 
         <script>
-        // Handle selection jenis pembayaran
+        // Handle selection kategori dan load produk
         document.addEventListener('DOMContentLoaded', function() {
-            const jenisBayarCards = document.querySelectorAll('.jenis-bayar-card');
-            const jenisInput = document.getElementById('jenis');
-            const produkListContainer = document.getElementById('produk-list-container');
-            const produkListDiv = document.getElementById('produk-list');
+            const kategoriCards = document.querySelectorAll('.kategori-card');
+            const produkAccordionContainer = document.getElementById('produk-accordion-container');
+            const produkAccordion = document.getElementById('produkAccordion');
             const hargaInput = document.getElementById('harga');
+            const ketInput = document.getElementById('ket');
+            const jenisInput = document.getElementById('jenis');
+            let selectedKategori = '';
+            let selectedProdukKode = '';
 
-            jenisBayarCards.forEach(function(card) {
+            // Fungsi reset form
+            window.resetForm = function() {
+                // Konfirmasi reset jika ada data yang sudah diisi
+                const harga = parseFloat(hargaInput.value) || 0;
+                const idpel = document.getElementById('idpel') ? document.getElementById('idpel').value.trim() : '';
+                const ket = ketInput ? ketInput.value.trim() : '';
+
+                if (harga > 0 || idpel || ket) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'question',
+                            title: 'Reset Form?',
+                            text: 'Semua data yang sudah diisi akan dihapus. Lanjutkan?',
+                            showCancelButton: true,
+                            confirmButtonColor: '#6c757d',
+                            cancelButtonColor: '#28a745',
+                            confirmButtonText: 'Ya, Reset',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                doResetForm();
+                            }
+                        });
+                    } else {
+                        if (confirm('Semua data yang sudah diisi akan dihapus. Lanjutkan?')) {
+                            doResetForm();
+                        }
+                    }
+                } else {
+                    // Langsung reset jika form kosong
+                    doResetForm();
+                }
+            };
+
+            // Fungsi untuk melakukan reset form
+            function doResetForm() {
+                // Reset semua input form
+                const form = document.getElementById('formTambahTransaksi');
+                if (form) {
+                    // Reset tanggal ke hari ini
+                    const tglInput = form.querySelector('input[name="tgl"]');
+                    if (tglInput) {
+                        tglInput.value = '<?=date('Y-m-d')?>';
+                    }
+
+                    // Reset idpel dan nama (readonly, harus via modal)
+                    const idpelInput = document.getElementById('idpel');
+                    const namaInput = document.getElementById('nama');
+                    const idPelangganInput = document.getElementById('id_pelanggan');
+                    if (idpelInput) idpelInput.value = '';
+                    if (namaInput) namaInput.value = '';
+                    if (idPelangganInput) idPelangganInput.value = '';
+
+                    // Reset harga
+                    if (hargaInput) hargaInput.value = '';
+
+                    // Reset keterangan
+                    if (ketInput) ketInput.value = '';
+
+                    // Reset jenis (id_bayar)
+                    if (jenisInput) jenisInput.value = '';
+
+                    // Reset status
+                    const statusInput = form.querySelector('select[name="status"]');
+                    if (statusInput) statusInput.value = '';
+                }
+
+                // Reset selected kategori
+                kategoriCards.forEach(function(card) {
+                    card.classList.remove('selected');
+                });
+                selectedKategori = '';
+
+                // Reset selected produk
+                document.querySelectorAll('.produk-grid-item').forEach(function(card) {
+                    card.classList.remove('selected');
+                });
+                selectedProdukKode = '';
+
+                // Sembunyikan accordion produk
+                if (produkAccordionContainer) {
+                    produkAccordionContainer.style.display = 'none';
+                }
+                if (produkAccordion) {
+                    produkAccordion.innerHTML = '';
+                }
+
+                // Scroll kembali ke paling atas halaman (seperti saat pertama kali buka)
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Alternatif: scroll ke kategori section jika ingin lebih spesifik
+                // setTimeout(function() {
+                //     const kategoriSection = document.getElementById('kategori-section');
+                //     if (kategoriSection) {
+                //         kategoriSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                //     }
+                // }, 100);
+
+                // Focus pada grid kategori pertama
+                if (kategoriCards.length > 0) {
+                    setTimeout(function() {
+                        kategoriCards[0].focus();
+                    }, 500);
+                }
+
+                // Show success message menggunakan toast
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Form Direset',
+                        text: 'Form telah dikembalikan ke kondisi awal',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        }
+                    });
+                }
+            }
+
+            // Validasi form sebelum submit
+            window.validateForm = function() {
+                // Cek apakah kategori sudah dipilih (optional, karena bisa manual)
+                // Cek apakah harga sudah diisi
+                const harga = parseFloat(hargaInput.value) || 0;
+                if (harga <= 0) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Harga Belum Diisi!',
+                            text: 'Mohon isi harga transaksi atau pilih produk untuk mengisi harga otomatis.',
+                            confirmButtonColor: '#ffc107'
+                        });
+                    } else {
+                        alert('Mohon isi harga transaksi atau pilih produk untuk mengisi harga otomatis.');
+                    }
+                    if (hargaInput) hargaInput.focus();
+                    return false;
+                }
+
+                // Cek apakah ID pelanggan sudah diisi
+                const idpel = document.getElementById('idpel') ? document.getElementById('idpel').value.trim() : '';
+                if (!idpel) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'ID Pelanggan Belum Diisi!',
+                            text: 'Mohon pilih pelanggan terlebih dahulu.',
+                            confirmButtonColor: '#ffc107'
+                        });
+                    } else {
+                        alert('Mohon pilih pelanggan terlebih dahulu.');
+                    }
+                    const idpelInput = document.getElementById('idpel');
+                    if (idpelInput) {
+                        const searchBtn = idpelInput.closest('.input-group').querySelector('[data-toggle="modal"]');
+                        if (searchBtn) searchBtn.click();
+                    }
+                    return false;
+                }
+
+                return true;
+            };
+
+            kategoriCards.forEach(function(card) {
                 card.addEventListener('click', function() {
-                    // Remove selected class from all cards
-                    jenisBayarCards.forEach(function(c) {
+                    const kategori = this.getAttribute('data-kategori');
+
+                    // Remove selected class from all kategori cards
+                    kategoriCards.forEach(function(c) {
                         c.classList.remove('selected');
                     });
 
                     // Add selected class to clicked card
                     this.classList.add('selected');
+                    selectedKategori = kategori;
+                    selectedProdukKode = ''; // Reset selected produk saat ganti kategori
 
-                    // Set hidden input value
-                    const idBayar = this.getAttribute('data-id-bayar');
-                    jenisInput.value = idBayar;
+                    // Reset accordion dan selected produk saat ganti kategori
+                    selectedProdukKode = '';
+                    document.querySelectorAll('.produk-grid-item').forEach(function(card) {
+                        card.classList.remove('selected');
+                    });
 
-                    // Load produk untuk jenis bayar yang dipilih
-                    loadProdukByJenisBayar(idBayar);
+                    // Load produk untuk kategori yang dipilih
+                    loadProdukByKategori(kategori);
 
-                    // Scroll card into view if needed
-                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    // Scroll to produk accordion dengan delay untuk smooth animation
+                    setTimeout(function() {
+                        if (produkAccordionContainer) {
+                            produkAccordionContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }, 300);
                 });
             });
 
-            // Fungsi untuk load produk berdasarkan jenis bayar
-            function loadProdukByJenisBayar(idBayar) {
-                if (!idBayar) {
-                    produkListContainer.style.display = 'none';
+            // Fungsi untuk load produk berdasarkan kategori
+            function loadProdukByKategori(kategori) {
+                if (!kategori) {
+                    produkAccordionContainer.style.display = 'none';
                     return;
                 }
 
-                // Show loading
-                produkListDiv.innerHTML = '<div class="col-12"><div class="text-center p-3"><i class="fa fa-spinner fa-spin"></i> Memuat produk...</div></div>';
-                produkListContainer.style.display = 'block';
+                // Show loading dengan animasi
+                produkAccordion.innerHTML = '<div class="text-center p-4"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-3 text-muted">Memuat produk dari kategori <strong>' + kategori + '</strong>...</p></div>';
+                produkAccordionContainer.style.display = 'block';
 
-                // Load produk via AJAX
-                fetch('<?=base_url('transaksi/get_produk.php')?>?id_bayar=' + idBayar)
-                    .then(response => response.json())
+                // Load produk via AJAX dengan timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 detik timeout
+
+                fetch('<?=base_url('transaksi/get_produk.php')?>?kategori=' + encodeURIComponent(kategori), {
+                    signal: controller.signal,
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        clearTimeout(timeoutId);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success && data.produk.length > 0) {
+                            // Group produk by sub-kategori atau langsung tampilkan
                             let html = '';
+                            let accordionIndex = 0;
+
+                            // Group produk (jika ada sub-kategori dalam kategori)
+                            const produkGroups = {};
                             data.produk.forEach(function(produk) {
+                                const groupKey = produk.kategori || 'Semua Produk';
+                                if (!produkGroups[groupKey]) {
+                                    produkGroups[groupKey] = [];
+                                }
+                                produkGroups[groupKey].push(produk);
+                            });
+
+                            // Generate accordion untuk setiap group
+                            Object.keys(produkGroups).forEach(function(groupKey) {
+                                const produkList = produkGroups[groupKey];
+                                const accordionId = 'accordion' + accordionIndex;
+                                const collapseId = 'collapse' + accordionIndex;
+
                                 html += `
-                                    <div class="col-md-6 col-lg-4 mb-2">
-                                        <div class="card produk-item-card border"
-                                             style="cursor: pointer; transition: all 0.3s;"
-                                             data-kode="${produk.kode}"
-                                             data-harga="${produk.harga}"
-                                             onclick="selectProduk('${produk.kode}', ${produk.harga})">
-                                            <div class="card-body p-2">
-                                                <div class="d-flex justify-content-between align-items-start">
-                                                    <small class="badge badge-info">${produk.kode}</small>
-                                                    <strong class="text-success">Rp ${parseInt(produk.harga).toLocaleString('id-ID')}</strong>
+                                    <div class="card mb-2 border">
+                                        <div class="card-header bg-light" id="heading${accordionIndex}">
+                                            <h5 class="mb-0">
+                                                <button class="btn btn-link ${accordionIndex === 0 ? '' : 'collapsed'}" type="button"
+                                                        data-toggle="collapse" data-target="#${collapseId}"
+                                                        aria-expanded="${accordionIndex === 0 ? 'true' : 'false'}"
+                                                        aria-controls="${collapseId}"
+                                                        style="text-decoration: none; color: #495057; width: 100%; text-align: left; padding: 0.75rem 1.25rem;">
+                                                    <i class="fa fa-folder-open mr-2 text-primary"></i>
+                                                    <strong>${groupKey}</strong>
+                                                    <span class="badge badge-primary ml-2">${produkList.length} produk</span>
+                                                    <i class="fa fa-chevron-down float-right mt-1" style="transition: transform 0.3s;"></i>
+                                                </button>
+                                            </h5>
+                                        </div>
+                                        <div id="${collapseId}"
+                                             class="collapse ${accordionIndex === 0 ? 'show' : ''}"
+                                             aria-labelledby="heading${accordionIndex}"
+                                             data-parent="#produkAccordion">
+                                            <div class="card-body p-3">
+                                                <div class="row">
+                                `;
+
+                                produkList.forEach(function(produk) {
+                                    const kode = produk.kode || '';
+                                    const harga = parseFloat(produk.harga) || 0;
+                                    const keterangan = (produk.keterangan || produk.produk || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                                    const idBayar = produk.id_bayar || null;
+
+                                    html += `
+                                        <div class="col-md-6 col-lg-4 mb-2">
+                                            <div class="card produk-grid-item border"
+                                                 data-kode="${kode}"
+                                                 data-harga="${harga}"
+                                                 data-keterangan="${keterangan}"
+                                                 data-id-bayar="${idBayar || ''}"
+                                                 style="cursor: pointer;">
+                                                <div class="card-body p-2">
+                                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                                        <span class="badge badge-info">${kode}</span>
+                                                        <strong class="text-success">Rp ${parseInt(harga).toLocaleString('id-ID')}</strong>
+                                                    </div>
+                                                    <small class="d-block text-truncate" title="${(produk.keterangan || produk.produk || '')}">
+                                                        ${(produk.keterangan || produk.produk || 'N/A')}
+                                                    </small>
                                                 </div>
-                                                <small class="d-block text-truncate mt-1" title="${produk.keterangan}">${produk.keterangan}</small>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+
+                                html += `
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 `;
+
+                                accordionIndex++;
                             });
-                            produkListDiv.innerHTML = html;
+
+                            produkAccordion.innerHTML = html;
+
+                            // Reinitialize Bootstrap collapse untuk accordion yang baru di-load
+                            if (typeof $ !== 'undefined' && $.fn.collapse) {
+                                // Bootstrap akan auto-handle collapse, tapi kita pastikan icon chevron berubah saat collapse
+                                $(produkAccordion).find('[data-toggle="collapse"]').on('click', function() {
+                                    const $icon = $(this).find('.fa-chevron-down');
+                                    const isExpanded = $(this).attr('aria-expanded') === 'true';
+                                    setTimeout(function() {
+                                        if ($icon.length) {
+                                            $icon.css('transform', isExpanded ? 'rotate(-90deg)' : 'rotate(0deg)');
+                                        }
+                                    }, 100);
+                                });
+
+                                // Update icon pada accordion yang sudah expanded
+                                $(produkAccordion).find('.collapse.show').prev().find('.fa-chevron-down').css('transform', 'rotate(-90deg)');
+                            }
                         } else {
-                            produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-info text-center p-2 mb-0">Tidak ada produk tersedia untuk jenis pembayaran ini</div></div>';
+                            produkAccordion.innerHTML = '<div class="alert alert-info text-center"><i class="fa fa-info-circle"></i> Tidak ada produk tersedia untuk kategori ini</div>';
                         }
                     })
                     .catch(error => {
+                        clearTimeout(timeoutId);
                         console.error('Error loading produk:', error);
-                        produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-warning text-center p-2 mb-0">Gagal memuat produk</div></div>';
+
+                        let errorMessage = 'Gagal memuat produk. ';
+                        if (error.name === 'AbortError') {
+                            errorMessage += 'Request timeout. Periksa koneksi internet Anda.';
+                        } else {
+                            errorMessage += 'Silakan refresh halaman atau coba lagi.';
+                        }
+
+                        produkAccordion.innerHTML = '<div class="alert alert-danger text-center">' +
+                            '<i class="fa fa-exclamation-triangle"></i><br>' +
+                            errorMessage + '<br>' +
+                            '<button class="btn btn-sm btn-primary mt-2" onclick="location.reload()">Refresh Halaman</button>' +
+                            '</div>';
                     });
             }
 
-            // Fungsi global untuk select produk
-            window.selectProduk = function(kode, harga) {
-                hargaInput.value = harga;
+            // Handle klik produk (menggunakan event delegation untuk menghindari masalah escape)
+            // Gunakan document.body untuk event delegation yang lebih stabil (akan catch semua produk card)
+            document.body.addEventListener('click', function(e) {
+                const produkCard = e.target.closest('.produk-grid-item');
+                if (produkCard && produkAccordionContainer.contains(produkCard)) {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                // Highlight selected produk
-                document.querySelectorAll('.produk-item-card').forEach(function(card) {
-                    card.classList.remove('border-primary');
-                    card.style.backgroundColor = '';
-                });
-                event.currentTarget.classList.add('border-primary');
-                event.currentTarget.style.backgroundColor = '#f0f8ff';
+                    const kode = produkCard.getAttribute('data-kode') || '';
+                    const harga = parseFloat(produkCard.getAttribute('data-harga')) || 0;
+                    const keterangan = produkCard.getAttribute('data-keterangan') || '';
+                    const idBayar = produkCard.getAttribute('data-id-bayar');
 
-                // Scroll to harga input
-                hargaInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                hargaInput.focus();
-            };
+                    // Validasi data
+                    if (!kode || harga <= 0) {
+                        console.error('Data produk tidak valid:', {kode, harga});
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: 'Data produk tidak valid. Silakan coba lagi.',
+                                timer: 2000
+                            });
+                        }
+                        return;
+                    }
+
+                    // Simpan kode produk yang dipilih
+                    selectedProdukKode = kode;
+
+                    // Fill form fields
+                    if (hargaInput) {
+                        hargaInput.value = harga;
+                        // Trigger change event untuk validasi
+                        hargaInput.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                    if (ketInput) {
+                        const keteranganClean = keterangan.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+                        const ketValue = kode + (keteranganClean ? ' - ' + keteranganClean : '');
+                        ketInput.value = ketValue;
+                    }
+
+                    // Set id_bayar jika ada (decode HTML entities)
+                    if (idBayar && idBayar !== '' && idBayar !== 'null' && jenisInput) {
+                        jenisInput.value = idBayar;
+                    }
+
+                    // Highlight selected produk dengan animasi
+                    document.querySelectorAll('.produk-grid-item').forEach(function(card) {
+                        card.classList.remove('selected');
+                    });
+                    produkCard.classList.add('selected');
+
+                    // Add visual feedback dengan pulse effect
+                    produkCard.style.transform = 'scale(0.95)';
+                    setTimeout(function() {
+                        produkCard.style.transform = '';
+                    }, 200);
+
+                    // Scroll to form dengan smooth behavior
+                    setTimeout(function() {
+                        if (hargaInput) {
+                            hargaInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            hargaInput.focus();
+                            hargaInput.select();
+                        }
+                    }, 300);
+
+                    // Show success notification menggunakan toast dengan tampilan lebih baik
+                    if (typeof Swal !== 'undefined') {
+                        const hargaFormatted = parseInt(harga).toLocaleString('id-ID');
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: '<div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Produk Dipilih</div><div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;"><span style="font-weight: 600; color: #212529;">' + kode + '</span><span style="font-weight: 700; color: #28a745; font-size: 15px;">Rp ' + hargaFormatted + '</span></div>',
+                            html: true,
+                            showConfirmButton: false,
+                            timer: 2500,
+                            timerProgressBar: true,
+                            width: '400px',
+                            padding: '18px 22px',
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer);
+                                toast.addEventListener('mouseleave', Swal.resumeTimer);
+                            }
+                        });
+                    }
+                }
+            });
         });
         </script>
     </body>

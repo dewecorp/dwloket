@@ -1,0 +1,101 @@
+========================================
+  CARA MELIHAT FILE DI REPO WEB
+========================================
+
+FILE SUDAH ADA DI REPO WEB!
+---------------------------
+Semua file sudah ada di: H:\DATA 5\REPO WEB
+Total: 7,779+ file sudah di-clone
+
+KENAPA TIDAK TERLIHAT DI FILE EXPLORER?
+----------------------------------------
+File mungkin ter-hidden atau setting File Explorer belum benar.
+
+CARA MEMBUAT FILE TERLIHAT:
+---------------------------
+
+CARA 1: Aktifkan "Show Hidden Files"
+--------------------------------------
+1. Buka File Explorer
+2. Klik menu "View" (di toolbar atas)
+3. Centang/aktifkan:
+   ✓ "Hidden items" (untuk menampilkan file hidden)
+   ✓ "File name extensions" (opsional, untuk lihat ekstensi)
+   ✓ "Hidden files" (jika ada)
+
+4. Refresh folder (tekan F5)
+
+CARA 2: Ubah View Settings
+---------------------------
+1. Di folder REPO WEB, klik menu "View"
+2. Pilih salah satu:
+   - "Details" (untuk lihat semua file dalam list)
+   - "List" (untuk lihat dalam bentuk list)
+   - "Large icons" (untuk lihat dengan icon besar)
+
+3. Refresh folder (tekan F5)
+
+CARA 3: Gunakan Search
+-----------------------
+1. Di folder REPO WEB, ketik di search box:
+   - "jenisbayar" (untuk cari folder jenisbayar)
+   - "import_produk_excel.php" (untuk cari file)
+   - "admin" (untuk cari folder admin)
+
+2. File akan muncul di hasil search
+
+CARA 4: Akses Langsung via Path
+--------------------------------
+1. Buka File Explorer
+2. Ketik di address bar:
+   H:\DATA 5\REPO WEB\jenisbayar\import_produk_excel.php
+
+3. Tekan Enter - file akan terbuka
+
+VERIFIKASI FILE ADA:
+--------------------
+Untuk memastikan file benar-benar ada, buka PowerShell dan jalankan:
+
+cd "H:\DATA 5\REPO WEB"
+Get-ChildItem -Force | Select-Object Name
+
+Atau cek file spesifik:
+
+Test-Path "H:\DATA 5\REPO WEB\jenisbayar\import_produk_excel.php"
+
+Jika hasilnya "True", berarti file ada!
+
+FOLDER YANG SEHARUSNYA TERLIHAT:
+---------------------------------
+✓ admin
+✓ auth
+✓ config
+✓ jenisbayar
+✓ libs
+✓ orderkuota
+✓ transaksi
+✓ user
+✓ files
+✓ vendor
+✓ header.php
+✓ footer.php
+✓ index.php
+✓ import_produk_excel.php (di dalam folder jenisbayar)
+✓ Dan 7,700+ file lainnya
+
+CATATAN:
+--------
+- File .git adalah folder hidden (normal, ini folder Git)
+- File .vscode adalah folder untuk VS Code (normal)
+- Semua file lain seharusnya terlihat setelah aktifkan "Show hidden items"
+
+JIKA MASIH TIDAK TERLIHAT:
+--------------------------
+1. Tutup File Explorer
+2. Buka kembali folder REPO WEB
+3. Pastikan "Show hidden items" sudah aktif
+4. Refresh dengan F5
+5. Coba ubah view ke "Details" atau "List"
+
+========================================
+

@@ -40,7 +40,7 @@ if errorlevel 1 (
 )
 echo.
 
-echo [3/3] Push ke REPO WEB...
+echo [3/4] Push ke REPO WEB...
 git push repo-web master
 if errorlevel 1 (
     echo ERROR: Gagal push ke REPO WEB!
@@ -48,6 +48,17 @@ if errorlevel 1 (
     exit /b 1
 )
 echo OK - Push berhasil!
+echo.
+
+echo [4/4] Update folder REPO WEB...
+cd "H:\DATA 5\REPO WEB"
+git pull
+if errorlevel 1 (
+    echo WARNING: Gagal update folder REPO WEB, tapi push sudah berhasil!
+) else (
+    echo OK - Folder REPO WEB sudah ter-update!
+)
+cd "H:\laragon\www\dwloket_ok"
 echo.
 
 echo ========================================
