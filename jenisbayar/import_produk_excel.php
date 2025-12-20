@@ -3,6 +3,9 @@
  * Import Produk dari Excel/CSV
  * Format: Kategori | Produk | Harga (3 kolom)
  * Mendukung file Excel (.xls, .xlsx) dan CSV
+ *
+ * @version 1.0
+ * @last_updated 2024
  */
 include_once('../header.php');
 include_once('../config/config.php');
@@ -560,5 +563,4 @@ Format yang didukung: CSV, XLS, XLSX
     </div>
 
 <?php include_once('../footer.php'); ?>
-
 
