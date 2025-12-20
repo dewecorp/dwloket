@@ -1,89 +1,4 @@
 <?php
-// Handle Tambah Produk SEBELUM include header untuk menghindari blank page
-if (isset($_POST['tambah_produk_modal'])) {
-    // Bersihkan semua output buffer
-    while (ob_get_level()) {
-        ob_end_clean();
-    }
-    ob_start();
-
-    include_once('../config/config.php');
-
-    $kode = mysqli_real_escape_string($koneksi, $_POST['kode'] ?? '');
-    $produk = mysqli_real_escape_string($koneksi, $_POST['produk'] ?? '');
-    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori'] ?? '');
-    $harga = floatval($_POST['harga'] ?? 0);
-    $status = intval($_POST['status'] ?? 1);
-
-    $success = false;
-    $message = '';
-
-    if (empty($kode) || empty($produk) || empty($kategori) || $harga <= 0) {
-        $message = 'Mohon lengkapi semua field yang wajib diisi!';
-        $success = false;
-    } else {
-        // Cek apakah kode sudah ada
-        $check_query = "SELECT id_produk FROM tb_produk_orderkuota WHERE kode = '$kode'";
-        $check_result = $koneksi->query($check_query);
-
-        if ($check_result && $check_result->num_rows > 0) {
-            $message = "Kode produk sudah ada: $kode";
-            $success = false;
-        } else {
-            $insert_query = "INSERT INTO tb_produk_orderkuota
-                            (kode, produk, kategori, harga, status, id_bayar)
-                            VALUES ('$kode', '$produk', '$kategori', $harga, $status, NULL)";
-
-            if ($koneksi->query($insert_query)) {
-                $message = 'Produk berhasil ditambahkan';
-                $success = true;
-            } else {
-                $message = 'Error: ' . $koneksi->error;
-                $success = false;
-            }
-        }
-    }
-
-    ob_end_clean();
-    ?>
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Tambah Produk</title>
-        <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
-    </head>
-    <body>
-    <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            icon: '<?=$success ? 'success' : 'error'?>',
-            title: '<?=$success ? 'Berhasil!' : 'Gagal!'?>',
-            text: '<?=addslashes($message)?>',
-            confirmButtonColor: '<?=$success ? '#28a745' : '#dc3545'?>',
-            <?php if ($success): ?>
-            timer: 2000,
-            timerProgressBar: true,
-            showConfirmButton: false
-            <?php else: ?>
-            confirmButtonText: 'OK'
-            <?php endif; ?>
-        }).then(() => {
-            window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
-        });
-        <?php if ($success): ?>
-        setTimeout(function() {
-            window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
-        }, 2500);
-        <?php endif; ?>
-    });
-    </script>
-    </body>
-    </html>
-    <?php
-    exit;
-}
-
 include_once('../header.php');
 include_once('../config/config.php');
 
@@ -146,7 +61,42 @@ if ($check_table && $check_table->num_rows > 0) {
     require_once '../libs/produk_helper.php';
 }
 
-// Handle Tambah Produk sudah dipindahkan ke atas (sebelum include header)
+// Handle Tambah Produk (harus dilakukan sebelum membaca session message)
+if (isset($_POST['tambah_produk_modal'])) {
+    $kode = mysqli_real_escape_string($koneksi, $_POST['kode'] ?? '');
+    $produk = mysqli_real_escape_string($koneksi, $_POST['produk'] ?? '');
+    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori'] ?? '');
+    $harga = floatval($_POST['harga'] ?? 0);
+    $status = intval($_POST['status'] ?? 1);
+
+    if (empty($kode) || empty($produk) || empty($kategori) || $harga <= 0) {
+        $_SESSION['tambah_message'] = 'Mohon lengkapi semua field yang wajib diisi!';
+        $_SESSION['tambah_success'] = false;
+    } else {
+        // Cek apakah kode sudah ada
+        $check_query = "SELECT id_produk FROM tb_produk_orderkuota WHERE kode = '$kode'";
+        $check_result = $koneksi->query($check_query);
+
+        if ($check_result && $check_result->num_rows > 0) {
+            $_SESSION['tambah_message'] = "Kode produk sudah ada: $kode";
+            $_SESSION['tambah_success'] = false;
+        } else {
+            $insert_query = "INSERT INTO tb_produk_orderkuota
+                            (kode, produk, kategori, harga, status, id_bayar)
+                            VALUES ('$kode', '$produk', '$kategori', $harga, $status, NULL)";
+
+            if ($koneksi->query($insert_query)) {
+                $_SESSION['tambah_message'] = 'Produk berhasil ditambahkan';
+                $_SESSION['tambah_success'] = true;
+            } else {
+                $_SESSION['tambah_message'] = 'Error: ' . $koneksi->error;
+                $_SESSION['tambah_success'] = false;
+            }
+        }
+    }
+    header('Location: ' . base_url('jenisbayar/jenis_bayar.php'));
+    exit;
+}
 
 // Inisialisasi variabel pesan
 $import_message = '';
@@ -2453,7 +2403,7 @@ if ($table_exists) {
     } elseif ($filter_produk) {
         // Filter berdasarkan nama produk
         $produk_escaped = mysqli_real_escape_string($koneksi, $filter_produk);
-        $query = "SELECT * FROM tb_produk_orderkuota WHERE produk = '$produk_escaped' ORDER BY kode ASC, kategori ASC, produk ASC, harga ASC";
+        $query = "SELECT * FROM tb_produk_orderkuota WHERE produk = '$produk_escaped' ORDER BY kategori ASC, kode ASC, produk ASC, harga ASC";
         $result = $koneksi->query($query);
         $produk_list = [];
         if ($result) {
@@ -2524,7 +2474,15 @@ if ($table_exists) {
     ];
 }
 ?>
-<body>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Produk & Harga</title>
+    </head>
+    <body>
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-7 align-self-center">
@@ -2749,7 +2707,7 @@ if ($table_exists) {
         <?php if ($table_exists && !empty($produk_list)): ?>
         <?php foreach ($produk_list as $produk): ?>
         <div id="modalEditProduk<?=$produk['id_produk']?>" class="modal fade" tabindex="-1" role="dialog">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title">
@@ -2761,44 +2719,36 @@ if ($table_exists) {
                         <div class="modal-body">
                             <input type="hidden" name="id_produk" value="<?=$produk['id_produk']?>">
                             <div class="form-group">
-                                <label>Kode Produk</label>
+                                <label>Kode</label>
                                 <input type="text" name="kode" class="form-control" value="<?=htmlspecialchars($produk['kode'])?>" readonly>
                             </div>
                             <div class="form-group">
-                                <label>Kategori <span class="text-danger">*</span></label>
-                                <input type="text" name="kategori" class="form-control" value="<?=htmlspecialchars($produk['kategori'])?>" required>
+                                <label>Produk</label>
+                                <input type="text" name="produk" class="form-control" value="<?=htmlspecialchars($produk['produk'])?>">
                             </div>
                             <div class="form-group">
-                                <label>Nama Produk <span class="text-danger">*</span></label>
-                                <input type="text" name="produk" class="form-control" value="<?=htmlspecialchars($produk['produk'])?>" required>
+                                <label>Kategori</label>
+                                <input type="text" name="kategori" class="form-control" value="<?=htmlspecialchars($produk['kategori'])?>">
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Harga <span class="text-danger">*</span></label>
-                                        <div class="input-group">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">Rp</span>
-                                            </div>
-                                            <input type="number" name="harga" class="form-control" value="<?=intval($produk['harga'])?>" step="1" min="0" required>
-                                        </div>
+                            <div class="form-group">
+                                <label>Harga</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Rp</span>
                                     </div>
+                                    <input type="number" name="harga" class="form-control" value="<?=intval($produk['harga'])?>" step="1" min="0" required>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Status</label>
-                                        <select name="status" class="form-control">
-                                            <option value="1" <?=($produk['status'] == 1) ? 'selected' : ''?>>Aktif</option>
-                                            <option value="0" <?=($produk['status'] == 0) ? 'selected' : ''?>>Tidak Aktif</option>
-                                        </select>
-                                    </div>
-                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Status</label>
+                                <select name="status" class="form-control" style="min-height: 38px; padding: 6px 12px; font-size: 14px;">
+                                    <option value="1" <?=($produk['status'] == 1) ? 'selected' : ''?>>Aktif</option>
+                                    <option value="0" <?=($produk['status'] == 0) ? 'selected' : ''?>>Tidak Aktif</option>
+                                </select>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" name="update_produk" class="btn btn-success btn-sm">
-                                <i class="fa fa-save"></i> Simpan Produk
-                            </button>
+                            <button type="submit" name="update_produk" class="btn btn-success btn-sm">Simpan</button>
                             <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Tutup</button>
                         </div>
                     </form>
@@ -3095,6 +3045,9 @@ if ($table_exists) {
                             <?php endif; ?>
 
                             <div id="loadingImport" style="display:none;" class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
                                 <p class="mt-3 text-muted" style="font-size: 16px;">Sedang memproses import, mohon tunggu...</p>
                             </div>
 
@@ -3153,7 +3106,7 @@ if ($table_exists) {
                                 if (alertInfo) alertInfo.style.display = 'none';
                                 if (btnImport) {
                                     btnImport.disabled = true;
-                                    btnImport.innerHTML = 'Memproses...';
+                                    btnImport.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memproses...';
                                 }
                                 if (btnCancel) btnCancel.disabled = true;
 
@@ -3354,7 +3307,9 @@ if ($table_exists) {
                     </div>
                     <div class="modal-body" id="produkDetailContent">
                         <div class="text-center">
-                            Memuat data...
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -3400,7 +3355,7 @@ if ($table_exists) {
         function viewProdukDetail(id_produk) {
             // Ambil data produk dari database via AJAX
             const contentDiv = document.getElementById('produkDetailContent');
-            contentDiv.innerHTML = '<div class="text-center">Memuat data...</div>';
+            contentDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>';
 
             // Buat request ke server untuk mendapatkan detail produk
             fetch('<?=base_url('jenisbayar/get_detail_produk.php')?>?id=' + id_produk)

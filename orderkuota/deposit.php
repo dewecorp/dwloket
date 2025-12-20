@@ -143,7 +143,13 @@ if ($stats_month) {
 }
 ?>
 
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Deposit OrderKuota</title>
+    <style>
         .deposit-card {
             border: 2px solid #007bff;
             border-radius: 10px;

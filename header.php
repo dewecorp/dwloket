@@ -19,35 +19,13 @@ if (isset($_SESSION['level']) == "") {
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="<?=base_url()?>/files/assets/images/dwloket_icon.png">
-    <title><?=get_page_title()?></title>
+    <title>DW LOKET JEPARA <?= date('Y') ?></title>
     <!-- Custom CSS -->
-    <?php
-    // Deteksi halaman dengan aman
-    $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
-    $request_uri = $_SERVER['REQUEST_URI'] ?? '';
-    $is_dashboard = (strpos($script_name, 'home/index.php') !== false || strpos($request_uri, '/home') !== false || $request_uri == '/' || $request_uri == '/home' || $request_uri == '/home/');
-    $needs_datatable = (strpos($script_name, 'transaksi') !== false ||
-                        strpos($script_name, 'pelanggan') !== false ||
-                        strpos($script_name, 'user') !== false ||
-                        strpos($script_name, 'jenisbayar') !== false ||
-                        strpos($script_name, 'orderkuota') !== false ||
-                        strpos($request_uri, 'transaksi') !== false ||
-                        strpos($request_uri, 'pelanggan') !== false ||
-                        strpos($request_uri, 'user') !== false ||
-                        strpos($request_uri, 'jenisbayar') !== false ||
-                        strpos($request_uri, 'orderkuota') !== false);
-
-    // CSS Chart hanya untuk dashboard
-    if ($is_dashboard): ?>
     <link href="<?=base_url()?>/files/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
     <link href="<?=base_url()?>/files/assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">
     <link href="<?=base_url()?>/files/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
-    <?php endif; ?>
-
-    <?php if ($needs_datatable): ?>
-    <link href="<?=base_url()?>/files/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css" rel="stylesheet">
-    <?php endif; ?>
-
+    <link href="<?=base_url()?>/files/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css"
+        rel="stylesheet">
     <!-- Custom CSS -->
     <link href="<?=base_url()?>/files/dist/css/style.min.css" rel="stylesheet">
     <link href="<?=base_url()?>/files/dist/css/modern-style.css" rel="stylesheet">
@@ -57,6 +35,15 @@ if (isset($_SESSION['level']) == "") {
 </head>
 
 <body>
+    <!-- ============================================================== -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- ============================================================== -->
+    <div class="preloader">
+        <div class="lds-ripple">
+            <div class="lds-pos"></div>
+            <div class="lds-pos"></div>
+        </div>
+    </div>
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -171,6 +158,12 @@ if (isset($_SESSION['level']) == "") {
                             <a class="sidebar-link sidebar-link" href="<?=base_url('orderkuota/index.php')?>"
                                 aria-expanded="false"><i data-feather="smartphone" class="feather-icon"></i><span
                                     class="hide-menu">OrderKuota</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link sidebar-link" href="<?=base_url('orderkuota/history.php')?>"
+                                aria-expanded="false"><i data-feather="clock" class="feather-icon"></i><span
+                                    class="hide-menu">Riwayat Pembayaran</span>
                             </a>
                         </li>
                         <li class="sidebar-item">

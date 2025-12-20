@@ -1,18 +1,12 @@
 <?php
-// Handle update produk SEBELUM include config untuk menghindari blank page
+include_once('../config/config.php');
+
+// Start session jika belum
+if (!isset($_SESSION)) {
+    session_start();
+}
+
 if (isset($_POST['update_produk'])) {
-    // Bersihkan semua output buffer
-    while (ob_get_level()) {
-        ob_end_clean();
-    }
-    ob_start();
-
-    include_once('../config/config.php');
-
-    // Start session jika belum
-    if (!isset($_SESSION)) {
-        session_start();
-    }
     $id_produk = intval($_POST['id_produk']);
     $kode = mysqli_real_escape_string($koneksi, $_POST['kode'] ?? '');
     $produk = mysqli_real_escape_string($koneksi, $_POST['produk'] ?? '');
@@ -32,10 +26,6 @@ if (isset($_POST['update_produk'])) {
                   status = $status,
                   updated_at = CURRENT_TIMESTAMP
               WHERE id_produk = $id_produk";
-
-    $success = false;
-    $message = '';
-    $message_html = false;
 
     if ($koneksi->query($query)) {
         // Buat detail perubahan
@@ -60,67 +50,21 @@ if (isset($_POST['update_produk'])) {
         }
 
         if (!empty($changes)) {
-            $message = "Produk <strong>" . htmlspecialchars($kode) . "</strong> berhasil diupdate:<br><ul style='text-align: left; display: inline-block; margin-top: 10px;'><li>" . implode("</li><li>", $changes) . "</li></ul>";
-            $message_html = true;
+            $message_html = "Produk <strong>" . htmlspecialchars($kode) . "</strong> berhasil diupdate:<br><ul style='text-align: left; display: inline-block; margin-top: 10px;'><li>" . implode("</li><li>", $changes) . "</li></ul>";
+            $_SESSION['update_message'] = $message_html;
+            $_SESSION['update_message_html'] = true;
         } else {
-            $message = "Produk <strong>" . htmlspecialchars($kode) . "</strong> berhasil diupdate (tidak ada perubahan)";
-            $message_html = true;
+            $message_html = "Produk <strong>" . htmlspecialchars($kode) . "</strong> berhasil diupdate (tidak ada perubahan)";
+            $_SESSION['update_message'] = $message_html;
+            $_SESSION['update_message_html'] = true;
         }
-        $success = true;
+        $_SESSION['update_success'] = true;
     } else {
-        $message = 'Gagal mengupdate data produk: ' . $koneksi->error;
-        $success = false;
+        $_SESSION['update_message'] = 'Gagal mengupdate data produk: ' . $koneksi->error;
+        $_SESSION['update_success'] = false;
     }
-
-    ob_end_clean();
-    ?>
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Update Produk</title>
-        <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
-    </head>
-    <body>
-    <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            icon: '<?=$success ? 'success' : 'error'?>',
-            title: '<?=$success ? 'Berhasil!' : 'Gagal!'?>',
-            <?php if ($message_html): ?>
-            html: <?=json_encode($message, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)?>,
-            <?php else: ?>
-            text: <?=json_encode($message, JSON_UNESCAPED_UNICODE)?>,
-            <?php endif; ?>
-            confirmButtonColor: '<?=$success ? '#28a745' : '#dc3545'?>',
-            width: '600px',
-            <?php if ($success): ?>
-            timer: 3000,
-            timerProgressBar: true,
-            showConfirmButton: false
-            <?php else: ?>
-            confirmButtonText: 'OK'
-            <?php endif; ?>
-        }).then(() => {
-            window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
-        });
-        <?php if ($success): ?>
-        setTimeout(function() {
-            window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
-        }, 3500);
-        <?php endif; ?>
-    });
-    </script>
-    </body>
-    </html>
-    <?php
-    exit;
 }
 
-// Jika tidak ada POST, redirect
-while (ob_get_level()) {
-    ob_end_clean();
-}
 header('Location: ' . base_url('jenisbayar/jenis_bayar.php'));
 exit;
 ?>

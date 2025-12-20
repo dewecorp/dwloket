@@ -3,56 +3,144 @@ include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/produk_helper.php';
 
-// Ambil semua kategori produk
-$all_kategori = getAllKategori();
+// Fungsi untuk menentukan icon dan warna berdasarkan jenis pembayaran
+// Fungsi ini otomatis akan handle jenis pembayaran baru yang ditambahkan
+function getJenisBayarStyle($jenis_bayar) {
+    $jenis_bayar_lower = strtolower(trim($jenis_bayar));
 
-// Ambil data jenis pembayaran untuk mapping
+    // Mapping icon dan warna berdasarkan keyword
+    $mapping = [
+        // PLN / Listrik
+        'token pln' => ['icon' => 'fa-bolt', 'color' => 'warning'],
+        'pln' => ['icon' => 'fa-bolt', 'color' => 'warning'],
+        'listrik' => ['icon' => 'fa-bolt', 'color' => 'warning'],
+
+        // Pulsa
+        'pulsa telkomsel' => ['icon' => 'fa-phone', 'color' => 'primary'],
+        'pulsa xl' => ['icon' => 'fa-phone', 'color' => 'info'],
+        'pulsa axis' => ['icon' => 'fa-phone', 'color' => 'danger'],
+        'pulsa indosat' => ['icon' => 'fa-phone', 'color' => 'warning'],
+        'pulsa tri' => ['icon' => 'fa-phone', 'color' => 'success'],
+        'pulsa smartfren' => ['icon' => 'fa-phone', 'color' => 'secondary'],
+        'pulsa' => ['icon' => 'fa-phone', 'color' => 'primary'],
+
+        // Data Internet
+        'data internet' => ['icon' => 'fa-wifi', 'color' => 'info'],
+        'paket data' => ['icon' => 'fa-wifi', 'color' => 'info'],
+        'data' => ['icon' => 'fa-wifi', 'color' => 'info'],
+        'internet' => ['icon' => 'fa-wifi', 'color' => 'info'],
+
+        // BPJS
+        'bpjs kesehatan' => ['icon' => 'fa-heart', 'color' => 'danger'],
+        'bpjs ketenagakerjaan' => ['icon' => 'fa-briefcase', 'color' => 'danger'],
+        'bpjs' => ['icon' => 'fa-heart', 'color' => 'danger'],
+
+        // PDAM / Air
+        'pdam' => ['icon' => 'fa-tint', 'color' => 'info'],
+        'air' => ['icon' => 'fa-tint', 'color' => 'info'],
+
+        // Internet Rumah
+        'indihome' => ['icon' => 'fa-home', 'color' => 'primary'],
+        'wifi id' => ['icon' => 'fa-wifi', 'color' => 'info'],
+
+        // E-Wallet / Payment
+        'shopee pay' => ['icon' => 'fa-shopping-bag', 'color' => 'warning'],
+        'shopee' => ['icon' => 'fa-shopping-bag', 'color' => 'warning'],
+        'grab ovo' => ['icon' => 'fa-motorcycle', 'color' => 'success'],
+        'grab' => ['icon' => 'fa-motorcycle', 'color' => 'success'],
+        'ovo' => ['icon' => 'fa-motorcycle', 'color' => 'success'],
+        'e-mandiri' => ['icon' => 'fa-university', 'color' => 'primary'],
+        'mandiri' => ['icon' => 'fa-university', 'color' => 'primary'],
+        'brizzi' => ['icon' => 'fa-credit-card', 'color' => 'info'],
+        'e-toll' => ['icon' => 'fa-road', 'color' => 'warning'],
+        'toll' => ['icon' => 'fa-road', 'color' => 'warning'],
+        'transfer uang' => ['icon' => 'fa-exchange-alt', 'color' => 'success'],
+        'transfer' => ['icon' => 'fa-exchange-alt', 'color' => 'success'],
+        'e-money' => ['icon' => 'fa-wallet', 'color' => 'primary'],
+        'wallet' => ['icon' => 'fa-wallet', 'color' => 'primary'],
+        'voucher game' => ['icon' => 'fa-gamepad', 'color' => 'danger'],
+        'voucher' => ['icon' => 'fa-gamepad', 'color' => 'danger'],
+        'game' => ['icon' => 'fa-gamepad', 'color' => 'danger'],
+    ];
+
+    // Cek exact match terlebih dahulu
+    if (isset($mapping[$jenis_bayar_lower])) {
+        return $mapping[$jenis_bayar_lower];
+    }
+
+    // Cek partial match (lebih fleksibel untuk jenis baru)
+    foreach ($mapping as $key => $value) {
+        // Cek jika keyword ada di nama jenis bayar atau sebaliknya
+        if (strpos($jenis_bayar_lower, $key) !== false || strpos($key, $jenis_bayar_lower) !== false) {
+            return $value;
+        }
+    }
+
+    // Default untuk jenis pembayaran baru yang belum ada di mapping
+    // Otomatis akan muncul dengan icon dan warna default
+    return ['icon' => 'fa-money-bill-wave', 'color' => 'secondary'];
+}
+
+// Ambil data jenis pembayaran secara dinamis dari database
+// Setiap kali halaman dimuat, akan mengambil data terbaru dari database
+// Jadi jika ada jenis pembayaran baru yang ditambahkan, otomatis akan muncul di grid
 $sql_jenis = $koneksi->query("SELECT * FROM tb_jenisbayar ORDER BY jenis_bayar ASC");
 $jenis_bayar_list = [];
 if ($sql_jenis) {
     while ($row = $sql_jenis->fetch_assoc()) {
-        $jenis_bayar_list[$row['id_bayar']] = $row;
+        // Ambil jumlah produk untuk setiap jenis bayar
+        $row['jumlah_produk'] = count(getProdukByIdBayar($row['id_bayar'], true));
+        $jenis_bayar_list[] = $row;
     }
 }
 ?>
-<style>
-        .kategori-card {
-            cursor: pointer;
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Tambah Transaksi</title>
+        <style>
+        .jenis-bayar-card {
+            cursor: pointer !important;
             transition: all 0.3s;
             position: relative;
-            z-index: 100;
+            z-index: 100 !important;
+            pointer-events: auto !important;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
         }
-        .kategori-card:hover {
+        .jenis-bayar-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .kategori-card.selected {
+        .jenis-bayar-card * {
+            pointer-events: none !important;
+        }
+        .jenis-bayar-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .jenis-bayar-card.selected {
             border-color: #28a745 !important;
             background-color: #f0fff4;
             box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
         }
-        .kategori-card.selected .card-body {
+        .jenis-bayar-card.selected .card-body {
             background-color: #f0fff4;
         }
-        .kategori-card .card-body {
+        .jenis-bayar-card .card-body {
             text-align: center;
             padding: 1.5rem 1rem;
-        }
-        .produk-item-card {
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        .produk-item-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-        .produk-item-card.selected {
-            border-color: #007bff !important;
-            background-color: #f0f8ff;
         }
         .form-label {
             font-weight: 600;
@@ -85,13 +173,24 @@ if ($sql_jenis) {
         .input-group-prepend .input-group-text {
             border-radius: 8px 0 0 8px;
         }
-        #form-pembayaran-section {
-            display: none;
+        .input-group-append .btn,
+        .input-group-append .input-group-text {
+            border-radius: 0 8px 8px 0;
+            border-left: 0;
+        }
+        .input-group-append .btn {
+            border-left: 1px solid #ced4da;
+        }
+        .produk-item-card {
+            transition: all 0.3s;
+        }
+        .produk-item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
         </style>
     </head>
     <body>
-        <a name="top" id="top"></a>
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-7 align-self-center">
@@ -107,81 +206,56 @@ if ($sql_jenis) {
                 </div>
             </div>
         </div>
-        <div class="container-fluid">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <?php if (isset($_SESSION['error_message'])): ?>
-                <div class="alert alert-<?=($_SESSION['error_success'] ?? false) ? 'success' : 'danger'?> alert-dismissible fade show" role="alert" style="margin-bottom: 10px;">
-                    <i class="fa fa-<?=($_SESSION['error_success'] ?? false) ? 'check-circle' : 'exclamation-triangle'?>"></i>
-                    <?=htmlspecialchars($_SESSION['error_message'])?>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <?php
-                unset($_SESSION['error_message']);
-                unset($_SESSION['error_success']);
-                endif; ?>
-                <div class="modern-card" style="margin-bottom: 10px;">
-                    <div class="modern-card-header" style="padding: 10px 15px;">
-                        <h4 style="margin: 0; font-size: 1.1rem;">
+                <div class="modern-card">
+                    <div class="modern-card-header">
+                        <h4>
                             <i class="fa fa-plus"></i> Tambah Transaksi
                         </h4>
                     </div>
-                    <div class="modern-card-body" style="padding: 12px 15px;">
-                        <form action="proses.php" method="POST" id="formTransaksi">
-                            <!-- Grid Kategori Produk -->
-                            <a name="kategori-section" id="kategori-section"></a>
-                            <div class="modern-card mb-3">
-                                <div class="modern-card-header" style="padding: 10px 15px;">
-                                    <h4 style="margin: 0; font-size: 1rem;">
-                                        <i class="fa fa-tags"></i> Pilih Kategori Produk (Opsional)
+                    <div class="modern-card-body">
+                        <form action="#" method="POST">
+                            <!-- Jenis Pembayaran Grid - Paling Atas -->
+                            <div class="modern-card mb-4">
+                                <div class="modern-card-header">
+                                    <h4>
+                                        <i class="fa fa-credit-card"></i> Pilih Jenis Pembayaran <span class="text-danger">*</span>
                                     </h4>
                                 </div>
-                                <div class="modern-card-body" style="padding: 12px 15px;">
-                                    <div class="row" id="kategori-grid">
-                                        <?php if (empty($all_kategori)): ?>
-                                        <div class="col-12">
-                                            <div class="alert alert-warning text-center">
-                                                <i class="fa fa-exclamation-triangle"></i> Belum ada kategori produk. Silakan import produk terlebih dahulu.
-                                            </div>
-                                        </div>
-                                        <?php else: ?>
-                                        <?php foreach ($all_kategori as $kategori): ?>
+                                <div class="modern-card-body">
+                                    <input type="hidden" name="jenis" id="jenis" required>
+                                    <div class="row">
+                                        <?php foreach ($jenis_bayar_list as $jenis):
+                                            $style = getJenisBayarStyle($jenis['jenis_bayar']);
+                                        ?>
                                         <div class="col-md-4 col-sm-6 mb-3">
-                                            <div class="card kategori-card border-primary"
-                                                 data-kategori="<?=htmlspecialchars($kategori['kategori'])?>"
-                                                 style="cursor: pointer; user-select: none; position: relative; z-index: 100;"
+                                            <div class="card jenis-bayar-card border-<?=$style['color']?>"
+                                                 data-id-bayar="<?=$jenis['id_bayar']?>"
+                                                 data-jenis-bayar="<?=htmlspecialchars($jenis['jenis_bayar'])?>"
+                                                 style="cursor: pointer !important; user-select: none; position: relative; z-index: 100;"
                                                  role="button"
                                                  tabindex="0">
                                                 <div class="card-body text-center">
-                                                    <div class="kategori-icon-wrapper mb-3">
-                                                        <i class="fa fa-box fa-3x text-primary"></i>
-                                                    </div>
-                                                    <h6 class="mb-0"><?=htmlspecialchars($kategori['kategori'])?></h6>
-                                                    <small class="text-muted"><?=$kategori['jumlah_produk']?> produk</small>
+                                                    <i class="fa <?=$style['icon']?> fa-3x text-<?=$style['color']?> mb-2"></i>
+                                                    <h6 class="mb-0"><?=htmlspecialchars($jenis['jenis_bayar'])?></h6>
                                                 </div>
                                             </div>
                                         </div>
                                         <?php endforeach; ?>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
 
-
                             <!-- Form Pembayaran -->
-                            <div class="modern-card" style="margin-top: 10px;">
-                                <div class="modern-card-header" style="padding: 10px 15px;">
-                                    <h4 style="margin: 0; font-size: 1.1rem;">
+                            <div class="modern-card">
+                                <div class="modern-card-header">
+                                    <h4>
                                         <i class="fa fa-edit"></i> Form Pembayaran
                                     </h4>
                                 </div>
-                                <div class="modern-card-body" style="padding: 12px 15px;">
-                                    <input type="hidden" name="jenis" id="jenis" required>
-                                    <input type="hidden" name="selected_produk_id" id="selected_produk_id">
-                                    <input type="hidden" name="selected_kategori" id="selected_kategori">
-
+                                <div class="modern-card-body">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="form-group">
@@ -219,13 +293,6 @@ if ($sql_jenis) {
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label for="produk" class="form-label">
-                                                    <i class="fa fa-box text-info"></i> Produk
-                                                </label>
-                                                <input type="text" name="produk" id="produk" class="form-control" placeholder="Produk akan terisi otomatis saat memilih produk" readonly>
-                                                <small class="form-text text-muted">Produk dipilih dari daftar kategori di atas</small>
-                                            </div>
-                                            <div class="form-group">
                                                 <label for="harga" class="form-label">
                                                     <i class="fa fa-money-bill-wave text-success"></i> Harga <span class="text-danger">*</span>
                                                 </label>
@@ -235,17 +302,34 @@ if ($sql_jenis) {
                                                     </div>
                                                     <input type="number" name="harga" id="harga" class="form-control" placeholder="0" required>
                                                 </div>
-                                                <small class="form-text text-muted">Harga akan terisi otomatis saat memilih produk</small>
+                                                <small class="form-text text-muted">
+                                                    Atau pilih produk dari daftar di bawah untuk mengisi harga otomatis
+                                                </small>
+                                            </div>
+
+                                            <!-- Daftar Produk (akan muncul setelah jenis bayar dipilih) -->
+                                            <div id="produk-list-container" style="display: none;">
+                                                <div class="form-group">
+                                                    <label class="form-label">
+                                                        <i class="fa fa-box text-info"></i> Pilih Produk (Opsional)
+                                                    </label>
+                                                    <div id="produk-list" class="row"></div>
+                                                    <small class="form-text text-muted">
+                                                        Klik produk untuk mengisi harga secara otomatis
+                                                    </small>
+                                                </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="status" class="form-label">
-                                                    <i class="fa fa-info-circle text-primary"></i> Status <span class="text-danger">*</span>
+                                                    <i class="fa fa-info-circle text-primary"></i> Status
                                                 </label>
-                                                <select class="form-control" name="status" id="status" required>
+                                                <select class="form-control" name="status" id="status">
                                                     <option value="">Pilih Status</option>
                                                     <option value="Lunas">Lunas</option>
                                                     <option value="Belum">Belum Bayar</option>
                                                 </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -253,20 +337,13 @@ if ($sql_jenis) {
                             <!-- Tombol Aksi -->
                             <div class="row mt-4">
                                 <div class="col-12">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <button type="button" class="btn btn-secondary btn-modern" onclick="resetForm(); return false;" style="cursor: pointer !important;">
-                                                    <i class="fa fa-refresh"></i> Reset Form
-                                                </button>
-                                                <div>
-                                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2" style="cursor: pointer !important;">
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2">
                                             <i class="fa fa-arrow-left"></i> Kembali
                                         </a>
-                                        <button type="submit" name="simpan" class="btn btn-success btn-modern" style="cursor: pointer !important;">
+                                        <button type="submit" name="simpan" class="btn btn-success btn-modern">
                                             <i class="fa fa-save"></i> Simpan Transaksi
                                         </button>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -292,7 +369,9 @@ if ($sql_jenis) {
                 ?>
                 <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
                 <script>
+				// Tunggu hingga DOM dan SweetAlert ready
 				document.addEventListener('DOMContentLoaded', function() {
+					// Tunggu sedikit untuk memastikan SweetAlert ter-load
 					setTimeout(function() {
 						if (typeof Swal !== 'undefined') {
 							Swal.fire({
@@ -305,13 +384,16 @@ if ($sql_jenis) {
 								showConfirmButton: true,
 								confirmButtonText: 'OK'
 							}).then((result) => {
+								// Redirect ke halaman transaksi
 								window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
 							});
 
+							// Fallback redirect setelah 2.5 detik
 							setTimeout(function() {
 								window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
 							}, 2500);
 						} else {
+							// Fallback jika SweetAlert tidak tersedia
 							alert('Transaksi Berhasil Ditambahkan!');
 							window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
 						}
@@ -347,72 +429,67 @@ if ($sql_jenis) {
         </div>
 
         <script>
-        let selectedKategori = '';
-        let selectedProduk = null;
-
-        // Handle selection kategori
+        // Handle selection jenis pembayaran
         document.addEventListener('DOMContentLoaded', function() {
-            const kategoriCards = document.querySelectorAll('.kategori-card');
+            const jenisBayarCards = document.querySelectorAll('.jenis-bayar-card');
+            const jenisInput = document.getElementById('jenis');
+            const produkListContainer = document.getElementById('produk-list-container');
+            const produkListDiv = document.getElementById('produk-list');
+            const hargaInput = document.getElementById('harga');
 
-            kategoriCards.forEach(function(card) {
+            jenisBayarCards.forEach(function(card) {
                 card.addEventListener('click', function() {
                     // Remove selected class from all cards
-                    kategoriCards.forEach(function(c) {
+                    jenisBayarCards.forEach(function(c) {
                         c.classList.remove('selected');
                     });
 
                     // Add selected class to clicked card
                     this.classList.add('selected');
 
-            // Get kategori
-            selectedKategori = this.getAttribute('data-kategori');
-            document.getElementById('selected_kategori').value = selectedKategori;
+                    // Set hidden input value
+                    const idBayar = this.getAttribute('data-id-bayar');
+                    jenisInput.value = idBayar;
 
-            // Load produk untuk kategori yang dipilih
-            loadProdukByKategori(selectedKategori);
+                    // Load produk untuk jenis bayar yang dipilih
+                    loadProdukByJenisBayar(idBayar);
 
-            // Buka modal produk
-            $('#modalProduk').modal('show');
+                    // Scroll card into view if needed
+                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 });
             });
-        });
 
-        // Fungsi untuk load produk berdasarkan kategori
-        function loadProdukByKategori(kategori) {
-            const produkListDiv = document.getElementById('produk-list-modal');
-            const modalKategoriTitle = document.getElementById('modalKategoriTitle');
-
-            // Set title modal
-            if (modalKategoriTitle) {
-                modalKategoriTitle.textContent = '- ' + kategori;
+            // Fungsi untuk load produk berdasarkan jenis bayar
+            function loadProdukByJenisBayar(idBayar) {
+                if (!idBayar) {
+                    produkListContainer.style.display = 'none';
+                    return;
                 }
 
                 // Show loading
-                produkListDiv.innerHTML = '<div class="col-12"><div class="text-center p-3">Memuat produk...</div></div>';
+                produkListDiv.innerHTML = '<div class="col-12"><div class="text-center p-3"><i class="fa fa-spinner fa-spin"></i> Memuat produk...</div></div>';
+                produkListContainer.style.display = 'block';
 
                 // Load produk via AJAX
-            fetch('<?=base_url('transaksi/get_produk.php')?>?kategori=' + encodeURIComponent(kategori))
+                fetch('<?=base_url('transaksi/get_produk.php')?>?id_bayar=' + idBayar)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.produk.length > 0) {
                             let html = '';
                             data.produk.forEach(function(produk) {
-                            const escapedKode = (produk.kode || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-                            const produkNama = (produk.produk || produk.keterangan || '').replace(/"/g, '&quot;').replace(/'/g, "\\'");
                                 html += `
                                     <div class="col-md-6 col-lg-4 mb-2">
                                         <div class="card produk-item-card border"
-                                         data-produk-id="${produk.id_produk}"
-                                         data-kode="${escapedKode}"
+                                             style="cursor: pointer; transition: all 0.3s;"
+                                             data-kode="${produk.kode}"
                                              data-harga="${produk.harga}"
-                                         data-id-bayar="${produk.id_bayar || ''}"
-                                         onclick="selectProduk(${produk.id_produk}, '${escapedKode}', ${produk.harga}, ${produk.id_bayar || 'null'}, this)">
+                                             onclick="selectProduk('${produk.kode}', ${produk.harga})">
                                             <div class="card-body p-2">
                                                 <div class="d-flex justify-content-between align-items-start">
-                                                <small class="badge badge-info">${produk.kode || ''}</small>
-                                                <strong class="text-success">Rp ${parseInt(produk.harga || 0).toLocaleString('id-ID')}</strong>
-                                            </div>
-                                            <small class="d-block text-truncate mt-1" title="${produkNama}">${produkNama || ''}</small>
+                                                    <small class="badge badge-info">${produk.kode}</small>
+                                                    <strong class="text-success">Rp ${parseInt(produk.harga).toLocaleString('id-ID')}</strong>
+                                                </div>
+                                                <small class="d-block text-truncate mt-1" title="${produk.keterangan}">${produk.keterangan}</small>
                                             </div>
                                         </div>
                                     </div>
@@ -420,7 +497,7 @@ if ($sql_jenis) {
                             });
                             produkListDiv.innerHTML = html;
                         } else {
-                        produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-info text-center p-2 mb-0">Tidak ada produk tersedia untuk kategori ini</div></div>';
+                            produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-info text-center p-2 mb-0">Tidak ada produk tersedia untuk jenis pembayaran ini</div></div>';
                         }
                     })
                     .catch(error => {
@@ -430,285 +507,30 @@ if ($sql_jenis) {
             }
 
             // Fungsi global untuk select produk
-        window.selectProduk = function(id_produk, kode, harga, id_bayar, cardElement) {
-            selectedProduk = { id_produk, kode, harga, id_bayar };
-
-            // Set form values
-            document.getElementById('selected_produk_id').value = id_produk;
-            document.getElementById('harga').value = harga;
-            document.getElementById('jenis').value = id_bayar || '';
-
-            // Load detail produk untuk menampilkan nama produk
-            fetch('<?=base_url('orderkuota/get_detail_produk.php')?>?id=' + id_produk)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.produk) {
-                        const produkNama = data.produk.produk || data.produk.keterangan || kode;
-                        document.getElementById('produk').value = produkNama;
-                    } else {
-                        document.getElementById('produk').value = kode;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading produk detail:', error);
-                    document.getElementById('produk').value = kode;
-                });
+            window.selectProduk = function(kode, harga) {
+                hargaInput.value = harga;
 
                 // Highlight selected produk
                 document.querySelectorAll('.produk-item-card').forEach(function(card) {
-                card.classList.remove('selected');
-            });
-            if (cardElement) {
-                cardElement.classList.add('selected');
-            }
-
-            // Tutup modal
-            $('#modalProduk').modal('hide');
-
-            // Scroll langsung ke form pembayaran dengan animasi smooth
-            // Pastikan kategori tetap terlihat di atas
-            setTimeout(function() {
-                // Cari form pembayaran berdasarkan header
-                const formCards = document.querySelectorAll('.modern-card');
-                let formSection = null;
-
-                formCards.forEach(function(card) {
-                    const header = card.querySelector('.modern-card-header h4');
-                    if (header && header.textContent.includes('Form Pembayaran')) {
-                        formSection = card;
-                    }
+                    card.classList.remove('border-primary');
+                    card.style.backgroundColor = '';
                 });
+                event.currentTarget.classList.add('border-primary');
+                event.currentTarget.style.backgroundColor = '#f0f8ff';
 
-                if (formSection) {
-                    // Scroll dengan offset agar kategori tetap terlihat
-                    const formOffset = formSection.offsetTop - 20; // 20px offset dari atas
-                    window.scrollTo({
-                        top: formOffset,
-                        behavior: 'smooth'
-                    });
-
-                    // Focus ke field harga setelah scroll dimulai
-                    setTimeout(function() {
-                        const hargaInput = document.getElementById('harga');
-                        if (hargaInput) {
+                // Scroll to harga input
+                hargaInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 hargaInput.focus();
-                            hargaInput.select();
-                        }
-                    }, 600);
-                }
-            }, 400);
-        };
-
-        // Fungsi reset form (global function)
-        window.resetForm = function() {
-            // Reset form values
-            document.getElementById('formTransaksi').reset();
-
-            // Reset hidden fields
-            document.getElementById('selected_produk_id').value = '';
-            document.getElementById('selected_kategori').value = '';
-            document.getElementById('jenis').value = '';
-            document.getElementById('id_pelanggan').value = '';
-
-            // Reset visible fields
-            document.getElementById('idpel').value = '';
-            document.getElementById('nama').value = '';
-            document.getElementById('produk').value = '';
-            document.getElementById('harga').value = '';
-            document.getElementById('ket').value = '';
-
-            // Reset dropdown
-            document.getElementById('status').value = '';
-
-            // Reset tanggal ke hari ini
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelector('input[name="tgl"]').value = today;
-
-            // Reset selected states
-            document.querySelectorAll('.kategori-card').forEach(function(card) {
-                card.classList.remove('selected');
-            });
-            document.querySelectorAll('.produk-item-card').forEach(function(card) {
-                card.classList.remove('selected');
-            });
-
-            selectedKategori = '';
-            selectedProduk = null;
-
-            // Tutup modal produk jika terbuka
-            $('#modalProduk').modal('hide');
-
-            // Scroll langsung ke atas penuh - gunakan pendekatan paling sederhana
-            // Scroll langsung tanpa delay
-            window.scrollTo(0, 0);
-            document.documentElement.scrollTop = 0;
-            document.body.scrollTop = 0;
-
-            // jQuery scroll langsung (jika tersedia)
-            if (typeof $ !== 'undefined') {
-                $('html, body').stop(true, true).scrollTop(0);
-            }
-
-            // Gunakan location.hash untuk scroll ke anchor top
-            if (document.getElementById('top')) {
-                location.hash = '#top';
-            }
-
-            // Force scroll sekali lagi untuk memastikan
-            setTimeout(function() {
-                window.scrollTo(0, 0);
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-                if (typeof $ !== 'undefined') {
-                    $('html, body').scrollTop(0);
-                }
-            }, 10);
-        };
-
-        // Event listener untuk tombol reset form - memastikan scroll bekerja
-        $(document).ready(function() {
-            $('button[onclick*="resetForm"]').on('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-
-                // Panggil fungsi resetForm
-                if (typeof window.resetForm === 'function') {
-                    window.resetForm();
-                }
-
-                // Scroll langsung setelah fungsi dipanggil - tanpa delay
-                window.scrollTo(0, 0);
-                document.documentElement.scrollTop = 0;
-                document.body.scrollTop = 0;
-                if (typeof $ !== 'undefined') {
-                    $('html, body').stop(true, true).scrollTop(0);
-                }
-
-                return false;
-            });
-        });
-
-        // Validasi form sebelum submit
-        document.getElementById('formTransaksi').addEventListener('submit', function(e) {
-            console.log('Form submit event triggered');
-            const jenisValue = document.getElementById('jenis').value;
-            const statusValue = document.getElementById('status').value;
-            const hargaValue = document.getElementById('harga').value;
-            const tglValue = document.querySelector('input[name="tgl"]').value;
-            const idpelValue = document.getElementById('idpel').value;
-            const namaValue = document.getElementById('nama').value;
-
-            // Validasi semua field wajib
-            if (!tglValue || tglValue === '') {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data Tidak Lengkap',
-                    text: 'Silakan isi Tanggal Transaksi terlebih dahulu.',
-                    confirmButtonColor: '#dc3545'
-                });
-                return false;
-            }
-
-            if (!idpelValue || idpelValue === '') {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data Tidak Lengkap',
-                    text: 'Silakan pilih Pelanggan terlebih dahulu.',
-                    confirmButtonColor: '#dc3545'
-                });
-                return false;
-            }
-
-            if (!namaValue || namaValue === '') {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data Tidak Lengkap',
-                    text: 'Nama Pelanggan tidak boleh kosong.',
-                    confirmButtonColor: '#dc3545'
-                });
-                return false;
-            }
-
-            if (!jenisValue || jenisValue === '' || parseInt(jenisValue) <= 0) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data Tidak Lengkap',
-                    text: 'Silakan pilih Jenis Pembayaran terlebih dahulu.',
-                    confirmButtonColor: '#dc3545'
-                });
-                return false;
-            }
-
-            if (!hargaValue || hargaValue === '' || parseFloat(hargaValue) <= 0) {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data Tidak Lengkap',
-                    text: 'Silakan isi Harga dengan benar.',
-                    confirmButtonColor: '#dc3545'
-                });
-                return false;
-            }
-
-            if (!statusValue || statusValue === '') {
-                e.preventDefault();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Data Tidak Lengkap',
-                    text: 'Silakan pilih Status terlebih dahulu.',
-                    confirmButtonColor: '#dc3545'
-                });
-                return false;
-            }
-
-            // Jika semua valid, biarkan form submit normal
-            // Jangan preventDefault, biarkan form submit secara normal
-            console.log('Form valid, submitting...');
-            return true;
-        });
-
-        // Fix cursor setelah halaman dimuat
-        $(document).ready(function() {
-            // Pastikan semua tombol dan link memiliki cursor pointer
-            $('button, .btn, a.btn, input[type="button"], input[type="submit"], input[type="reset"]').css('cursor', 'pointer');
-            // Pastikan input text memiliki cursor text
-            $('input[type="text"], input[type="number"], input[type="date"], textarea, select').css('cursor', 'text');
-            // Reset cursor untuk elemen lain
-            $('body').css('cursor', 'default');
+            };
         });
         </script>
-
-        <!-- Modal Produk -->
-        <div class="modal fade" id="modalProduk" tabindex="-1" role="dialog" aria-labelledby="modalProdukLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                        <h4 class="modal-title" id="modalProdukLabel">
-                            <i class="fa fa-box"></i> Pilih Produk
-                            <span id="modalKategoriTitle" class="ml-2"></span>
-                        </h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
-                        <div id="produk-list-modal" class="row"></div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                            <i class="fa fa-times"></i> Tutup
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </body>
 </html>
 <?php
 include"modal_item.php";
 include_once('../footer.php');
 ?>
+
+
+
+

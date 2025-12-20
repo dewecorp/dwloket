@@ -2,132 +2,30 @@
 include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/orderkuota_api.php';
-require_once '../libs/produk_helper.php';
 
 // Get transaksi data dari ref_id atau id_transaksi
 $ref_id = $_GET['ref_id'] ?? '';
 $transaksi_id = $_GET['id'] ?? 0;
 $transaksi = null;
 
-// Cek apakah tabel produk ada
-$produk_table_exists = false;
-$check_produk_table = $koneksi->query("SHOW TABLES LIKE 'tb_produk_orderkuota'");
-if ($check_produk_table && $check_produk_table->num_rows > 0) {
-    $produk_table_exists = true;
-}
-
 if ($ref_id) {
-    if ($produk_table_exists) {
-        $check_column = $koneksi->query("SHOW COLUMNS FROM transaksi LIKE 'selected_produk_id'");
-        $has_selected_produk_id = ($check_column && $check_column->num_rows > 0);
-
-        if ($has_selected_produk_id) {
-            $transaksi_query = $koneksi->query("SELECT t.*,
-                                                       COALESCE(
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_produk = t.selected_produk_id AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(t.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND p.status = 1 LIMIT 1),
-                                                           j.jenis_bayar,
-                                                           '-'
-                                                       ) as produk_nama
-                                                FROM transaksi t
-                                                LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                                WHERE t.ket LIKE '%Ref: " . mysqli_real_escape_string($koneksi, $ref_id) . "%'
-                                                ORDER BY t.id_transaksi DESC LIMIT 1");
-        } else {
-            $transaksi_query = $koneksi->query("SELECT t.*,
-                                                       COALESCE(
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(t.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND p.status = 1 LIMIT 1),
-                                                           j.jenis_bayar,
-                                                           '-'
-                                                       ) as produk_nama
-                                                FROM transaksi t
-                                                LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                                WHERE t.ket LIKE '%Ref: " . mysqli_real_escape_string($koneksi, $ref_id) . "%'
-                                                ORDER BY t.id_transaksi DESC LIMIT 1");
-        }
-    } else {
-        $transaksi_query = $koneksi->query("SELECT t.*, j.jenis_bayar
-                                            FROM transaksi t
-                                            LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                            WHERE t.ket LIKE '%Ref: " . mysqli_real_escape_string($koneksi, $ref_id) . "%'
-                                            ORDER BY t.id_transaksi DESC LIMIT 1");
-    }
+    $transaksi_query = $koneksi->query("SELECT t.*, j.jenis_bayar
+                                        FROM transaksi t
+                                        LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
+                                        WHERE t.ket LIKE '%Ref: " . mysqli_real_escape_string($koneksi, $ref_id) . "%'
+                                        ORDER BY t.id_transaksi DESC LIMIT 1");
 } elseif ($transaksi_id) {
-    if ($produk_table_exists) {
-        $check_column = $koneksi->query("SHOW COLUMNS FROM transaksi LIKE 'selected_produk_id'");
-        $has_selected_produk_id = ($check_column && $check_column->num_rows > 0);
-
-        if ($has_selected_produk_id) {
-            $transaksi_query = $koneksi->query("SELECT t.*,
-                                                       COALESCE(
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_produk = t.selected_produk_id AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(t.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND p.status = 1 LIMIT 1),
-                                                           j.jenis_bayar,
-                                                           '-'
-                                                       ) as produk_nama
-                                                FROM transaksi t
-                                                LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                                WHERE t.id_transaksi = " . (int)$transaksi_id);
-        } else {
-            $transaksi_query = $koneksi->query("SELECT t.*,
-                                                       COALESCE(
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(t.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND p.status = 1 LIMIT 1),
-                                                           j.jenis_bayar,
-                                                           '-'
-                                                       ) as produk_nama
-                                                FROM transaksi t
-                                                LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                                WHERE t.id_transaksi = " . (int)$transaksi_id);
-        }
-    } else {
-        $transaksi_query = $koneksi->query("SELECT t.*, j.jenis_bayar
-                                            FROM transaksi t
-                                            LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                            WHERE t.id_transaksi = " . (int)$transaksi_id);
-    }
+    $transaksi_query = $koneksi->query("SELECT t.*, j.jenis_bayar
+                                        FROM transaksi t
+                                        LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
+                                        WHERE t.id_transaksi = " . (int)$transaksi_id);
 } else {
     // Jika tidak ada ref_id atau id, ambil transaksi terakhir
-    if ($produk_table_exists) {
-        $check_column = $koneksi->query("SHOW COLUMNS FROM transaksi LIKE 'selected_produk_id'");
-        $has_selected_produk_id = ($check_column && $check_column->num_rows > 0);
-
-        if ($has_selected_produk_id) {
-            $transaksi_query = $koneksi->query("SELECT t.*,
-                                                       COALESCE(
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_produk = t.selected_produk_id AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(t.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND p.status = 1 LIMIT 1),
-                                                           j.jenis_bayar,
-                                                           '-'
-                                                       ) as produk_nama
-                                                FROM transaksi t
-                                                LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                                WHERE t.ket LIKE '%OrderKuota%'
-                                                ORDER BY t.id_transaksi DESC LIMIT 1");
-        } else {
-            $transaksi_query = $koneksi->query("SELECT t.*,
-                                                       COALESCE(
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(t.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                           (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = t.id_bayar AND p.status = 1 LIMIT 1),
-                                                           j.jenis_bayar,
-                                                           '-'
-                                                       ) as produk_nama
-                                                FROM transaksi t
-                                                LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                                WHERE t.ket LIKE '%OrderKuota%'
-                                                ORDER BY t.id_transaksi DESC LIMIT 1");
-        }
-    } else {
-        $transaksi_query = $koneksi->query("SELECT t.*, j.jenis_bayar
-                                            FROM transaksi t
-                                            LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
-                                            WHERE t.ket LIKE '%OrderKuota%'
-                                            ORDER BY t.id_transaksi DESC LIMIT 1");
-    }
+    $transaksi_query = $koneksi->query("SELECT t.*, j.jenis_bayar
+                                        FROM transaksi t
+                                        LEFT JOIN tb_jenisbayar j ON t.id_bayar = j.id_bayar
+                                        WHERE t.ket LIKE '%OrderKuota%'
+                                        ORDER BY t.id_transaksi DESC LIMIT 1");
 }
 
 if ($transaksi_query && $transaksi_query->num_rows > 0) {
@@ -137,13 +35,8 @@ if ($transaksi_query && $transaksi_query->num_rows > 0) {
     preg_match('/Ref: ([A-Z0-9_]+)/', $transaksi['ket'], $matches);
     $transaksi['ref_id'] = $matches[1] ?? '';
 
-    // Gunakan produk_nama dari query jika ada
-    if (!empty($transaksi['produk_nama']) && $transaksi['produk_nama'] != '-') {
-        $transaksi['product_name'] = $transaksi['produk_nama'];
-    } else {
-        preg_match('/OrderKuota: ([^-]+)/', $transaksi['ket'], $product_matches);
-        $transaksi['product_name'] = trim($product_matches[1] ?? '');
-    }
+    preg_match('/OrderKuota: ([^-]+)/', $transaksi['ket'], $product_matches);
+    $transaksi['product_name'] = trim($product_matches[1] ?? '');
 
     // Extract token jika ada
     $token = '';
@@ -454,8 +347,8 @@ if (file_exists(__DIR__ . '/../config/company_config.php')) {
                     <td><?=htmlspecialchars($transaksi['idpel'])?></td>
                 </tr>
                 <tr>
-                    <td>Produk</td>
-                    <td><?=htmlspecialchars($transaksi['product_name'] ?? $transaksi['produk_nama'] ?? 'OrderKuota')?></td>
+                    <td>Pembayaran</td>
+                    <td><?=htmlspecialchars($transaksi['jenis_bayar'] ?? 'OrderKuota')?></td>
                 </tr>
             </table>
 

@@ -1,0 +1,25 @@
+{
+  // Auto Save Configuration
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+
+  // Save all files when window loses focus
+  "files.autoSaveWhenDelay": true,
+
+  // Format on save
+  "editor.formatOnSave": false,
+
+  // Trim trailing whitespace
+  "files.trimTrailingWhitespace": true,
+
+  // Insert final newline
+  "files.insertFinalNewline": true,
+
+  // Warn when file is modified on disk
+  "files.hotExit": "onExitAndWindowClose"
+}
+
+
+
+
+

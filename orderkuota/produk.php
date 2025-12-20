@@ -40,7 +40,13 @@ if ($jenis_bayar_query) {
 }
 ?>
 
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Produk OrderKuota</title>
+    <style>
         .produk-card {
             transition: all 0.3s;
             cursor: pointer;
@@ -180,11 +186,7 @@ if ($jenis_bayar_query) {
                                             <?php endif; ?>
                                         </div>
                                         <h6 class="card-title mb-2"><?=htmlspecialchars($produk['produk'])?></h6>
-                                        <?php if (!empty($produk['kategori'])): ?>
-                                        <p class="card-text small text-muted mb-2">
-                                            <i class="fa fa-tag"></i> <?=htmlspecialchars($produk['kategori'])?>
-                                        </p>
-                                        <?php endif; ?>
+                                        <p class="card-text small text-muted mb-2"><?=htmlspecialchars($produk['keterangan'])?></p>
                                         <div class="price-badge">Rp <?=number_format($produk['harga'], 0, ',', '.')?></div>
                                         <?php if ($produk['jenis_bayar']): ?>
                                         <small class="text-muted d-block mt-1">

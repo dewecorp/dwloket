@@ -3,7 +3,6 @@ include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/orderkuota_api.php';
 require_once '../libs/log_activity.php';
-require_once '../libs/produk_helper.php';
 
 // Handle cek status
 $status_result = null;
@@ -76,64 +75,18 @@ $count_query = $koneksi->query("SELECT COUNT(*) as total FROM transaksi WHERE $w
 $total_count = $count_query ? $count_query->fetch_assoc()['total'] : 0;
 $total_pages = ceil($total_count / $per_page);
 
-// Get history transaksi dengan pagination - join dengan produk
+// Get history transaksi dengan pagination
 $history_transaksi = [];
-// Cek apakah tabel produk ada
-$produk_table_exists = false;
-$check_produk_table = $koneksi->query("SHOW TABLES LIKE 'tb_produk_orderkuota'");
-if ($check_produk_table && $check_produk_table->num_rows > 0) {
-    $produk_table_exists = true;
-}
-
-if ($produk_table_exists) {
-    // Cek apakah kolom selected_produk_id ada
-    $check_column = $koneksi->query("SHOW COLUMNS FROM transaksi LIKE 'selected_produk_id'");
-    $has_selected_produk_id = ($check_column && $check_column->num_rows > 0);
-
-    if ($has_selected_produk_id) {
-        // Query dengan selected_produk_id
-        $history_query = $koneksi->query("SELECT transaksi.*,
-                                               COALESCE(
-                                                   (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_produk = transaksi.selected_produk_id AND p.status = 1 LIMIT 1),
-                                                   (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = transaksi.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(transaksi.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                   (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = transaksi.id_bayar AND p.status = 1 LIMIT 1),
-                                                   '-'
-                                               ) as produk_nama
-                                        FROM transaksi
-                                        WHERE $where_clause
-                                        ORDER BY tgl DESC, id_transaksi DESC
-                                        LIMIT $per_page OFFSET $offset");
-    } else {
-        // Query tanpa selected_produk_id
-        $history_query = $koneksi->query("SELECT transaksi.*,
-                                               COALESCE(
-                                                   (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = transaksi.id_bayar AND CAST(p.harga AS UNSIGNED) = CAST(transaksi.harga AS UNSIGNED) AND p.status = 1 LIMIT 1),
-                                                   (SELECT p.produk FROM tb_produk_orderkuota p WHERE p.id_bayar = transaksi.id_bayar AND p.status = 1 LIMIT 1),
-                                                   '-'
-                                               ) as produk_nama
-                                        FROM transaksi
-                                        WHERE $where_clause
-                                        ORDER BY tgl DESC, id_transaksi DESC
-                                        LIMIT $per_page OFFSET $offset");
-    }
-} else {
-    // Fallback jika tabel produk tidak ada
-    $history_query = $koneksi->query("SELECT * FROM transaksi WHERE $where_clause ORDER BY tgl DESC, id_transaksi DESC LIMIT $per_page OFFSET $offset");
-}
-
+$history_query = $koneksi->query("SELECT * FROM transaksi WHERE $where_clause ORDER BY tgl DESC, id_transaksi DESC LIMIT $per_page OFFSET $offset");
 if ($history_query) {
     while ($row = $history_query->fetch_assoc()) {
         // Extract ref_id dari keterangan
         preg_match('/Ref: ([A-Z0-9_]+)/', $row['ket'], $matches);
         $row['ref_id'] = $matches[1] ?? '';
 
-        // Gunakan produk_nama dari query jika ada, jika tidak extract dari keterangan
-        if (!empty($row['produk_nama']) && $row['produk_nama'] != '-') {
-            $row['product_name'] = $row['produk_nama'];
-        } else {
-            preg_match('/OrderKuota: ([^-]+)/', $row['ket'], $product_matches);
-            $row['product_name'] = trim($product_matches[1] ?? '');
-        }
+        // Extract product name
+        preg_match('/OrderKuota: ([^-]+)/', $row['ket'], $product_matches);
+        $row['product_name'] = trim($product_matches[1] ?? '');
 
         // Extract token jika ada (untuk PLN prabayar)
         if (preg_match('/Token:\s*([0-9]+)/i', $row['ket'], $token_matches)) {
@@ -165,7 +118,11 @@ $month_stats = $month_query->fetch_assoc();
 
 <!DOCTYPE html>
 <html lang="en">
-<style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Transaksi OrderKuota</title>
+    <style>
         .border-left-primary {
             border-left: 0.25rem solid #4e73df !important;
         }
@@ -280,91 +237,82 @@ $month_stats = $month_query->fetch_assoc();
             </div>
         </div>
 
-        <!-- Filter Card -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="modern-card">
-                    <div class="modern-card-header">
-                        <h4>
-                            <i class="fa fa-filter"></i> Filter & Pencarian
-                        </h4>
-                    </div>
-                    <div class="modern-card-body">
-                        <form method="GET" class="row" id="filterForm">
-                            <div class="col-md-2">
-                                <label>Status</label>
-                                <select name="status" class="form-control">
-                                    <option value="">Semua Status</option>
-                                    <option value="Lunas" <?=$filter_status == 'Lunas' ? 'selected' : ''?>>Lunas</option>
-                                    <option value="Belum" <?=$filter_status == 'Belum' ? 'selected' : ''?>>Belum Bayar</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Dari Tanggal</label>
-                                <input type="date" name="date_from" class="form-control" value="<?=$filter_date_from?>">
-                            </div>
-                            <div class="col-md-2">
-                                <label>Sampai Tanggal</label>
-                                <input type="date" name="date_to" class="form-control" value="<?=$filter_date_to?>">
-                            </div>
-                            <div class="col-md-3">
-                                <label>Cari</label>
-                                <div class="input-group">
-                                    <input type="text" name="search" class="form-control" placeholder="Nama/ID/Ref ID" value="<?=htmlspecialchars($search)?>">
-                                    <div class="input-group-append">
-                                        <button type="submit" class="btn btn-info">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label style="visibility: hidden; margin-bottom: 0.5rem; display: block;">&nbsp;</label>
-                                <div class="d-flex" style="gap: 0.5rem;">
-                                    <a href="<?=base_url('orderkuota/history.php')?>" class="btn btn-secondary" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
-                                        <i class="fa fa-refresh"></i> Reset
-                                    </a>
-                                    <?php if (isset($_SESSION['level']) && $_SESSION['level'] == 'admin'): ?>
-                                    <a href="<?=base_url('export_excel.php?page=orderkuota_history&' . http_build_query($_GET))?>" class="btn btn-success" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
-                                        <i class="fa fa-file-excel"></i> Excel
-                                    </a>
-                                    <a href="<?=base_url('export_pdf.php?page=orderkuota_history&' . http_build_query($_GET))?>" target="_blank" class="btn btn-danger" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
-                                        <i class="fa fa-file-pdf"></i> PDF
-                                    </a>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
-                        </form>
+        <!-- Statistik Filtered -->
+        <?php if ($filter_date_from || $filter_date_to || $filter_status || $search): ?>
+        <div class="alert alert-info">
+            <i class="fa fa-filter"></i> <strong>Hasil Filter:</strong>
+            Menampilkan <strong><?=$filtered_stats['total'] ?? 0?></strong> transaksi
+            dengan total nominal <strong>Rp <?=number_format($filtered_stats['nominal'] ?? 0, 0, ',', '.')?></strong>
+        </div>
+        <?php endif; ?>
 
-                        <!-- Statistik Filtered -->
-                        <?php if ($filter_date_from || $filter_date_to || $filter_status || $search): ?>
-                        <div class="alert alert-info mt-3 mb-0">
-                            <i class="fa fa-filter"></i> <strong>Hasil Filter:</strong>
-                            Menampilkan <strong><?=$filtered_stats['total'] ?? 0?></strong> transaksi
-                            dengan total nominal <strong>Rp <?=number_format($filtered_stats['nominal'] ?? 0, 0, ',', '.')?></strong>
-                        </div>
-                        <?php endif; ?>
+        <!-- Filter -->
+        <div class="filter-box-modern">
+            <form method="GET" class="row">
+                    <div class="col-md-2">
+                        <label>Status</label>
+                        <select name="status" class="form-control">
+                            <option value="">Semua Status</option>
+                            <option value="Lunas" <?=$filter_status == 'Lunas' ? 'selected' : ''?>>Lunas</option>
+                            <option value="Belum" <?=$filter_status == 'Belum' ? 'selected' : ''?>>Belum Bayar</option>
+                        </select>
                     </div>
-                </div>
+                    <div class="col-md-2">
+                        <label>Dari Tanggal</label>
+                        <input type="date" name="date_from" class="form-control" value="<?=$filter_date_from?>">
+                    </div>
+                    <div class="col-md-2">
+                        <label>Sampai Tanggal</label>
+                        <input type="date" name="date_to" class="form-control" value="<?=$filter_date_to?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label>Cari</label>
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Nama/ID/Ref ID" value="<?=htmlspecialchars($search)?>">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-info">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                                <a href="<?=base_url('orderkuota/history.php')?>" class="btn btn-secondary">
+                                    <i class="fa fa-refresh"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label>&nbsp;</label>
+                        <div class="d-flex gap-2">
+                            <?php if (isset($_SESSION['level']) && $_SESSION['level'] == 'admin'): ?>
+                            <a href="<?=base_url('export_excel.php?page=orderkuota_history&' . http_build_query($_GET))?>"
+                               class="btn btn-success flex-fill">
+                                <i class="fa fa-file-excel"></i> Excel
+                            </a>
+                            <a href="<?=base_url('export_pdf.php?page=orderkuota_history&' . http_build_query($_GET))?>"
+                               target="_blank"
+                               class="btn btn-danger flex-fill">
+                                <i class="fa fa-file-pdf"></i> PDF
+                            </a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
 
         <!-- Tabel History -->
-        <div class="row">
-            <div class="col-12">
-                <div class="modern-card">
-                    <div class="modern-card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4>
-                                <i class="fa fa-history"></i> Daftar Transaksi
-                                <span class="badge badge-light ml-2"><?=$total_count?> Total</span>
-                                <span class="badge badge-light ml-2">Halaman <?=$page?> dari <?=$total_pages?></span>
-                            </h4>
-                            <div>
-                                <a href="<?=base_url('export_excel.php?page=orderkuota_history&' . http_build_query($_GET))?>"
-                                   class="btn btn-sm btn-success mr-2">
-                                    <i class="fa fa-file-excel"></i> Excel
-                                </a>
+        <div class="modern-card">
+            <div class="modern-card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4>
+                        <i class="fa fa-history"></i> Daftar Transaksi
+                        <span class="badge badge-light ml-2"><?=$total_count?> Total</span>
+                        <span class="badge badge-light ml-2">Halaman <?=$page?> dari <?=$total_pages?></span>
+                    </h4>
+                    <div>
+                        <a href="<?=base_url('export_excel.php?page=orderkuota_history&' . http_build_query($_GET))?>"
+                           class="btn btn-sm btn-success mr-2">
+                            <i class="fa fa-file-excel"></i> Excel
+                        </a>
                         <a href="<?=base_url('export_pdf.php?page=orderkuota_history&' . http_build_query($_GET))?>"
                            target="_blank"
                            class="btn btn-sm btn-danger mr-2">
@@ -496,8 +444,6 @@ $month_stats = $month_query->fetch_assoc();
                 </nav>
                 <?php endif; ?>
                 <?php endif; ?>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,16 @@
 <?php
 include_once('../header.php');
 ?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelanggan</title>
+</head>
+
 <body>
     <div class="page-breadcrumb">
         <div class="row">
@@ -59,22 +69,7 @@ include_once('../header.php');
                                     <tr>
                                         <td><?=$no++.'.'?></td>
                                         <td><?=$data['nama'];?></td>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <code class="mr-2"><?=htmlspecialchars($data['no_idpel']);?></code>
-                                                <button class="btn btn-xs btn-outline-primary"
-                                                        onclick="copyIdPel('<?=htmlspecialchars($data['no_idpel'], ENT_QUOTES)?>', this)"
-                                                        data-toggle="tooltip"
-                                                        data-placement="top"
-                                                        title="Copy ID/PEL untuk pembayaran manual"
-                                                        id="copyBtn_<?=$data['id_pelanggan']?>">
-                                                    <i class="fa fa-copy"></i>
-                                                </button>
-                                                <span class="copy-feedback ml-2" id="copyFeedback_<?=$data['id_pelanggan']?>" style="display: none; color: #28a745; font-size: 0.75rem; font-weight: 500;">
-                                                    <i class="fa fa-check"></i> Sudah Disalin
-                                                </span>
-                                            </div>
-                                        </td>
+                                        <td><?=$data['no_idpel'];?></td>
 
                                         <td align="center">
                                             <a data-toggle="modal"
@@ -109,146 +104,19 @@ include"modal_edit.php";
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
-    // Initialize tooltips
-    $('[data-toggle="tooltip"]').tooltip();
-});
-
-// Function to copy ID/PEL to clipboard
-function copyIdPel(idpel, buttonElement) {
-    // Get feedback element
-    var buttonId = buttonElement ? buttonElement.id : '';
-    var pelangganId = buttonId ? buttonId.replace('copyBtn_', '') : '';
-    var feedbackElement = pelangganId ? document.getElementById('copyFeedback_' + pelangganId) : null;
-
-    // Copy function
-    function doCopy() {
-        // Try modern clipboard API first
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(idpel).then(function() {
-                showCopySuccess(buttonElement, feedbackElement);
-            }).catch(function(err) {
-                console.error('Clipboard API failed:', err);
-                // Fallback to old method
-                fallbackCopy(idpel, buttonElement, feedbackElement);
-            });
-        } else {
-            // Fallback for older browsers
-            fallbackCopy(idpel, buttonElement, feedbackElement);
-        }
-    }
-
-    // Execute copy
-    doCopy();
-}
-
-// Show copy success feedback
-function showCopySuccess(buttonElement, feedbackElement) {
-    if (!buttonElement) return;
-
-    // Save original tooltip title before removing
-    var originalTitle = buttonElement.getAttribute('title') || buttonElement.getAttribute('data-original-title') || 'Copy ID/PEL untuk pembayaran manual';
-
-    // Disable/hide tooltip saat copy berhasil
-    if (typeof $ !== 'undefined' && $(buttonElement).data('bs.tooltip')) {
-        $(buttonElement).tooltip('hide');
-        $(buttonElement).tooltip('disable');
-    }
-
-    // Remove tooltip attributes to prevent tooltip from showing
-    buttonElement.removeAttribute('data-toggle');
-    buttonElement.removeAttribute('title');
-    buttonElement.removeAttribute('data-placement');
-    buttonElement.setAttribute('data-tooltip-disabled', 'true');
-
-    // Change button appearance
-    buttonElement.classList.remove('btn-outline-primary');
-    buttonElement.classList.add('btn-success');
-    var originalHTML = buttonElement.innerHTML;
-    buttonElement.innerHTML = '<i class="fa fa-check"></i>';
-
-    // Show feedback text
-    if (feedbackElement) {
-        feedbackElement.style.display = 'inline';
-    }
-
-    // Reset button after 2 seconds
-    setTimeout(function() {
-        if (buttonElement) {
-            buttonElement.classList.remove('btn-success');
-            buttonElement.classList.add('btn-outline-primary');
-            buttonElement.innerHTML = originalHTML;
-
-            // Restore tooltip attributes
-            buttonElement.setAttribute('data-toggle', 'tooltip');
-            buttonElement.setAttribute('data-placement', 'top');
-            buttonElement.setAttribute('title', originalTitle);
-            buttonElement.removeAttribute('data-tooltip-disabled');
-
-            // Re-initialize tooltip
-            if (typeof $ !== 'undefined') {
-                $(buttonElement).tooltip('dispose'); // Remove old tooltip instance
-                $(buttonElement).tooltip(); // Re-initialize tooltip
-            }
-        }
-        if (feedbackElement) {
-            feedbackElement.style.display = 'none';
-        }
-    }, 2000);
-}
-
-// Fallback copy method for older browsers
-function fallbackCopy(idpel, buttonElement, feedbackElement) {
-    const textArea = document.createElement('textarea');
-    textArea.value = idpel;
-    textArea.style.position = 'fixed';
-    textArea.style.top = '0';
-    textArea.style.left = '0';
-    textArea.style.width = '2em';
-    textArea.style.height = '2em';
-    textArea.style.padding = '0';
-    textArea.style.border = 'none';
-    textArea.style.outline = 'none';
-    textArea.style.boxShadow = 'none';
-    textArea.style.background = 'transparent';
-    textArea.style.opacity = '0';
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-
-    try {
-        var successful = document.execCommand('copy');
-        if (successful) {
-            showCopySuccess(buttonElement, feedbackElement);
-        } else {
-            // Tampilkan SweetAlert jika gagal
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Gagal menyalin. Silakan salin manual: ' + idpel,
-                    confirmButtonColor: '#dc3545',
-                    confirmButtonText: 'OK'
-                });
-            } else {
-                alert('Gagal menyalin. Silakan salin manual: ' + idpel);
-            }
-        }
-    } catch (err) {
-        console.error('Copy failed:', err);
-        // Tampilkan SweetAlert jika gagal
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: 'Gagal menyalin. Silakan salin manual: ' + idpel,
-                confirmButtonColor: '#dc3545',
-                confirmButtonText: 'OK'
-            });
-        } else {
-            alert('Gagal menyalin. Silakan salin manual: ' + idpel);
-        }
-    }
-
-    document.body.removeChild(textArea);
-}
+    $('.btn-copy').on("click", function() {
+        $("#text-copy").select();
+        document.execCommand("copy");
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Telah Disalin...',
+            timer: 1500,
+            timerProgressBar: true,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
+    })
+})
 </script>

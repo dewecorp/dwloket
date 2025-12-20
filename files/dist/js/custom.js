@@ -4,6 +4,8 @@ $(function () {
     // Feather Icon Init Js
     feather.replace();
 
+    $(".preloader").fadeOut();
+
     // this is for close icon when navigation open in mobile view
     $(".nav-toggler").on('click', function () {
         $("#main-wrapper").toggleClass("show-sidebar");

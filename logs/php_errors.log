@@ -1,0 +1,1237 @@
+[17-Dec-2025 22:09:25 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:09:27 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:09:30 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:11:44 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:11:46 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:14:01 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:14:03 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:16:40 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:16:42 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:16:50 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:16:52 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:19:06 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:19:08 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:20:17 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:20:43 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:22:22 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:22:25 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:23:17 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:27:12 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:27:49 Asia/Jakarta] [2025-12-17 22:27:49] NOTICE: session_start(): A session had already been started - ignoring in F:\laragon\www\dwloket_ok\config\config.php on line 11
+[17-Dec-2025 22:27:54 Asia/Jakarta] [2025-12-17 22:27:54] NOTICE: session_start(): A session had already been started - ignoring in F:\laragon\www\dwloket_ok\config\config.php on line 11
+[17-Dec-2025 22:28:38 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:45 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:45 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:45 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:45 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:33:45 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:33:45 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:33:45 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:33:45 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:33:45 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:33:45 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:33:45 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:33:45 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:33:45 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:33:48 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:48 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:48 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:48 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:33:48 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:33:48 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:33:48 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:33:48 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:33:48 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:33:48 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:33:48 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:33:48 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:33:48 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:33:53 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:53 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:53 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:33:53 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:33:53 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:33:53 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:33:53 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:33:53 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:33:53 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:33:53 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:33:53 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:33:53 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:33:53 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:37:16 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:37:16 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:37:16 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:37:16 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:37:16 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:37:16 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:37:16 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:37:16 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:37:16 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:37:16 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:37:16 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:37:16 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:37:16 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:37:20 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:37:20 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:37:20 Asia/Jakarta] Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:37:20 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:37:20 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:37:20 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:37:20 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:37:20 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:37:20 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:37:20 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:37:20 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:37:20 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:37:20 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:48:45 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:45 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:45 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:45 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:45 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:48:45 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:48:45 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:48:45 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:48:45 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:48:45 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:48:45 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:48:45 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:48:45 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:48:45 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:48:49 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:49 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:49 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:49 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:49 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:48:49 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:48:49 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:48:49 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:48:49 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:48:49 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:48:49 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:48:49 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:48:49 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:48:49 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:48:51 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:51 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:51 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:51 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 22:48:51 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 22:48:51 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 22:48:51 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 22:48:51 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 22:48:51 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 22:48:51 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 22:48:51 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 22:48:51 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 22:48:51 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 22:48:51 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 23:59:24 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:24 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:24 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:24 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:24 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 23:59:24 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 23:59:24 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 23:59:24 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 23:59:24 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 23:59:24 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 23:59:24 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 23:59:24 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 23:59:24 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 23:59:24 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 23:59:28 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:28 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:28 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:28 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:28 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 23:59:28 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 23:59:28 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 23:59:28 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 23:59:28 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 23:59:28 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 23:59:28 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 23:59:28 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 23:59:28 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 23:59:28 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 23:59:31 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:31 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:31 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:31 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[17-Dec-2025 23:59:31 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[17-Dec-2025 23:59:31 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[17-Dec-2025 23:59:31 Asia/Jakarta]   - is_file: Yes
+[17-Dec-2025 23:59:31 Asia/Jakarta]   - is_readable: Yes
+[17-Dec-2025 23:59:31 Asia/Jakarta]   - file_size: 114
+[17-Dec-2025 23:59:31 Asia/Jakarta]   - file_mtime: 1765985274
+[17-Dec-2025 23:59:31 Asia/Jakarta]   - Added to backups list
+[17-Dec-2025 23:59:31 Asia/Jakarta] getBackups() found 1 backup files
+[17-Dec-2025 23:59:31 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[17-Dec-2025 23:59:31 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:02:01 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:01 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:01 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:01 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:01 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[18-Dec-2025 00:02:01 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:02:01 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:02:01 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:02:01 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:02:01 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:02:01 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:02:01 Asia/Jakarta] getBackups() found 1 backup files
+[18-Dec-2025 00:02:01 Asia/Jakarta] admin/backup.php - Total backups found: 1
+[18-Dec-2025 00:02:01 Asia/Jakarta] First backup: test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:02:16 Asia/Jakarta] [2025-12-18 00:02:16] NOTICE: session_start(): A session had already been started - ignoring in F:\laragon\www\dwloket_ok\config\config.php on line 11
+[18-Dec-2025 00:02:16 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:16 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:16 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:16 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[18-Dec-2025 00:02:16 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:02:16 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:02:16 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:02:16 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:02:16 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:02:16 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:02:16 Asia/Jakarta] getBackups() found 1 backup files
+[18-Dec-2025 00:02:21 Asia/Jakarta] [2025-12-18 00:02:21] NOTICE: session_start(): A session had already been started - ignoring in F:\laragon\www\dwloket_ok\config\config.php on line 11
+[18-Dec-2025 00:02:21 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:21 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:21 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:21 Asia/Jakarta] getBackups() - Files found by scandir: 1
+[18-Dec-2025 00:02:21 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:02:21 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:02:21 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:02:21 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:02:21 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:02:21 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:02:21 Asia/Jakarta] getBackups() found 1 backup files
+[18-Dec-2025 00:02:21 Asia/Jakarta] Creating backup file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:02:22 Asia/Jakarta] Backup created successfully: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:02:22 Asia/Jakarta] File size: 41077 bytes
+[18-Dec-2025 00:02:22 Asia/Jakarta] Found in scandir: Yes
+[18-Dec-2025 00:02:22 Asia/Jakarta] Found in glob: Yes
+[18-Dec-2025 00:02:22 Asia/Jakarta] Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:23 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:23 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:23 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:02:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:02:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:02:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:02:23 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:02:23 Asia/Jakarta] VERIFIED: File found in getBackups() list
+[18-Dec-2025 00:02:24 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:24 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:02:24 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:02:24 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:02:24 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:02:24 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:02:24 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:03:04 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:03:04 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:03:04 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:03:04 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:03:04 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:03:04 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:03:04 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:03:04 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:03:04 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:03:04 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:03:04 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:03 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:03 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:03 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:03 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:03 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:04:03 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:03 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:04:03 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:03 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:04:03 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:04:03 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:06 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:06 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:06 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:06 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:06 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:04:06 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:06 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:04:06 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:06 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:04:06 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:04:06 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:09 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:09 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:09 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:09 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:09 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:04:09 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:09 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:04:09 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:09 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:04:09 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:04:09 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:39 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:39 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:39 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:39 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:04:39 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:04:39 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:39 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:04:39 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:04:39 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:04:39 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:04:39 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:21 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:21 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:21 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:21 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:21 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:06:21 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:21 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:06:21 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:21 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:06:21 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:06:21 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:23 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:23 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:23 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:23 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:23 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:06:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:06:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:23 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:06:23 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:06:23 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:24 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:24 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:24 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:24 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:24 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:06:24 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:24 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:06:24 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:24 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:06:24 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:06:24 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:33 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:33 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:33 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:33 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:06:33 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:06:33 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:33 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:06:33 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:06:33 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:06:33 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:06:33 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:08:10 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:10 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:10 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:10 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:10 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:08:10 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:08:10 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:08:10 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:08:10 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:08:10 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:08:10 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:08:13 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:13 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:13 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:13 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:08:13 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:08:13 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:08:13 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:08:13 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:08:13 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:08:13 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:08:13 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:39 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:39 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:39 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:39 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:39 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:09:39 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:39 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:09:39 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:39 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:09:39 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:09:39 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:42 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:42 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:42 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:42 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:42 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:09:42 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:42 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:09:42 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:42 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:09:42 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:09:42 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:44 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:44 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:44 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:44 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:44 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:09:44 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:44 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:09:44 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:44 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:09:44 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:09:44 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:47 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:47 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:47 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:47 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:09:47 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:09:47 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:47 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:09:47 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:09:47 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:09:47 Asia/Jakarta] admin/backup.php - Total backups found: 2
+[18-Dec-2025 00:09:47 Asia/Jakarta] First backup: test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:10:23 Asia/Jakarta] [2025-12-18 00:10:23] NOTICE: session_start(): A session had already been started - ignoring in F:\laragon\www\dwloket_ok\config\config.php on line 11
+[18-Dec-2025 00:10:23 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:23 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:23 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:23 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:10:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:10:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:23 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:10:28 Asia/Jakarta] [2025-12-18 00:10:28] NOTICE: session_start(): A session had already been started - ignoring in F:\laragon\www\dwloket_ok\config\config.php on line 11
+[18-Dec-2025 00:10:28 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:28 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:28 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:28 Asia/Jakarta] getBackups() - Files found by scandir: 2
+[18-Dec-2025 00:10:28 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:28 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:10:28 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:28 Asia/Jakarta] getBackups() found 2 backup files
+[18-Dec-2025 00:10:28 Asia/Jakarta] Creating backup file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:10:29 Asia/Jakarta] Backup created successfully: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:10:29 Asia/Jakarta] File size: 41077 bytes
+[18-Dec-2025 00:10:29 Asia/Jakarta] Found in scandir: Yes
+[18-Dec-2025 00:10:29 Asia/Jakarta] Found in glob: Yes
+[18-Dec-2025 00:10:29 Asia/Jakarta] Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:30 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:30 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:30 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:10:30 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:30 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:30 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:10:30 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:30 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:10:30 Asia/Jakarta] VERIFIED: File found in getBackups() list
+[18-Dec-2025 00:10:31 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:31 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:31 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:10:31 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:31 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:31 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:10:31 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:31 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:10:39 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:39 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:39 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:39 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:39 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:10:39 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:39 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:39 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:10:39 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:39 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:10:39 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:10:39 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:10:43 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:43 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:43 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:43 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:10:43 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:10:43 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:43 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:43 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:10:43 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:10:43 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:10:43 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:10:43 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:19 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:19 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:19 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:19 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:19 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:11:19 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:19 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:19 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:11:19 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:19 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:11:19 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:11:19 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:21 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:21 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:21 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:21 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:21 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:11:21 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:21 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:21 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:11:21 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:21 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:11:21 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:11:21 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:23 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:23 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:23 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:23 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:23 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:11:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:23 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:11:23 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:23 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:11:23 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:11:23 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:27 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:27 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:27 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:27 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:11:27 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:11:27 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:27 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:27 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:11:27 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:11:27 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:11:27 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:11:27 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:12:41 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:12:41 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:12:41 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:12:41 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:12:41 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:12:41 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:12:41 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:12:41 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:12:41 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:12:41 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:12:41 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:12:41 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:25 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:25 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:25 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:25 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:25 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:13:25 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:25 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:25 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:13:25 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:25 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:13:25 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:13:25 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:27 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:27 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:27 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:27 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:27 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:13:27 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:27 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:27 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:13:27 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:27 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:13:27 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:13:27 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:30 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:30 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:30 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:30 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:30 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:13:30 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:30 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:30 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:13:30 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:30 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:13:30 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:13:30 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:33 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:33 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:33 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:33 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:13:33 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:13:33 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:33 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:33 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:13:33 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:13:33 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:13:33 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:13:33 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:43 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:43 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:43 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:43 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:43 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:14:43 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:43 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:43 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:14:43 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:43 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:14:43 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:14:43 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:45 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:45 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:45 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:45 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:45 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:14:45 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:45 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:45 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:14:45 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:45 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:14:45 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:14:45 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:47 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:47 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:47 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:47 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:47 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:14:47 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:47 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:47 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:14:47 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:47 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:14:47 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:14:47 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:50 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:50 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:50 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:50 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:50 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:14:50 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:50 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:50 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:14:50 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:50 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:14:50 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:14:50 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:52 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:52 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:52 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:52 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:14:52 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:14:52 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:52 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:52 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:14:52 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:14:52 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:14:52 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:14:52 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:49 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:49 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:49 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:49 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:49 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:19:49 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:49 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:49 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:19:49 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:49 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:19:49 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:19:49 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:52 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:52 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:52 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:52 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:52 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:19:52 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:52 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:52 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:19:52 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:52 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:19:52 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:19:52 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:54 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:54 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:54 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:54 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:54 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:19:54 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:54 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:54 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:19:54 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:54 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:19:54 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:19:54 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:56 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:56 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:56 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:56 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:56 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:19:56 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:56 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:56 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:19:56 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:56 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:19:56 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:19:56 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:58 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:58 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:58 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:58 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 00:19:58 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 00:19:58 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:58 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:58 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 00:19:58 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 00:19:58 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 00:19:58 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 00:19:58 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 04:05:33 Asia/Jakarta] [2025-12-18 04:05:33] WARNING: mysqli_connect(): (HY000/2002): No connection could be made because the target machine actively refused it.
+ in F:\laragon\www\dwloket_ok\config\koneksi.php on line 14
+[18-Dec-2025 04:05:33 Asia/Jakarta] Database connection failed: No connection could be made because the target machine actively refused it.
+
+[18-Dec-2025 04:06:00 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:00 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:00 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:00 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:00 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 04:06:00 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 04:06:00 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 04:06:00 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 04:06:00 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 04:06:00 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 04:06:00 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 04:06:00 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 04:06:05 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:05 Asia/Jakarta] BackupRestore initialized. Backup directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:05 Asia/Jakarta] getBackups() - Getting backups from directory: F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:05 Asia/Jakarta] getBackups() - Backup directory (this->backup_dir): F:\laragon\www\dwloket_ok\backups
+[18-Dec-2025 04:06:05 Asia/Jakarta] getBackups() - Files found by scandir: 3
+[18-Dec-2025 04:06:05 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_backup_2025-12-17_22-27-54.sql
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - file_size: 114
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - file_mtime: 1765985274
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 04:06:05 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-02-21.sql
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - file_mtime: 1765990941
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 04:06:05 Asia/Jakarta] getBackups() - Processing file: F:\laragon\www\dwloket_ok\backups\test_verify_2025-12-18_00-10-28.sql
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - is_file: Yes
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - is_readable: Yes
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - file_size: 41077
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - file_mtime: 1765991428
+[18-Dec-2025 04:06:05 Asia/Jakarta]   - Added to backups list
+[18-Dec-2025 04:06:05 Asia/Jakarta] getBackups() found 3 backup files
+[18-Dec-2025 04:06:05 Asia/Jakarta] admin/backup.php - Total backups found: 3
+[18-Dec-2025 04:06:05 Asia/Jakarta] First backup: test_verify_2025-12-18_00-10-28.sql
