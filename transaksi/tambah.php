@@ -15,20 +15,12 @@ if ($sql_jenis) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Tambah Transaksi</title>
-        <style>
+<style>
         .kategori-card {
-            cursor: pointer !important;
+            cursor: pointer;
             transition: all 0.3s;
             position: relative;
-            z-index: 100 !important;
-            pointer-events: auto !important;
+            z-index: 100;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -100,10 +92,10 @@ if ($sql_jenis) {
     </head>
     <body>
         <a name="top" id="top"></a>
-        <div class="page-breadcrumb" style="margin-bottom: 5px; padding: 8px 0;">
+        <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-7 align-self-center">
-                    <h4 class="page-title text-truncate text-dark font-weight-medium mb-1" style="margin-bottom: 5px !important;">Transaksi</h4>
+                    <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Transaksi</h4>
                     <div class="d-flex align-items-center">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb m-0 p-0">
@@ -115,7 +107,7 @@ if ($sql_jenis) {
                 </div>
             </div>
         </div>
-    <div class="container-fluid" style="padding-top: 5px;">
+        <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <?php if (isset($_SESSION['error_message'])): ?>
@@ -159,11 +151,13 @@ if ($sql_jenis) {
                                         <div class="col-md-4 col-sm-6 mb-3">
                                             <div class="card kategori-card border-primary"
                                                  data-kategori="<?=htmlspecialchars($kategori['kategori'])?>"
-                                                 style="cursor: pointer !important; user-select: none; position: relative; z-index: 100;"
+                                                 style="cursor: pointer; user-select: none; position: relative; z-index: 100;"
                                                  role="button"
                                                  tabindex="0">
                                                 <div class="card-body text-center">
-                                                    <i class="fa fa-tag fa-3x text-primary mb-2"></i>
+                                                    <div class="kategori-icon-wrapper mb-3">
+                                                        <i class="fa fa-box fa-3x text-primary"></i>
+                                                    </div>
                                                     <h6 class="mb-0"><?=htmlspecialchars($kategori['kategori'])?></h6>
                                                     <small class="text-muted"><?=$kategori['jumlah_produk']?> produk</small>
                                                 </div>
@@ -260,14 +254,14 @@ if ($sql_jenis) {
                             <div class="row mt-4">
                                 <div class="col-12">
                                             <div class="d-flex justify-content-between align-items-center">
-                                                <button type="button" class="btn btn-secondary btn-modern" onclick="resetForm(); return false;">
+                                                <button type="button" class="btn btn-secondary btn-modern" onclick="resetForm(); return false;" style="cursor: pointer !important;">
                                                     <i class="fa fa-refresh"></i> Reset Form
                                                 </button>
                                                 <div>
-                                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2">
+                                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2" style="cursor: pointer !important;">
                                             <i class="fa fa-arrow-left"></i> Kembali
                                         </a>
-                                        <button type="submit" name="simpan" class="btn btn-success btn-modern">
+                                        <button type="submit" name="simpan" class="btn btn-success btn-modern" style="cursor: pointer !important;">
                                             <i class="fa fa-save"></i> Simpan Transaksi
                                         </button>
                                                 </div>
@@ -394,7 +388,7 @@ if ($sql_jenis) {
                 }
 
                 // Show loading
-                produkListDiv.innerHTML = '<div class="col-12"><div class="text-center p-3"><i class="fa fa-spinner fa-spin"></i> Memuat produk...</div></div>';
+                produkListDiv.innerHTML = '<div class="col-12"><div class="text-center p-3">Memuat produk...</div></div>';
 
                 // Load produk via AJAX
             fetch('<?=base_url('transaksi/get_produk.php')?>?kategori=' + encodeURIComponent(kategori))
@@ -544,41 +538,31 @@ if ($sql_jenis) {
             // Tutup modal produk jika terbuka
             $('#modalProduk').modal('hide');
 
-            // Scroll langsung ke atas - gunakan pendekatan yang paling sederhana dan langsung
-            // Scroll langsung tanpa delay sama sekali
-            (function scrollToTopNow() {
-                // Method 1: Scroll langsung
-                window.scrollTo(0, 0);
-                window.scroll(0, 0);
+            // Scroll langsung ke atas penuh - gunakan pendekatan paling sederhana
+            // Scroll langsung tanpa delay
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
 
-                // Method 2: Set scrollTop langsung
-                if (document.documentElement) {
-                    document.documentElement.scrollTop = 0;
-                }
-                if (document.body) {
-                    document.body.scrollTop = 0;
-                }
+            // jQuery scroll langsung (jika tersedia)
+            if (typeof $ !== 'undefined') {
+                $('html, body').stop(true, true).scrollTop(0);
+            }
 
-                // Method 3: jQuery jika tersedia
-                if (typeof $ !== 'undefined') {
-                    $('html, body').stop(true, true).scrollTop(0);
-                }
+            // Gunakan location.hash untuk scroll ke anchor top
+            if (document.getElementById('top')) {
+                location.hash = '#top';
+            }
 
-                // Method 4: Gunakan location.hash untuk memastikan
-                var topAnchor = document.getElementById('top');
-                if (topAnchor) {
-                    topAnchor.scrollIntoView({ behavior: 'instant', block: 'start' });
-                }
-            })();
-
-            // Smooth scroll setelah sedikit delay (untuk UX)
+            // Force scroll sekali lagi untuk memastikan
             setTimeout(function() {
-                window.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'smooth'
-                });
-            }, 50);
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                if (typeof $ !== 'undefined') {
+                    $('html, body').scrollTop(0);
+                }
+            }, 10);
         };
 
         // Event listener untuk tombol reset form - memastikan scroll bekerja
@@ -592,13 +576,13 @@ if ($sql_jenis) {
                     window.resetForm();
                 }
 
-                // Scroll langsung setelah fungsi dipanggil
-                setTimeout(function() {
-                    window.scrollTo(0, 0);
-                    document.documentElement.scrollTop = 0;
-                    document.body.scrollTop = 0;
+                // Scroll langsung setelah fungsi dipanggil - tanpa delay
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                if (typeof $ !== 'undefined') {
                     $('html, body').stop(true, true).scrollTop(0);
-                }, 10);
+                }
 
                 return false;
             });
@@ -685,6 +669,16 @@ if ($sql_jenis) {
             // Jangan preventDefault, biarkan form submit secara normal
             console.log('Form valid, submitting...');
             return true;
+        });
+
+        // Fix cursor setelah halaman dimuat
+        $(document).ready(function() {
+            // Pastikan semua tombol dan link memiliki cursor pointer
+            $('button, .btn, a.btn, input[type="button"], input[type="submit"], input[type="reset"]').css('cursor', 'pointer');
+            // Pastikan input text memiliki cursor text
+            $('input[type="text"], input[type="number"], input[type="date"], textarea, select').css('cursor', 'text');
+            // Reset cursor untuk elemen lain
+            $('body').css('cursor', 'default');
         });
         </script>
 

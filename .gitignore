@@ -32,6 +32,9 @@ desktop.ini
 .env
 .env.local
 
+# Database Configuration (contains sensitive credentials)
+config/database.php
+
 # Cache
 cache/
 *.cache

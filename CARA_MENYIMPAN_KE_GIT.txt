@@ -1,0 +1,59 @@
+========================================
+CARA MENYIMPAN PROJECT KE GIT REPOSITORY
+========================================
+
+LANGKAH MUDAH:
+
+1. PASTIKAN GIT SUDAH TERINSTALL
+   - Jika belum, download dari: https://git-scm.com/download/win
+   - Install Git
+   - Restart komputer (atau restart Command Prompt/PowerShell)
+
+2. JALANKAN SCRIPT OTOMATIS
+   - Double-click file: simpan_ke_git.bat
+   - Atau klik kanan > Run as Administrator
+   - Script akan otomatis:
+     * Membuat repository di H:\REPO WEB\dwloket_ok.git
+     * Menghubungkan project ke repository
+     * Menyimpan semua file ke repository
+
+3. SETELAH SCRIPT SELESAI
+   - Project sudah tersimpan di H:\REPO WEB\dwloket_ok.git
+   - Setiap kali ada perubahan, jalankan script lagi atau gunakan perintah Git
+
+========================================
+CARA MENYIMPAN PERUBAHAN SETELAH INI
+========================================
+
+OPSI 1: Gunakan Script (Mudah)
+   - Jalankan: simpan_ke_git.bat
+   - Ikuti instruksi di layar
+
+OPSI 2: Manual dengan Command Prompt
+   1. Buka Command Prompt di folder project
+   2. Ketik perintah berikut satu per satu:
+
+      git add .
+      git commit -m "Deskripsi perubahan"
+      git push
+
+OPSI 3: Manual dengan Git Bash
+   1. Klik kanan di folder project > Git Bash Here
+   2. Ketik perintah yang sama seperti Opsi 2
+
+========================================
+CATATAN PENTING
+========================================
+
+- File yang TIDAK disimpan (sudah diatur otomatis):
+  * config/database.php (berisi password database)
+  * File backup (*.sql, *.zip)
+  * File log (*.log)
+  * Folder vendor dan node_modules
+
+- Repository tersimpan di: H:\REPO WEB\dwloket_ok.git
+
+- Jika ada masalah, cek file: GIT_SETUP_INSTRUCTIONS.md
+
+========================================
+

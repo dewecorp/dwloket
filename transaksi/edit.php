@@ -1,6 +1,10 @@
 <?php
 include_once('../header.php');
 include_once('../config/config.php');
+require_once '../libs/produk_helper.php';
+
+// Ambil semua kategori produk
+$all_kategori = getAllKategori();
 
 // Fungsi untuk menentukan icon dan warna berdasarkan jenis pembayaran
 // Fungsi ini otomatis akan handle jenis pembayaran baru yang ditambahkan
@@ -81,28 +85,81 @@ function getJenisBayarStyle($jenis_bayar) {
 }
 
 $id = @$_GET['id'];
-$sql = $koneksi->query("SELECT * FROM transaksi WHERE id_transaksi='$id'");
-$data = $sql->fetch_assoc();
-$status = $data['status'];
-$tgl = $data['tgl'];
-$selected_id_bayar = $data['id_bayar'] ?? '';
+if (empty($id)) {
+    header('Location: ' . base_url('transaksi/transaksi.php'));
+    exit;
+}
 
-// Ambil informasi produk jika ada kode produk di keterangan atau cari berdasarkan id_bayar
+$sql = $koneksi->query("SELECT * FROM transaksi WHERE id_transaksi='$id'");
+if (!$sql || $sql->num_rows == 0) {
+    header('Location: ' . base_url('transaksi/transaksi.php'));
+    exit;
+}
+
+$data = $sql->fetch_assoc();
+$status = $data['status'] ?? '';
+$tgl = $data['tgl'] ?? '';
+$selected_id_bayar = $data['id_bayar'] ?? '';
+$selected_produk_id_from_db = isset($data['selected_produk_id']) ? intval($data['selected_produk_id']) : 0;
+$harga_transaksi = isset($data['harga']) ? intval($data['harga']) : 0;
+
+require_once '../libs/produk_helper.php';
+
+// Ambil informasi produk dengan prioritas:
+// 1. selected_produk_id (jika ada)
+// 2. Match berdasarkan id_bayar + harga yang sama
+// 3. Match berdasarkan id_bayar + harga terdekat
+// 4. Produk pertama dengan id_bayar yang sama
 $produk_info = null;
-if (!empty($data['ket'])) {
-    // Coba extract kode produk dari keterangan
+
+// Prioritas 1: Gunakan selected_produk_id jika ada
+if ($selected_produk_id_from_db > 0) {
+    $produk_info = getProdukById($selected_produk_id_from_db);
+}
+
+// Prioritas 2: Jika tidak ada selected_produk_id, cari berdasarkan id_bayar + harga yang sama
+if (!$produk_info && $selected_id_bayar && $harga_transaksi > 0) {
+    $produk_list_by_bayar = getProdukByIdBayar($selected_id_bayar, true);
+    if (!empty($produk_list_by_bayar)) {
+        // Cari produk dengan harga yang sama persis
+        foreach ($produk_list_by_bayar as $produk) {
+            if (intval($produk['harga']) == $harga_transaksi) {
+                $produk_info = $produk;
+                break;
+            }
+        }
+
+        // Jika tidak ada yang sama persis, cari yang paling dekat
+        if (!$produk_info) {
+            $closest_produk = null;
+            $min_diff = PHP_INT_MAX;
+            foreach ($produk_list_by_bayar as $produk) {
+                $diff = abs(intval($produk['harga']) - $harga_transaksi);
+                if ($diff < $min_diff) {
+                    $min_diff = $diff;
+                    $closest_produk = $produk;
+                }
+            }
+            if ($closest_produk) {
+                $produk_info = $closest_produk;
+            }
+        }
+    }
+}
+
+// Prioritas 3: Jika masih tidak ada, coba dari keterangan (backward compatibility)
+if (!$produk_info && !empty($data['ket'])) {
     preg_match('/\b([A-Z0-9]{3,20})\b/', $data['ket'], $matches);
     if (!empty($matches[1])) {
-        require_once '../libs/produk_helper.php';
         $produk_info = getProdukByKode($matches[1]);
     }
 }
-// Jika tidak ditemukan dari keterangan, cari produk berdasarkan id_bayar
+
+// Prioritas 4: Ambil produk pertama dengan id_bayar yang sama (fallback terakhir)
 if (!$produk_info && $selected_id_bayar) {
-    require_once '../libs/produk_helper.php';
     $produk_list_by_bayar = getProdukByIdBayar($selected_id_bayar, true);
     if (!empty($produk_list_by_bayar)) {
-        $produk_info = $produk_list_by_bayar[0]; // Ambil produk pertama
+        $produk_info = $produk_list_by_bayar[0];
     }
 }
 
@@ -117,20 +174,12 @@ if ($sql_jenis) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Edit Transaksi</title>
-        <style>
+<style>
         .jenis-bayar-card {
-            cursor: pointer !important;
+            cursor: pointer;
             transition: all 0.3s;
             position: relative;
-            z-index: 100 !important;
-            pointer-events: auto !important;
+            z-index: 100;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -139,19 +188,6 @@ if ($sql_jenis) {
         .jenis-bayar-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .jenis-bayar-card * {
-            pointer-events: none !important;
-        }
-        .jenis-bayar-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-            pointer-events: none;
         }
         .jenis-bayar-card.selected {
             border-color: #28a745 !important;
@@ -164,6 +200,51 @@ if ($sql_jenis) {
         .jenis-bayar-card .card-body {
             text-align: center;
             padding: 1.5rem 1rem;
+        }
+        .kategori-card {
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 100;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .kategori-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,123,255,0.15);
+            border-color: #007bff !important;
+        }
+        .kategori-card.selected {
+            border-color: #28a745 !important;
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f5e9 100%);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+        }
+        .kategori-card.selected .card-body {
+            background: transparent;
+        }
+        .kategori-card .card-body {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .kategori-icon-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .kategori-icon-wrapper i {
+            filter: drop-shadow(0 2px 4px rgba(0,123,255,0.2));
+            transition: all 0.3s ease;
+        }
+        .kategori-card:hover .kategori-icon-wrapper i {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 4px 8px rgba(0,123,255,0.3));
+        }
+        .kategori-card.selected .kategori-icon-wrapper i {
+            color: #28a745 !important;
+            filter: drop-shadow(0 2px 4px rgba(40,167,69,0.3));
         }
         .form-label {
             font-weight: 600;
@@ -225,25 +306,65 @@ if ($sql_jenis) {
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <div class="modern-card">
-                        <div class="modern-card-header">
-                            <h4>
+                    <div class="modern-card" style="margin-bottom: 10px;">
+                        <div class="modern-card-header" style="padding: 10px 15px;">
+                            <h4 style="margin: 0; font-size: 1.1rem;">
                                 <i class="fa fa-edit"></i> Edit Transaksi
                             </h4>
                         </div>
-                        <div class="modern-card-body">
-                            <form action="#" method="POST">
+                        <div class="modern-card-body" style="padding: 12px 15px;">
+                            <form action="proses.php" method="POST" id="formTransaksi">
                                 <input type="hidden" name="id" value="<?=$data['id_transaksi']?>">
                                 <input type="hidden" name="jenis" id="jenis" value="<?=$selected_id_bayar?>" required>
+                                <input type="hidden" name="selected_produk_id" id="selected_produk_id" value="<?=$produk_info ? ($produk_info['id_produk'] ?? '') : ''?>">
+                                <input type="hidden" name="selected_kategori" id="selected_kategori" value="<?=htmlspecialchars($produk_info ? ($produk_info['kategori'] ?? '') : '')?>">
+
+                                <!-- Grid Kategori Produk -->
+                                <div class="modern-card mb-3">
+                                    <div class="modern-card-header" style="padding: 10px 15px;">
+                                        <h4 style="margin: 0; font-size: 1rem;">
+                                            <i class="fa fa-tags"></i> Pilih Kategori Produk (Opsional)
+                                        </h4>
+                                    </div>
+                                    <div class="modern-card-body" style="padding: 12px 15px;">
+                                        <div class="row" id="kategori-grid">
+                                            <?php if (empty($all_kategori)): ?>
+                                            <div class="col-12">
+                                                <div class="alert alert-warning text-center">
+                                                    <i class="fa fa-exclamation-triangle"></i> Belum ada kategori produk. Silakan import produk terlebih dahulu.
+                                                </div>
+                                            </div>
+                                            <?php else: ?>
+                                            <?php foreach ($all_kategori as $kategori): ?>
+                                            <div class="col-md-4 col-sm-6 mb-3">
+                                                <div class="card kategori-card border-primary <?=($produk_info && isset($produk_info['kategori']) && $produk_info['kategori'] == $kategori['kategori']) ? 'selected' : ''?>"
+                                                     data-kategori="<?=htmlspecialchars($kategori['kategori'])?>"
+                                                     style="cursor: pointer; user-select: none; position: relative; z-index: 100;"
+                                                     role="button"
+                                                     tabindex="0">
+                                                    <div class="card-body text-center">
+                                                        <div class="kategori-icon-wrapper mb-3">
+                                                            <i class="fa fa-box fa-3x text-primary"></i>
+                                                        </div>
+                                                        <h6 class="mb-0"><?=htmlspecialchars($kategori['kategori'])?></h6>
+                                                        <small class="text-muted"><?=$kategori['jumlah_produk']?> produk</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <!-- Form Pembayaran -->
-                                <div class="modern-card">
-                                    <div class="modern-card-header">
-                                        <h4>
+                                <div class="modern-card" style="margin-top: 10px;">
+                                    <div class="modern-card-header" style="padding: 10px 15px;">
+                                        <h4 style="margin: 0; font-size: 1.1rem;">
                                             <i class="fa fa-edit"></i> Form Pembayaran
                                         </h4>
                                     </div>
-                                    <div class="modern-card-body">
+                                    <div class="modern-card-body" style="padding: 12px 15px;">
                                         <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="form-group">
@@ -284,8 +405,8 @@ if ($sql_jenis) {
                                                     <label for="produk" class="form-label">
                                                         <i class="fa fa-box text-info"></i> Produk
                                                     </label>
-                                                    <input type="text" name="produk" id="produk" class="form-control" value="<?=htmlspecialchars($produk_info ? ($produk_info['produk'] ?: $produk_info['keterangan'] ?: $produk_info['kode']) : '')?>" readonly>
-                                                    <small class="form-text text-muted">Informasi produk terkait transaksi</small>
+                                                    <input type="text" name="produk" id="produk" class="form-control" value="<?=htmlspecialchars($produk_info ? ($produk_info['produk'] ?? $produk_info['keterangan'] ?? $produk_info['kode'] ?? '') : '')?>" placeholder="Produk akan terisi otomatis saat memilih produk" readonly>
+                                                    <small class="form-text text-muted">Produk dipilih dari daftar kategori di atas</small>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="harga" class="form-label">
@@ -317,10 +438,10 @@ if ($sql_jenis) {
                                 <div class="row mt-4">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-end align-items-center">
-                                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2">
+                                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2" style="cursor: pointer !important;">
                                                 <i class="fa fa-arrow-left"></i> Kembali
                                             </a>
-                                            <button type="submit" name="edit" class="btn btn-success btn-modern">
+                                            <button type="submit" name="edit" class="btn btn-success btn-modern" style="cursor: pointer !important;">
                                                 <i class="fa fa-save"></i> Simpan Perubahan
                                             </button>
                                         </div>
@@ -329,88 +450,178 @@ if ($sql_jenis) {
                             </form>
                         </div>
                     </div>
-                    <?php
-                    if(@$_POST['edit']) {
-                    $id     = @$_POST['id'];
-                    $tgl    = @$_POST['tgl'];
-                    $idpel  = @$_POST['idpel'];
-                    $nama   = @$_POST['nama'];
-                    $jenis  = @$_POST['jenis'];
-                    $harga  = @$_POST['harga'];
-                    $status = @$_POST['status'];
-                    $ket    = @$_POST['ket'];
-
-                    $sql = $koneksi->query("UPDATE transaksi SET tgl='$tgl', idpel='$idpel', nama='$nama', id_bayar='$jenis', harga='$harga', status='$status', ket='$ket' WHERE id_transaksi='$id'");
-                    if ($sql) {
-						// Log aktivitas
-						require_once '../libs/log_activity.php';
-						@log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id);
-                    ?>
-                    <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
-                    <script>
-					// Tunggu hingga DOM dan SweetAlert ready
-					document.addEventListener('DOMContentLoaded', function() {
-						// Tunggu sedikit untuk memastikan SweetAlert ter-load
-						setTimeout(function() {
-							if (typeof Swal !== 'undefined') {
-								Swal.fire({
-									icon: 'success',
-									title: 'Berhasil!',
-									text: 'Transaksi Berhasil Diedit',
-									confirmButtonColor: '#28a745',
-									timer: 2000,
-									timerProgressBar: true,
-									showConfirmButton: true,
-									confirmButtonText: 'OK'
-								}).then((result) => {
-									// Redirect ke halaman transaksi
-									window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
-								});
-
-								// Fallback redirect setelah 2.5 detik
-								setTimeout(function() {
-									window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
-								}, 2500);
-							} else {
-								// Fallback jika SweetAlert tidak tersedia
-								alert('Transaksi Berhasil Diedit!');
-								window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
-							}
-						}, 100);
-					});
-                    </script>
-                    <?php
-                    } else {
-                    ?>
-                    <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
-                    <script>
-					document.addEventListener('DOMContentLoaded', function() {
-						setTimeout(function() {
-							if (typeof Swal !== 'undefined') {
-								Swal.fire({
-									icon: 'error',
-									title: 'Gagal!',
-									text: 'Terjadi kesalahan saat mengedit transaksi',
-									confirmButtonColor: '#dc3545',
-									confirmButtonText: 'OK'
-								});
-							} else {
-								alert('Terjadi kesalahan saat mengedit transaksi');
-							}
-						}, 100);
-					});
-                    </script>
-                    <?php
-                    }
-                    }
-                    ?>
                 </div>
             </div>
         </div>
 
         <script>
-        // No need for kategori selection in edit mode
+        let selectedKategori = '<?=htmlspecialchars($produk_info ? ($produk_info['kategori'] ?? '') : '', ENT_QUOTES)?>';
+        let selectedProduk = <?=json_encode($produk_info ?: null)?>;
+
+        // Handle selection kategori
+        document.addEventListener('DOMContentLoaded', function() {
+            const kategoriCards = document.querySelectorAll('.kategori-card');
+
+            kategoriCards.forEach(function(card) {
+                card.addEventListener('click', function() {
+                    // Remove selected class from all cards
+                    kategoriCards.forEach(function(c) {
+                        c.classList.remove('selected');
+                    });
+
+                    // Add selected class to clicked card
+                    this.classList.add('selected');
+
+                    // Get kategori
+                    selectedKategori = this.getAttribute('data-kategori');
+                    document.getElementById('selected_kategori').value = selectedKategori;
+
+                    // Load produk untuk kategori yang dipilih
+                    loadProdukByKategori(selectedKategori);
+
+                    // Buka modal produk
+                    $('#modalProduk').modal('show');
+                });
+            });
+        });
+
+        // Fungsi untuk load produk berdasarkan kategori
+        function loadProdukByKategori(kategori) {
+            const produkListDiv = document.getElementById('produk-list-modal');
+            const modalKategoriTitle = document.getElementById('modalKategoriTitle');
+
+            // Set title modal
+            if (modalKategoriTitle) {
+                modalKategoriTitle.textContent = '- ' + kategori;
+            }
+
+            // Show loading
+            produkListDiv.innerHTML = '<div class="col-12"><div class="text-center p-3">Memuat produk...</div></div>';
+
+            // Load produk via AJAX
+            fetch('get_produk.php?kategori=' + encodeURIComponent(kategori))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.produk && data.produk.length > 0) {
+                        renderProdukList(data.produk, produkListDiv);
+                    } else {
+                        produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-info text-center">Tidak ada produk untuk kategori ini</div></div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading produk:', error);
+                    produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-danger text-center">Gagal memuat produk</div></div>';
+                });
+        }
+
+        // Fungsi untuk render daftar produk
+        function renderProdukList(produkList, container) {
+            container.innerHTML = '';
+            produkList.forEach(function(produk) {
+                const produkCard = document.createElement('div');
+                produkCard.className = 'col-md-4 col-sm-6 mb-3';
+                const produkName = produk.produk || produk.keterangan || produk.kode;
+                produkCard.innerHTML = `
+                    <div class="card produk-item-card border-info"
+                         onclick="selectProduk(${produk.id_produk || 'null'}, '${produk.kode}', ${produk.harga}, ${produk.id_bayar || 'null'}, this)"
+                         style="cursor: pointer; transition: all 0.3s;">
+                        <div class="card-body">
+                            <h6 class="card-title">${produkName}</h6>
+                            <p class="card-text mb-1"><strong>Rp ${parseInt(produk.harga).toLocaleString('id-ID')}</strong></p>
+                            <small class="text-muted">${produk.kode}</small>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(produkCard);
+            });
+        }
+
+        // Fungsi untuk memilih produk
+        window.selectProduk = function(id_produk, kode, harga, id_bayar, cardElement) {
+            selectedProduk = { id_produk, kode, harga, id_bayar };
+
+            // Set form values
+            document.getElementById('selected_produk_id').value = id_produk || '';
+            document.getElementById('harga').value = harga;
+            document.getElementById('jenis').value = id_bayar || '';
+
+            // Load detail produk untuk menampilkan nama produk
+            if (id_produk) {
+                fetch('<?=base_url('orderkuota/get_detail_produk.php')?>?id=' + id_produk)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.produk) {
+                            const produkNama = data.produk.produk || data.produk.keterangan || kode;
+                            document.getElementById('produk').value = produkNama;
+                        } else {
+                            document.getElementById('produk').value = kode;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading produk detail:', error);
+                        document.getElementById('produk').value = kode;
+                    });
+            } else {
+                document.getElementById('produk').value = kode;
+            }
+
+            // Highlight selected produk
+            document.querySelectorAll('.produk-item-card').forEach(function(card) {
+                card.classList.remove('selected');
+            });
+            if (cardElement) {
+                cardElement.classList.add('selected');
+            }
+
+            // Close modal
+            $('#modalProduk').modal('hide');
+
+            // Scroll to form
+            setTimeout(function() {
+                const formSection = document.querySelector('#formTransaksi');
+                if (formSection) {
+                    formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    setTimeout(function() {
+                        document.getElementById('harga').focus();
+                    }, 300);
+                }
+            }, 300);
+        };
+
+        // Fix cursor setelah halaman dimuat
+        $(document).ready(function() {
+            // Pastikan semua tombol dan link memiliki cursor pointer
+            $('button, .btn, a.btn, input[type="button"], input[type="submit"], input[type="reset"]').css('cursor', 'pointer');
+            // Pastikan input text memiliki cursor text
+            $('input[type="text"], input[type="number"], input[type="date"], textarea, select').css('cursor', 'text');
+            // Reset cursor untuk elemen lain
+            $('body').css('cursor', 'default');
+        });
         </script>
+
+        <!-- Modal Pilih Produk -->
+        <div class="modal fade" id="modalProduk" tabindex="-1" role="dialog" aria-labelledby="modalProdukLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h5 class="modal-title" id="modalProdukLabel">
+                            <i class="fa fa-box"></i> Pilih Produk <span id="modalKategoriTitle"></span>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                        <div id="produk-list-modal" class="row">
+                            <!-- Produk akan dimuat di sini via AJAX -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
 <?php

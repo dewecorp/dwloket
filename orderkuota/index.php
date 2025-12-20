@@ -94,8 +94,8 @@ if (isset($_GET['cek_saldo'])) {
     $balance_result = check_balance_orderkuota();
 }
 
-// Ambil semua produk aktif untuk ditampilkan
-$all_produk = getProdukByKategori(null, null, true);
+// Ambil semua kategori produk
+$all_kategori = getAllKategori();
 
 // Get filter untuk riwayat pembayaran
 $filter_status = $_GET['status'] ?? '';
@@ -214,69 +214,38 @@ if ($history_query) {
         </div>
     </div>
 
-    <!-- Daftar Produk -->
+    <!-- Grid Kategori Produk -->
     <div class="modern-card mb-4">
         <div class="modern-card-header">
-            <h4><i class="fa fa-box"></i> Daftar Produk & Harga</h4>
+            <h4><i class="fa fa-tags"></i> Pilih Kategori Produk</h4>
         </div>
         <div class="modern-card-body">
-            <!-- Search Box -->
-            <div class="mb-3">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="fa fa-search"></i></span>
+            <div class="row" id="kategori-grid">
+                <?php if (empty($all_kategori)): ?>
+                <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                        <i class="fa fa-exclamation-triangle"></i> Belum ada kategori produk. Silakan import produk terlebih dahulu.
                     </div>
-                    <input type="text" id="searchProduk" class="form-control" placeholder="Cari produk berdasarkan kode, nama, atau kategori...">
-                    <div class="input-group-append">
-                        <button type="button" class="btn btn-secondary" onclick="clearSearch()">
-                            <i class="fa fa-times"></i> Clear
-                        </button>
-                    </div>
-                </div>
-                <small class="form-text text-muted">Ketik untuk mencari produk. Klik produk untuk melihat detail atau pilih untuk form pembayaran.</small>
-            </div>
-
-            <!-- Product Grid -->
-            <div id="produkListContent">
-                <?php if (empty($all_produk)): ?>
-                <div class="alert alert-info text-center">
-                    <i class="fa fa-info-circle"></i> Belum ada produk tersedia. Silakan import produk terlebih dahulu.
                 </div>
                 <?php else: ?>
-                <div class="row" id="produkGrid">
-                    <?php foreach ($all_produk as $produk): ?>
-                    <div class="col-md-6 col-lg-4 mb-2 produk-item"
-                         data-kode="<?=htmlspecialchars(strtolower($produk['kode']))?>"
-                         data-nama="<?=htmlspecialchars(strtolower($produk['produk']))?>"
-                         data-keterangan="<?=htmlspecialchars(strtolower($produk['keterangan'] ?? ''))?>"
-                         data-kategori="<?=htmlspecialchars(strtolower($produk['kategori']))?>">
-                        <div class="card produk-item-card border"
-                             data-id="<?=$produk['id_produk']?>"
-                             data-kode="<?=htmlspecialchars($produk['kode'])?>"
-                             data-harga="<?=intval($produk['harga'])?>"
-                             onclick="viewProdukDetail(<?=$produk['id_produk']?>)">
-                            <div class="card-body p-2">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <small class="badge badge-info"><?=htmlspecialchars($produk['kode'])?></small>
-                                    <strong class="text-success">Rp <?=number_format(intval($produk['harga']), 0, ',', '.')?></strong>
-                                </div>
-                                <small class="d-block text-truncate mt-1" title="<?=htmlspecialchars($produk['keterangan'] ?: $produk['produk'])?>">
-                                    <?=htmlspecialchars($produk['keterangan'] ?: $produk['produk'])?>
-                                </small>
-                                <small class="d-block text-muted mt-1">
-                                    <i class="fa fa-tag"></i> <?=htmlspecialchars($produk['kategori'])?>
-                                </small>
+                <?php foreach ($all_kategori as $kategori): ?>
+                <div class="col-md-4 col-sm-6 mb-3">
+                    <div class="card kategori-card border-primary"
+                         data-kategori="<?=htmlspecialchars($kategori['kategori'])?>"
+                         style="cursor: pointer; user-select: none; position: relative; z-index: 100;"
+                         role="button"
+                         tabindex="0">
+                        <div class="card-body text-center">
+                            <div class="kategori-icon-wrapper mb-3">
+                                <i class="fa fa-box fa-3x text-primary"></i>
                             </div>
+                            <h6 class="mb-0"><?=htmlspecialchars($kategori['kategori'])?></h6>
+                            <small class="text-muted"><?=$kategori['jumlah_produk']?> produk</small>
                         </div>
                     </div>
-                    <?php endforeach; ?>
                 </div>
+                <?php endforeach; ?>
                 <?php endif; ?>
-            </div>
-
-            <!-- No Results Message -->
-            <div id="noResultsMessage" class="alert alert-warning text-center" style="display: none;">
-                <i class="fa fa-search"></i> Tidak ada produk yang ditemukan dengan kata kunci tersebut.
             </div>
         </div>
     </div>
@@ -367,95 +336,122 @@ if ($history_query) {
     </div>
 
     <!-- Riwayat Pembayaran -->
-    <div class="modern-card mb-4">
-        <div class="modern-card-header">
-            <h4><i class="fa fa-history"></i> Riwayat Pembayaran</h4>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <h4>
+                        <i class="fa fa-filter"></i> Filter & Pencarian
+                    </h4>
+                </div>
+                <div class="modern-card-body">
+                    <form method="GET" action="" class="row" id="filterForm">
+                        <div class="col-md-2">
+                            <label>Status</label>
+                            <select name="status" class="form-control">
+                                <option value="">Semua Status</option>
+                                <option value="Lunas" <?=$filter_status == 'Lunas' ? 'selected' : ''?>>Lunas</option>
+                                <option value="Belum" <?=$filter_status == 'Belum' ? 'selected' : ''?>>Belum Bayar</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Dari Tanggal</label>
+                            <input type="date" name="date_from" class="form-control" value="<?=htmlspecialchars($filter_date_from)?>">
+                        </div>
+                        <div class="col-md-2">
+                            <label>Sampai Tanggal</label>
+                            <input type="date" name="date_to" class="form-control" value="<?=htmlspecialchars($filter_date_to)?>">
+                        </div>
+                        <div class="col-md-3">
+                            <label>Cari</label>
+                            <div class="input-group">
+                                <input type="text" name="search_history" class="form-control" placeholder="Nama/ID/Ref ID" value="<?=htmlspecialchars($search_history)?>">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label style="visibility: hidden; margin-bottom: 0.5rem; display: block;">&nbsp;</label>
+                            <div class="d-flex" style="gap: 0.5rem;">
+                                <a href="<?=base_url('orderkuota/index.php')?>" class="btn btn-secondary" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-refresh"></i> Reset
+                                </a>
+                                <a href="<?=base_url('orderkuota/history.php')?>" class="btn btn-primary" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="fa fa-list"></i> Lihat Semua
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="modern-card-body">
-            <!-- Filter & Pencarian -->
-            <form method="GET" action="" class="mb-3">
-                <div class="row">
-                    <div class="col-md-3 mb-2">
-                        <input type="text" name="search_history" class="form-control form-control-sm"
-                               placeholder="Cari transaksi..." value="<?=htmlspecialchars($search_history)?>">
-                    </div>
-                    <div class="col-md-2 mb-2">
-                        <select name="status" class="form-control form-control-sm">
-                            <option value="">Semua Status</option>
-                            <option value="Lunas" <?=$filter_status == 'Lunas' ? 'selected' : ''?>>Lunas</option>
-                            <option value="Pending" <?=$filter_status == 'Pending' ? 'selected' : ''?>>Pending</option>
-                            <option value="Gagal" <?=$filter_status == 'Gagal' ? 'selected' : ''?>>Gagal</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 mb-2">
-                        <input type="date" name="date_from" class="form-control form-control-sm"
-                               value="<?=htmlspecialchars($filter_date_from)?>">
-                    </div>
-                    <div class="col-md-2 mb-2">
-                        <input type="date" name="date_to" class="form-control form-control-sm"
-                               value="<?=htmlspecialchars($filter_date_to)?>">
-                    </div>
-                    <div class="col-md-3 mb-2">
-                        <button type="submit" class="btn btn-primary btn-sm">
-                            <i class="fa fa-search"></i> Cari
-                        </button>
-                        <a href="<?=base_url('orderkuota/index.php')?>" class="btn btn-secondary btn-sm">
-                            <i class="fa fa-refresh"></i> Reset
-                        </a>
-                        <a href="<?=base_url('orderkuota/history.php')?>" class="btn btn-info btn-sm">
-                            <i class="fa fa-list"></i> Lihat Semua
-                        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="modern-card">
+                <div class="modern-card-header">
+                    <h4>
+                        <i class="fa fa-history"></i> Riwayat Pembayaran
+                    </h4>
+                </div>
+                <div class="modern-card-body">
+                    <!-- Tabel Riwayat -->
+                    <div class="table-responsive">
+                        <table class="table modern-table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tanggal</th>
+                                    <th>Produk</th>
+                                    <th>Nomor Tujuan</th>
+                                    <th>Harga</th>
+                                    <th>Status</th>
+                                    <th>Ref ID</th>
+                                    <th style="text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($history_transaksi)): ?>
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <div class="alert alert-info">
+                                            <i class="fa fa-info-circle"></i> Belum ada riwayat pembayaran OrderKuota
+                                        </div>
+                                    </td>
+                                </tr>
+                                <?php else: ?>
+                                <?php foreach ($history_transaksi as $trans): ?>
+                                <tr>
+                                    <td><?=date('d/m/Y H:i', strtotime($trans['tgl']))?></td>
+                                    <td><?=htmlspecialchars($trans['product_name'] ?: 'N/A')?></td>
+                                    <td><?=htmlspecialchars($trans['idpel'])?></td>
+                                    <td><strong>Rp <?=number_format(floatval($trans['harga']), 0, ',', '.')?></strong></td>
+                                    <td>
+                                        <?php if ($trans['status'] == 'Lunas'): ?>
+                                        <span class="badge badge-pill badge-success">Lunas</span>
+                                        <?php elseif ($trans['status'] == 'Pending'): ?>
+                                        <span class="badge badge-pill badge-warning">Pending</span>
+                                        <?php else: ?>
+                                        <span class="badge badge-pill badge-danger"><?=htmlspecialchars($trans['status'])?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><small class="text-info"><?=htmlspecialchars($trans['ref_id'] ?: '-')?></small></td>
+                                    <td align="center">
+                                        <a href="<?=base_url('orderkuota/detail.php?id=' . $trans['id_transaksi'])?>"
+                                           class="btn btn-sm btn-info" title="Detail" data-toggle="tooltip" data-placement="top">
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-            </form>
-
-            <!-- Tabel Riwayat -->
-            <div class="table-responsive">
-                <table class="table table-hover table-striped">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Produk</th>
-                            <th>Nomor Tujuan</th>
-                            <th>Harga</th>
-                            <th>Status</th>
-                            <th>Ref ID</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($history_transaksi)): ?>
-                        <tr>
-                            <td colspan="7" class="text-center">Tidak ada riwayat pembayaran</td>
-                        </tr>
-                        <?php else: ?>
-                        <?php foreach ($history_transaksi as $trans): ?>
-                        <tr>
-                            <td><?=date('d/m/Y H:i', strtotime($trans['tgl']))?></td>
-                            <td><?=htmlspecialchars($trans['product_name'] ?: 'N/A')?></td>
-                            <td><?=htmlspecialchars($trans['idpel'])?></td>
-                            <td><strong>Rp <?=number_format(floatval($trans['harga']), 0, ',', '.')?></strong></td>
-                            <td>
-                                <?php if ($trans['status'] == 'Lunas'): ?>
-                                <span class="badge badge-success">Lunas</span>
-                                <?php elseif ($trans['status'] == 'Pending'): ?>
-                                <span class="badge badge-warning">Pending</span>
-                                <?php else: ?>
-                                <span class="badge badge-danger"><?=htmlspecialchars($trans['status'])?></span>
-                                <?php endif; ?>
-                            </td>
-                            <td><small><?=htmlspecialchars($trans['ref_id'] ?: '-')?></small></td>
-                            <td>
-                                <a href="<?=base_url('orderkuota/detail.php?id=' . $trans['id_transaksi'])?>"
-                                   class="btn btn-sm btn-info" title="Detail">
-                                    <i class="fa fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
@@ -484,6 +480,31 @@ if ($history_query) {
     </div>
 </div>
 
+<!-- Modal Produk -->
+<div class="modal fade" id="modalProduk" tabindex="-1" role="dialog" aria-labelledby="modalProdukLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h4 class="modal-title" id="modalProdukLabel">
+                    <i class="fa fa-box"></i> Pilih Produk
+                    <span id="modalKategoriTitle" class="ml-2"></span>
+                </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+                <div id="produk-list-modal" class="row"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fa fa-times"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Detail Produk -->
 <div class="modal fade" id="modalProdukDetail" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -498,9 +519,7 @@ if ($history_query) {
             </div>
             <div class="modal-body" id="produkDetailContent">
                 <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="sr-only">Loading...</span>
-                    </div>
+                    Memuat data...
                 </div>
             </div>
             <div class="modal-footer">
@@ -513,59 +532,121 @@ if ($history_query) {
 <script>
 // Search functionality
 document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchProduk');
-    const produkItems = document.querySelectorAll('.produk-item');
-    const noResultsMessage = document.getElementById('noResultsMessage');
-    const produkGrid = document.getElementById('produkGrid');
 
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase().trim();
-            let visibleCount = 0;
-
-            produkItems.forEach(function(item) {
-                const kode = item.getAttribute('data-kode') || '';
-                const nama = item.getAttribute('data-nama') || '';
-                const keterangan = item.getAttribute('data-keterangan') || '';
-                const kategori = item.getAttribute('data-kategori') || '';
-
-                if (searchTerm === '' ||
-                    kode.includes(searchTerm) ||
-                    nama.includes(searchTerm) ||
-                    keterangan.includes(searchTerm) ||
-                    kategori.includes(searchTerm)) {
-                    item.style.display = '';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
+    // Handle selection kategori
+    const kategoriCards = document.querySelectorAll('.kategori-card');
+    kategoriCards.forEach(function(card) {
+        card.addEventListener('click', function() {
+            // Remove selected class from all cards
+            kategoriCards.forEach(function(c) {
+                c.classList.remove('selected');
             });
 
-            // Show/hide no results message
-            if (visibleCount === 0 && searchTerm !== '') {
-                noResultsMessage.style.display = 'block';
-                if (produkGrid) produkGrid.style.display = 'none';
-            } else {
-                noResultsMessage.style.display = 'none';
-                if (produkGrid) produkGrid.style.display = '';
-            }
+            // Add selected class to clicked card
+            this.classList.add('selected');
+
+            // Get kategori
+            const selectedKategori = this.getAttribute('data-kategori');
+
+            // Load produk untuk kategori yang dipilih
+            loadProdukByKategori(selectedKategori);
+
+            // Buka modal produk
+            $('#modalProduk').modal('show');
         });
-    }
+    });
 });
 
-function clearSearch() {
-    document.getElementById('searchProduk').value = '';
-    document.querySelectorAll('.produk-item').forEach(function(item) {
-        item.style.display = '';
-    });
-    document.getElementById('noResultsMessage').style.display = 'none';
-    document.getElementById('produkGrid').style.display = 'flex';
+// Fungsi untuk load produk berdasarkan kategori
+function loadProdukByKategori(kategori) {
+    const produkListDiv = document.getElementById('produk-list-modal');
+    const modalKategoriTitle = document.getElementById('modalKategoriTitle');
+
+    // Set title modal
+    if (modalKategoriTitle) {
+        modalKategoriTitle.textContent = '- ' + kategori;
+    }
+
+    // Show loading
+    produkListDiv.innerHTML = '<div class="col-12"><div class="text-center p-3">Memuat produk...</div></div>';
+
+    // Load produk via AJAX
+    fetch('<?=base_url('orderkuota/get_produk_by_kategori.php')?>?kategori=' + encodeURIComponent(kategori))
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.produk.length > 0) {
+                let html = '';
+                data.produk.forEach(function(produk) {
+                    const escapedKode = produk.kode.replace(/'/g, "\\'");
+                    html += `
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card produk-item-card border"
+                                 onclick="selectProdukOrderkuota(${produk.id_produk}, '${escapedKode}', ${produk.harga}, ${produk.id_bayar || 'null'}, this)"
+                                 style="cursor: pointer;">
+                                <div class="card-body p-2">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <small class="badge badge-info">${produk.kode}</small>
+                                        <strong class="text-success">Rp ${parseInt(produk.harga).toLocaleString('id-ID')}</strong>
+                                    </div>
+                                    <small class="d-block text-truncate mt-1" title="${produk.produk}">
+                                        ${produk.produk}
+                                    </small>
+                                    <small class="d-block text-muted mt-1">
+                                        <i class="fa fa-tag"></i> ${produk.kategori}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                produkListDiv.innerHTML = html;
+            } else {
+                produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-info text-center">Tidak ada produk dalam kategori ini.</div></div>';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading produk:', error);
+            produkListDiv.innerHTML = '<div class="col-12"><div class="alert alert-danger text-center">Gagal memuat produk.</div></div>';
+        });
 }
+
+// Fungsi untuk select produk dari modal
+window.selectProdukOrderkuota = function(id_produk, kode, harga, id_bayar, cardElement) {
+    // Set form values
+    const productCodeInput = document.getElementById('product_code');
+    const hargaInput = document.getElementById('harga');
+
+    if (productCodeInput) {
+        productCodeInput.value = kode;
+    }
+
+    if (hargaInput) {
+        hargaInput.value = harga;
+    }
+
+    // Close modal
+    $('#modalProduk').modal('hide');
+
+    // Scroll to form
+    const paymentForm = document.getElementById('paymentForm');
+    if (paymentForm) {
+        paymentForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Focus on target input
+    setTimeout(function() {
+        const targetInput = document.getElementById('target');
+        if (targetInput) {
+            targetInput.focus();
+        }
+    }, 500);
+};
+
 
 // View produk detail
 function viewProdukDetail(id_produk) {
     const contentDiv = document.getElementById('produkDetailContent');
-    contentDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>';
+    contentDiv.innerHTML = '<div class="text-center">Memuat data...</div>';
 
     fetch('<?=base_url('orderkuota/get_detail_produk.php')?>?id=' + id_produk)
         .then(response => response.json())
@@ -609,8 +690,8 @@ function viewProdukDetail(id_produk) {
                         <div class="col-md-6">
                             <table class="table table-borderless">
                                 <tr>
-                                    <th width="40%">Keterangan</th>
-                                    <td>${prod.keterangan || '-'}</td>
+                                    <th width="40%">Nama Produk</th>
+                                    <td>${prod.produk || '-'}</td>
                                 </tr>
                                 <tr>
                                     <th>Dibuat</th>

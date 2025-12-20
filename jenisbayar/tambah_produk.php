@@ -3,6 +3,102 @@
  * Halaman untuk menambah produk langsung dari jenis bayar
  * Lebih praktis karena tidak perlu import file
  */
+
+// Handle form tambah produk SEBELUM include header untuk menghindari blank page
+if (isset($_POST['tambah_produk'])) {
+    // Bersihkan semua output buffer
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    ob_start();
+
+    include_once('../config/config.php');
+
+    $kode = mysqli_real_escape_string($koneksi, $_POST['kode'] ?? '');
+    $keterangan = mysqli_real_escape_string($koneksi, $_POST['keterangan'] ?? '');
+    $produk = mysqli_real_escape_string($koneksi, $_POST['produk'] ?? '');
+    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori'] ?? '');
+    $id_bayar = intval($_POST['id_bayar'] ?? 0);
+    $harga = floatval($_POST['harga'] ?? 0);
+    $status = intval($_POST['status'] ?? 1);
+
+    $success = false;
+    $message = '';
+
+    if (empty($kode)) {
+        $message = "Kode produk harus diisi";
+        $success = false;
+    } elseif (empty($produk)) {
+        $message = "Nama produk harus diisi";
+        $success = false;
+    } elseif (empty($kategori)) {
+        $message = "Kategori harus diisi";
+        $success = false;
+    } elseif ($harga <= 0) {
+        $message = "Harga harus lebih dari 0";
+        $success = false;
+    } else {
+        // Cek apakah kode sudah ada
+        $check_query = "SELECT id_produk FROM tb_produk_orderkuota WHERE kode = '$kode'";
+        $check_result = $koneksi->query($check_query);
+
+        if ($check_result && $check_result->num_rows > 0) {
+            $message = "Kode produk sudah ada: $kode";
+            $success = false;
+        } else {
+            $id_bayar_sql = $id_bayar > 0 ? $id_bayar : 'NULL';
+            $insert_query = "INSERT INTO tb_produk_orderkuota
+                            (kode, keterangan, produk, kategori, harga, status, id_bayar)
+                            VALUES ('$kode', '$keterangan', '$produk', '$kategori', $harga, $status, $id_bayar_sql)";
+
+            if ($koneksi->query($insert_query)) {
+                $message = "Produk berhasil ditambahkan";
+                $success = true;
+            } else {
+                $message = "Error: " . $koneksi->error;
+                $success = false;
+            }
+        }
+    }
+
+    ob_end_clean();
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Tambah Produk</title>
+        <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
+    </head>
+    <body>
+    <script type="text/javascript">
+    Swal.fire({
+        icon: '<?=$success ? 'success' : 'error'?>',
+        title: '<?=$success ? 'Berhasil!' : 'Gagal!'?>',
+        text: '<?=addslashes($message)?>',
+        confirmButtonColor: '<?=$success ? '#28a745' : '#dc3545'?>',
+        <?php if ($success): ?>
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false
+        <?php else: ?>
+        confirmButtonText: 'OK'
+        <?php endif; ?>
+    }).then(() => {
+        window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
+    });
+    <?php if ($success): ?>
+    setTimeout(function() {
+        window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
+    }, 2500);
+    <?php endif; ?>
+    </script>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
 include_once('../header.php');
 include_once('../config/config.php');
 
@@ -39,47 +135,7 @@ if (!$table_exists) {
     $table_exists = true;
 }
 
-// Handle form tambah produk
-if (isset($_POST['tambah_produk'])) {
-    $kode = mysqli_real_escape_string($koneksi, $_POST['kode'] ?? '');
-    $keterangan = mysqli_real_escape_string($koneksi, $_POST['keterangan'] ?? '');
-    $produk = mysqli_real_escape_string($koneksi, $_POST['produk'] ?? '');
-    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori'] ?? '');
-    $id_bayar = intval($_POST['id_bayar'] ?? 0);
-    $harga = floatval($_POST['harga'] ?? 0);
-    $status = intval($_POST['status'] ?? 1);
-
-    if (empty($kode)) {
-        $error_msg = "Kode produk harus diisi";
-    } elseif (empty($produk)) {
-        $error_msg = "Nama produk harus diisi";
-    } elseif (empty($kategori)) {
-        $error_msg = "Kategori harus diisi";
-    } elseif ($harga <= 0) {
-        $error_msg = "Harga harus lebih dari 0";
-    } else {
-        // Cek apakah kode sudah ada
-        $check_query = "SELECT id_produk FROM tb_produk_orderkuota WHERE kode = '$kode'";
-        $check_result = $koneksi->query($check_query);
-
-        if ($check_result && $check_result->num_rows > 0) {
-            $error_msg = "Kode produk sudah ada: $kode";
-        } else {
-            $id_bayar_sql = $id_bayar > 0 ? $id_bayar : 'NULL';
-            $insert_query = "INSERT INTO tb_produk_orderkuota
-                            (kode, keterangan, produk, kategori, harga, status, id_bayar)
-                            VALUES ('$kode', '$keterangan', '$produk', '$kategori', $harga, $status, $id_bayar_sql)";
-
-            if ($koneksi->query($insert_query)) {
-                $success_msg = "Produk berhasil ditambahkan";
-                // Clear form
-                $_POST = [];
-            } else {
-                $error_msg = "Error: " . $koneksi->error;
-            }
-        }
-    }
-}
+// Handle form tambah produk sudah dipindahkan ke atas (sebelum include header)
 
 // Ambil semua jenis bayar untuk dropdown
 $jenis_bayar_query = $koneksi->query("SELECT * FROM tb_jenisbayar ORDER BY jenis_bayar ASC");

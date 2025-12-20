@@ -20,7 +20,7 @@ if (@$_SESSION['admin'] || @$_SESSION['user']) {
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="<?=base_url()?>/files/assets/images/dwloket_icon.png">
-    <title>Login DW LOKET</title>
+    <title>Login - DW LOKET JEPARA <?= date('Y') ?></title>
     <!-- Custom CSS -->
     <link href="<?=base_url()?>/files/dist/css/style.min.css" rel="stylesheet">
     <style>
@@ -211,17 +211,6 @@ if (@$_SESSION['admin'] || @$_SESSION['user']) {
 <body>
     <div class="main-wrapper">
         <!-- ============================================================== -->
-        <!-- Preloader - style you can find in spinners.css -->
-        <!-- ============================================================== -->
-        <div class="preloader">
-            <div class="lds-ripple">
-                <div class="lds-pos"></div>
-                <div class="lds-pos"></div>
-            </div>
-        </div>
-        <!-- ============================================================== -->
-        <!-- Preloader - style you can find in spinners.css -->
-        <!-- ============================================================== -->
         <!-- ============================================================== -->
         <!-- Login box.scss -->
         <!-- ============================================================== -->
@@ -302,27 +291,73 @@ if (@$_SESSION['admin'] || @$_SESSION['user']) {
     <!-- ============================================================== -->
     <!-- This page plugin js -->
     <!-- ============================================================== -->
-    <script>
-        $(".preloader ").fadeOut();
-    </script>
 </body>
 
 </html>
 <?php
 if (isset($_POST['login'])) {
-	$username = $_POST['user'];
-	$pass = $_POST['pass'];
+	require_once '../libs/password_helper.php';
 
-	$sql = $koneksi->query("SELECT * FROM tb_user WHERE username='$username' AND password='$pass'");
-	$data = $sql->fetch_array();
-	$login = $sql->num_rows;
-	if ($login >=1) {
+	$username = trim($_POST['user'] ?? '');
+	$pass = $_POST['pass'] ?? '';
+
+	// Validasi input
+	if (empty($username) || empty($pass)) {
+		?>
+		<script type="text/javascript">
+			Swal.fire({
+				icon: 'error',
+				title: 'Login Gagal!',
+				text: 'Username dan Password harus diisi!',
+				confirmButtonColor: '#dc3545',
+				confirmButtonText: 'OK'
+			});
+		</script>
+		<?php
+		exit;
+	}
+
+	// Gunakan prepared statement untuk mencegah SQL injection
+	$stmt = $koneksi->prepare("SELECT * FROM tb_user WHERE username = ? LIMIT 1");
+	if (!$stmt) {
+		error_log("Prepare failed: " . $koneksi->error);
+		?>
+		<script type="text/javascript">
+			Swal.fire({
+				icon: 'error',
+				title: 'Error!',
+				text: 'Terjadi kesalahan sistem. Silakan coba lagi.',
+				confirmButtonColor: '#dc3545',
+				confirmButtonText: 'OK'
+			});
+		</script>
+		<?php
+		exit;
+	}
+
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$data = $result->fetch_assoc();
+	$stmt->close();
+
+	if ($data && verify_password($pass, $data['password'])) {
+		// Password cocok, buat session
 		session_start();
 
 		$_SESSION['level'] = $data['level'];
 		$_SESSION['id_user'] = $data['id_user'];
 		$_SESSION['username'] = $data['username'];
 		$_SESSION['nama'] = $data['nama'];
+
+		// Update password ke hash jika masih plain text (migrasi otomatis)
+		if (password_needs_rehash($data['password'])) {
+			$hashed_password = hash_password($pass);
+			$update_stmt = $koneksi->prepare("UPDATE tb_user SET password = ? WHERE id_user = ?");
+			$update_stmt->bind_param("si", $hashed_password, $data['id_user']);
+			$update_stmt->execute();
+			$update_stmt->close();
+		}
 
 		// Log aktivitas
 		require_once '../libs/log_activity.php';
@@ -345,6 +380,7 @@ if (isset($_POST['login'])) {
 		</script>
 		<?php
 	} else {
+		// Username atau password salah
 		?>
 		<script type="text/javascript">
 			Swal.fire({

@@ -1,4 +1,89 @@
 <?php
+// Handle Tambah Produk SEBELUM include header untuk menghindari blank page
+if (isset($_POST['tambah_produk_modal'])) {
+    // Bersihkan semua output buffer
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    ob_start();
+
+    include_once('../config/config.php');
+
+    $kode = mysqli_real_escape_string($koneksi, $_POST['kode'] ?? '');
+    $produk = mysqli_real_escape_string($koneksi, $_POST['produk'] ?? '');
+    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori'] ?? '');
+    $harga = floatval($_POST['harga'] ?? 0);
+    $status = intval($_POST['status'] ?? 1);
+
+    $success = false;
+    $message = '';
+
+    if (empty($kode) || empty($produk) || empty($kategori) || $harga <= 0) {
+        $message = 'Mohon lengkapi semua field yang wajib diisi!';
+        $success = false;
+    } else {
+        // Cek apakah kode sudah ada
+        $check_query = "SELECT id_produk FROM tb_produk_orderkuota WHERE kode = '$kode'";
+        $check_result = $koneksi->query($check_query);
+
+        if ($check_result && $check_result->num_rows > 0) {
+            $message = "Kode produk sudah ada: $kode";
+            $success = false;
+        } else {
+            $insert_query = "INSERT INTO tb_produk_orderkuota
+                            (kode, produk, kategori, harga, status, id_bayar)
+                            VALUES ('$kode', '$produk', '$kategori', $harga, $status, NULL)";
+
+            if ($koneksi->query($insert_query)) {
+                $message = 'Produk berhasil ditambahkan';
+                $success = true;
+            } else {
+                $message = 'Error: ' . $koneksi->error;
+                $success = false;
+            }
+        }
+    }
+
+    ob_end_clean();
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Tambah Produk</title>
+        <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
+    </head>
+    <body>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: '<?=$success ? 'success' : 'error'?>',
+            title: '<?=$success ? 'Berhasil!' : 'Gagal!'?>',
+            text: '<?=addslashes($message)?>',
+            confirmButtonColor: '<?=$success ? '#28a745' : '#dc3545'?>',
+            <?php if ($success): ?>
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false
+            <?php else: ?>
+            confirmButtonText: 'OK'
+            <?php endif; ?>
+        }).then(() => {
+            window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
+        });
+        <?php if ($success): ?>
+        setTimeout(function() {
+            window.location.href = "<?=base_url('jenisbayar/jenis_bayar.php')?>";
+        }, 2500);
+        <?php endif; ?>
+    });
+    </script>
+    </body>
+    </html>
+    <?php
+    exit;
+}
+
 include_once('../header.php');
 include_once('../config/config.php');
 
@@ -61,42 +146,7 @@ if ($check_table && $check_table->num_rows > 0) {
     require_once '../libs/produk_helper.php';
 }
 
-// Handle Tambah Produk (harus dilakukan sebelum membaca session message)
-if (isset($_POST['tambah_produk_modal'])) {
-    $kode = mysqli_real_escape_string($koneksi, $_POST['kode'] ?? '');
-    $produk = mysqli_real_escape_string($koneksi, $_POST['produk'] ?? '');
-    $kategori = mysqli_real_escape_string($koneksi, $_POST['kategori'] ?? '');
-    $harga = floatval($_POST['harga'] ?? 0);
-    $status = intval($_POST['status'] ?? 1);
-
-    if (empty($kode) || empty($produk) || empty($kategori) || $harga <= 0) {
-        $_SESSION['tambah_message'] = 'Mohon lengkapi semua field yang wajib diisi!';
-        $_SESSION['tambah_success'] = false;
-    } else {
-        // Cek apakah kode sudah ada
-        $check_query = "SELECT id_produk FROM tb_produk_orderkuota WHERE kode = '$kode'";
-        $check_result = $koneksi->query($check_query);
-
-        if ($check_result && $check_result->num_rows > 0) {
-            $_SESSION['tambah_message'] = "Kode produk sudah ada: $kode";
-            $_SESSION['tambah_success'] = false;
-        } else {
-            $insert_query = "INSERT INTO tb_produk_orderkuota
-                            (kode, produk, kategori, harga, status, id_bayar)
-                            VALUES ('$kode', '$produk', '$kategori', $harga, $status, NULL)";
-
-            if ($koneksi->query($insert_query)) {
-                $_SESSION['tambah_message'] = 'Produk berhasil ditambahkan';
-                $_SESSION['tambah_success'] = true;
-            } else {
-                $_SESSION['tambah_message'] = 'Error: ' . $koneksi->error;
-                $_SESSION['tambah_success'] = false;
-            }
-        }
-    }
-    header('Location: ' . base_url('jenisbayar/jenis_bayar.php'));
-    exit;
-}
+// Handle Tambah Produk sudah dipindahkan ke atas (sebelum include header)
 
 // Inisialisasi variabel pesan
 $import_message = '';
@@ -2403,7 +2453,7 @@ if ($table_exists) {
     } elseif ($filter_produk) {
         // Filter berdasarkan nama produk
         $produk_escaped = mysqli_real_escape_string($koneksi, $filter_produk);
-        $query = "SELECT * FROM tb_produk_orderkuota WHERE produk = '$produk_escaped' ORDER BY kategori ASC, kode ASC, produk ASC, harga ASC";
+        $query = "SELECT * FROM tb_produk_orderkuota WHERE produk = '$produk_escaped' ORDER BY kode ASC, kategori ASC, produk ASC, harga ASC";
         $result = $koneksi->query($query);
         $produk_list = [];
         if ($result) {
@@ -2474,15 +2524,7 @@ if ($table_exists) {
     ];
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Produk & Harga</title>
-    </head>
-    <body>
+<body>
         <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-7 align-self-center">
@@ -3053,9 +3095,6 @@ if ($table_exists) {
                             <?php endif; ?>
 
                             <div id="loadingImport" style="display:none;" class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
                                 <p class="mt-3 text-muted" style="font-size: 16px;">Sedang memproses import, mohon tunggu...</p>
                             </div>
 
@@ -3114,7 +3153,7 @@ if ($table_exists) {
                                 if (alertInfo) alertInfo.style.display = 'none';
                                 if (btnImport) {
                                     btnImport.disabled = true;
-                                    btnImport.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memproses...';
+                                    btnImport.innerHTML = 'Memproses...';
                                 }
                                 if (btnCancel) btnCancel.disabled = true;
 
@@ -3315,9 +3354,7 @@ if ($table_exists) {
                     </div>
                     <div class="modal-body" id="produkDetailContent">
                         <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
+                            Memuat data...
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -3363,7 +3400,7 @@ if ($table_exists) {
         function viewProdukDetail(id_produk) {
             // Ambil data produk dari database via AJAX
             const contentDiv = document.getElementById('produkDetailContent');
-            contentDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>';
+            contentDiv.innerHTML = '<div class="text-center">Memuat data...</div>';
 
             // Buat request ke server untuk mendapatkan detail produk
             fetch('<?=base_url('jenisbayar/get_detail_produk.php')?>?id=' + id_produk)

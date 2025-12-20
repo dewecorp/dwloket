@@ -16,7 +16,25 @@
 <script src="<?=base_url()?>/files/dist/js/sidebarmenu.js"></script>
 <!--Custom JavaScript -->
 <script src="<?=base_url()?>/files/dist/js/custom.min.js"></script>
-<!--This page JavaScript -->
+<!--This page JavaScript - hanya di-load jika diperlukan -->
+<?php
+// Deteksi halaman dengan aman
+$script_name = $_SERVER['SCRIPT_NAME'] ?? '';
+$request_uri = $_SERVER['REQUEST_URI'] ?? '';
+$is_dashboard = (strpos($script_name, 'home/index.php') !== false || strpos($request_uri, '/home') !== false || $request_uri == '/' || $request_uri == '/home' || $request_uri == '/home/');
+$needs_datatable = (strpos($script_name, 'transaksi') !== false ||
+                    strpos($script_name, 'pelanggan') !== false ||
+                    strpos($script_name, 'user') !== false ||
+                    strpos($script_name, 'jenisbayar') !== false ||
+                    strpos($script_name, 'orderkuota') !== false ||
+                    strpos($request_uri, 'transaksi') !== false ||
+                    strpos($request_uri, 'pelanggan') !== false ||
+                    strpos($request_uri, 'user') !== false ||
+                    strpos($request_uri, 'jenisbayar') !== false ||
+                    strpos($request_uri, 'orderkuota') !== false);
+
+// Script chart hanya untuk dashboard
+if ($is_dashboard): ?>
 <script src="<?=base_url()?>/files/assets/extra-libs/c3/d3.min.js"></script>
 <script src="<?=base_url()?>/files/assets/extra-libs/c3/c3.min.js"></script>
 <script src="<?=base_url()?>/files/assets/libs/chartist/dist/chartist.min.js"></script>
@@ -24,8 +42,14 @@
 <script src="<?=base_url()?>/files/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js"></script>
 <script src="<?=base_url()?>/files/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js"></script>
 <script src="<?=base_url()?>/files/dist/js/pages/dashboards/dashboard1.min.js"></script>
+<?php endif; ?>
+
+<?php if ($needs_datatable): ?>
+<!-- DataTable scripts - hanya untuk halaman yang membutuhkan -->
 <script src="<?=base_url()?>/files/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?=base_url()?>/files/dist/js/pages/datatable/datatable-basic.init.js"></script>
+<?php endif; ?>
+
 <!-- <script src="<?=base_url()?>/files/dist/js/sweetalert2@11.js"></script> -->
 <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
 
@@ -112,6 +136,7 @@ function confirmLogout() {
     });
     return false;
 }
+
 </script>
 </body>
 

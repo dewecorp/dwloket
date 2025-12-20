@@ -32,7 +32,7 @@ function getProdukByKategori($id_bayar = null, $kategori = null, $only_active = 
     $query = "SELECT p.*
               FROM tb_produk_orderkuota p
               $where_clause
-              ORDER BY p.kategori ASC, p.kode ASC, p.produk ASC, p.harga ASC";
+              ORDER BY p.kode ASC, p.kategori ASC, p.produk ASC, p.harga ASC";
 
     $result = $koneksi->query($query);
     $produk = [];
@@ -104,7 +104,36 @@ function getAllKategori() {
  * @return array Array produk
  */
 function getProdukByIdBayar($id_bayar, $only_active = true) {
-    return getProdukByKategori($id_bayar, null, $only_active);
+    global $koneksi;
+
+    $id_bayar = intval($id_bayar);
+    if ($id_bayar <= 0) {
+        return [];
+    }
+
+    $where_conditions = ["p.id_bayar = $id_bayar"];
+
+    if ($only_active) {
+        $where_conditions[] = "p.status = 1";
+    }
+
+    $where_clause = "WHERE " . implode(" AND ", $where_conditions);
+
+    $query = "SELECT p.*
+              FROM tb_produk_orderkuota p
+              $where_clause
+              ORDER BY p.harga ASC, p.kode ASC, p.produk ASC";
+
+    $result = $koneksi->query($query);
+    $produk = [];
+
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $produk[] = $row;
+        }
+    }
+
+    return $produk;
 }
 
 /**
@@ -126,7 +155,7 @@ function searchProduk($keyword, $only_active = true) {
                      OR p.produk LIKE '%$keyword_escaped%'
                      OR p.kategori LIKE '%$keyword_escaped%')
               $status_condition
-              ORDER BY p.kategori ASC, p.kode ASC, p.produk ASC, p.harga ASC
+              ORDER BY p.kode ASC, p.kategori ASC, p.produk ASC, p.harga ASC
               LIMIT 100";
 
     $result = $koneksi->query($query);
@@ -189,6 +218,34 @@ function getProdukStats() {
     }
 
     return $stats;
+}
+
+/**
+ * Mengambil produk berdasarkan ID produk
+ *
+ * @param int $id_produk ID produk
+ * @return array|null Data produk atau null jika tidak ditemukan
+ */
+function getProdukById($id_produk) {
+    global $koneksi;
+
+    $id_produk = intval($id_produk);
+    if ($id_produk <= 0) {
+        return null;
+    }
+
+    $query = "SELECT p.*
+              FROM tb_produk_orderkuota p
+              WHERE p.id_produk = $id_produk
+              LIMIT 1";
+
+    $result = $koneksi->query($query);
+
+    if ($result && $result->num_rows > 0) {
+        return $result->fetch_assoc();
+    }
+
+    return null;
 }
 
 ?>

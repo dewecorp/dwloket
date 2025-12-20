@@ -18,7 +18,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
-                                <input type="text" name="password" class="form-control" placeholder="Password" required>
+                                <input type="password" name="password" class="form-control" placeholder="Password" required>
                             </div>
                             <div class="form-group">
                                 <label for="nama">Nama</label>
@@ -58,69 +58,110 @@
 </div>
 <?php
 if (@$_POST['simpan']) {
-$username = $_POST['username'];
-$password = $_POST['password'];
-$nama = $_POST['nama'];
-$email = $_POST['email'];
-$level = $_POST['level'];
-$sumber = $_FILES['foto']['tmp_name'];
-$ekstensi = explode(".", $_FILES['foto']['name']);
-$nama_foto = "foto-".round(microtime(true)).".".end($ekstensi);
-$upload = move_uploaded_file($sumber, "files/assets/images/".$nama_foto);
-if ($sumber == "") {
-$koneksi->query("INSERT INTO tb_user (username, password, nama, email, level, foto) VALUES ('$username', '$password', '$nama', '$email', '$level', '$nama_foto')");
-// Log aktivitas
-require_once '../libs/log_activity.php';
-@log_activity('create', 'user', 'Menambah user: ' . $nama);
-?>
-<script type="text/javascript">
-Swal.fire({
-	icon: 'success',
-	title: 'Berhasil!',
-	text: '<?=addslashes($nama)?> Berhasil Ditambahkan',
-	confirmButtonColor: '#28a745',
-	timer: 2000,
-	timerProgressBar: true,
-	showConfirmButton: false
-}).then(() => {
-	window.location.href = "<?=base_url('user')?>";
-});
-</script>
-<?php
-} else {
-if ($upload) {
-$koneksi->query("INSERT INTO tb_user (username, password, nama, email, level, foto) VALUES ('$username', '$password', '$nama', '$email', '$level', '$nama_foto')");
-// Log aktivitas
-require_once '../libs/log_activity.php';
-@log_activity('create', 'user', 'Menambah user: ' . $nama);
-?>
-<script type="text/javascript">
-Swal.fire({
-	icon: 'success',
-	title: 'Berhasil!',
-	text: '<?=addslashes($nama)?> Berhasil Ditambahkan',
-	confirmButtonColor: '#28a745',
-	timer: 2000,
-	timerProgressBar: true,
-	showConfirmButton: false
-}).then(() => {
-	window.location.href = "<?=base_url('user')?>";
-});
-</script>
-<?php
-} else {
-?>
-<script type="text/javascript">
-Swal.fire({
-	icon: 'error',
-	title: 'Gagal!',
-	text: 'Gagal Mengupload Foto',
-	confirmButtonColor: '#dc3545',
-	confirmButtonText: 'OK'
-});
-</script>
-<?php
+require_once '../libs/password_helper.php';
+
+$username = trim($_POST['username'] ?? '');
+$password = $_POST['password'] ?? '';
+$nama = trim($_POST['nama'] ?? '');
+$email = trim($_POST['email'] ?? '');
+$level = $_POST['level'] ?? '';
+
+// Validasi
+if (empty($username) || empty($password) || empty($nama) || empty($email) || empty($level)) {
+	?>
+	<script type="text/javascript">
+	Swal.fire({
+		icon: 'error',
+		title: 'Gagal!',
+		text: 'Semua field wajib diisi!',
+		confirmButtonColor: '#dc3545',
+		confirmButtonText: 'OK'
+	});
+	</script>
+	<?php
+	exit;
 }
+
+// Hash password
+$hashed_password = hash_password($password);
+
+$sumber = $_FILES['foto']['tmp_name'] ?? '';
+$nama_foto = 'default.png';
+
+if (!empty($sumber) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
+	$ekstensi = explode(".", $_FILES['foto']['name']);
+	$nama_foto = "foto-".round(microtime(true)).".".end($ekstensi);
+	$upload = move_uploaded_file($sumber, "files/assets/images/".$nama_foto);
+
+	if (!$upload) {
+		?>
+		<script type="text/javascript">
+		Swal.fire({
+			icon: 'error',
+			title: 'Gagal!',
+			text: 'Gagal Mengupload Foto',
+			confirmButtonColor: '#dc3545',
+			confirmButtonText: 'OK'
+		});
+		</script>
+		<?php
+		exit;
+	}
+}
+
+// Gunakan prepared statement untuk mencegah SQL injection
+$stmt = $koneksi->prepare("INSERT INTO tb_user (username, password, nama, email, level, foto) VALUES (?, ?, ?, ?, ?, ?)");
+if (!$stmt) {
+	error_log("Prepare failed: " . $koneksi->error);
+	?>
+	<script type="text/javascript">
+	Swal.fire({
+		icon: 'error',
+		title: 'Error!',
+		text: 'Terjadi kesalahan sistem. Silakan coba lagi.',
+		confirmButtonColor: '#dc3545',
+		confirmButtonText: 'OK'
+	});
+	</script>
+	<?php
+	exit;
+}
+
+$stmt->bind_param("ssssss", $username, $hashed_password, $nama, $email, $level, $nama_foto);
+$result = $stmt->execute();
+$stmt->close();
+
+if ($result) {
+	// Log aktivitas
+	require_once '../libs/log_activity.php';
+	@log_activity('create', 'user', 'Menambah user: ' . $nama);
+	?>
+	<script type="text/javascript">
+	Swal.fire({
+		icon: 'success',
+		title: 'Berhasil!',
+		text: '<?=addslashes($nama)?> Berhasil Ditambahkan',
+		confirmButtonColor: '#28a745',
+		timer: 2000,
+		timerProgressBar: true,
+		showConfirmButton: false
+	}).then(() => {
+		window.location.href = "<?=base_url('user')?>";
+	});
+	</script>
+	<?php
+} else {
+	?>
+	<script type="text/javascript">
+	Swal.fire({
+		icon: 'error',
+		title: 'Gagal!',
+		text: 'Gagal menambahkan user. Username mungkin sudah digunakan.',
+		confirmButtonColor: '#dc3545',
+		confirmButtonText: 'OK'
+	});
+	</script>
+	<?php
 }
 }
 ?>

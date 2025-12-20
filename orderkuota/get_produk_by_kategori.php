@@ -39,10 +39,11 @@ foreach ($produk_list as $produk) {
     $response['produk'][] = [
         'id_produk' => $produk['id_produk'],
         'kode' => $produk['kode'],
-        'keterangan' => $produk['keterangan'],
+        'keterangan' => $produk['produk'] ?? '',
         'produk' => $produk['produk'],
         'kategori' => $produk['kategori'],
         'harga' => intval($produk['harga']),
+        'id_bayar' => $produk['id_bayar'] ?? null,
         'status' => $produk['status']
     ];
 }

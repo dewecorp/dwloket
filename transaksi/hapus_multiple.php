@@ -9,10 +9,29 @@ if (!isset($_SESSION)) {
 
 // Cek apakah request POST dengan ids
 if (!isset($_POST['ids']) || !is_array($_POST['ids']) || empty($_POST['ids'])) {
-    echo '<script>
-        alert("Tidak ada transaksi yang dipilih untuk dihapus");
-        window.location.href = "' . base_url('transaksi/transaksi.php') . '";
-    </script>';
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Hapus Multiple</title>
+        <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
+    </head>
+    <body>
+    <script>
+    Swal.fire({
+        icon: 'warning',
+        title: 'Peringatan!',
+        text: 'Tidak ada transaksi yang dipilih untuk dihapus',
+        confirmButtonColor: '#ffc107',
+        confirmButtonText: 'OK'
+    }).then(() => {
+        window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
+    });
+    </script>
+    </body>
+    </html>
+    <?php
     exit;
 }
 
@@ -22,10 +41,29 @@ $ids = array_filter($ids, function($id) {
 });
 
 if (empty($ids)) {
-    echo '<script>
-        alert("ID transaksi tidak valid");
-        window.location.href = "' . base_url('transaksi/transaksi.php') . '";
-    </script>';
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Hapus Multiple</title>
+        <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
+    </head>
+    <body>
+    <script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'ID transaksi tidak valid',
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'OK'
+    }).then(() => {
+        window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
+    });
+    </script>
+    </body>
+    </html>
+    <?php
     exit;
 }
 
