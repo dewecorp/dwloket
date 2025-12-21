@@ -1,10 +1,13 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
 include_once('../config/config.php');
 require_once '../libs/produk_helper.php';
 
-// Validasi ID parameter terlebih dahulu
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-if (empty($id) || $id <= 0) {
+// Validasi ID parameter
+if (!isset($_GET['id'])) {
     header('Location: ' . base_url('transaksi/transaksi.php'));
     exit();
 }
@@ -177,6 +180,12 @@ function getJenisBayarStyle($jenis_bayar) {
     return ['icon' => 'fa-money-bill-wave', 'color' => 'secondary'];
 }
 
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+if (empty($id) || $id <= 0) {
+    header('Location: ' . base_url('transaksi/transaksi.php'));
+    exit();
+}
+
 $sql = $koneksi->query("SELECT * FROM transaksi WHERE id_transaksi='$id'");
 if (!$sql) {
     error_log("Error fetching transaksi: " . mysqli_error($koneksi));
@@ -185,7 +194,7 @@ if (!$sql) {
 }
 
 $data = $sql->fetch_assoc();
-if (!$data || empty($data)) {
+if (!$data) {
     header('Location: ' . base_url('transaksi/transaksi.php'));
     exit();
 }
@@ -217,10 +226,14 @@ if ($sql_jenis) {
     }
 }
 ?>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var style = document.createElement('style');
-    style.textContent = `
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Transaksi</title>
+        <style>
         .jenis-bayar-card {
             cursor: pointer !important;
             transition: all 0.3s;
@@ -351,12 +364,10 @@ document.addEventListener('DOMContentLoaded', function() {
         .input-group-append .btn {
             border-left: 1px solid #ced4da;
         }
-    `;
-    document.head.appendChild(style);
-});
-</script>
-
-<div class="page-breadcrumb">
+        </style>
+    </head>
+    <body>
+        <div class="page-breadcrumb">
             <div class="row">
                 <div class="col-7 align-self-center">
                     <h4 class="page-title text-truncate text-dark font-weight-medium mb-1">Transaksi</h4>
@@ -718,6 +729,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         </script>
+    </body>
+</html>
 <?php
 include_once('modal_item.php');
 include_once('../footer.php');
