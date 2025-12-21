@@ -1,7 +1,113 @@
 <?php
-include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/produk_helper.php';
+
+// PROSES POST HARUS SEBELUM HEADER UNTUK REDIRECT
+// Debug: Log semua POST untuk debugging
+if (!empty($_POST)) {
+    error_log("=== POST DETECTED ===");
+    error_log("POST Keys: " . implode(', ', array_keys($_POST)));
+}
+
+if (isset($_POST['simpan'])) {
+    // Debug: Log data yang diterima
+    error_log("=== FORM SUBMIT DETECTED ===");
+    error_log("POST Data: " . print_r($_POST, true));
+
+    $tgl    = isset($_POST['tgl']) ? trim($_POST['tgl']) : '';
+    $idpel  = isset($_POST['idpel']) ? trim($_POST['idpel']) : '';
+    $nama   = isset($_POST['nama']) ? trim($_POST['nama']) : '';
+    $jenis  = isset($_POST['jenis']) ? trim($_POST['jenis']) : '';
+    $harga  = isset($_POST['harga']) ? trim($_POST['harga']) : '';
+    $status = isset($_POST['status']) ? trim($_POST['status']) : '';
+    $ket    = isset($_POST['ket']) ? trim($_POST['ket']) : '';
+
+    // Validasi input
+    $error_msg = '';
+    if (empty($tgl)) {
+        $error_msg = 'Tanggal transaksi belum diisi.';
+    } elseif (empty($idpel)) {
+        $error_msg = 'ID pelanggan belum diisi.';
+    } elseif (empty($nama)) {
+        $error_msg = 'Nama pelanggan belum diisi.';
+    } elseif (empty($harga) || floatval($harga) <= 0) {
+        $error_msg = 'Harga tidak valid atau belum diisi. Harga: ' . $harga;
+    }
+
+    if (empty($error_msg)) {
+        // Escape untuk keamanan
+        $tgl = mysqli_real_escape_string($koneksi, $tgl);
+        $idpel = mysqli_real_escape_string($koneksi, $idpel);
+        $nama = mysqli_real_escape_string($koneksi, $nama);
+        $jenis = mysqli_real_escape_string($koneksi, $jenis);
+        $harga = floatval($harga);
+        $status = mysqli_real_escape_string($koneksi, $status);
+        $ket = mysqli_real_escape_string($koneksi, $ket);
+
+        // Handle id_bayar - kolom tidak boleh NULL, harus ada nilai valid
+        // Pastikan selalu ada nilai, tidak boleh NULL
+        if (!empty($jenis) && $jenis !== '' && $jenis !== '0' && $jenis !== 'null') {
+            $jenis_sql = intval($jenis); // Pastikan integer
+        } else {
+            // Jika jenis kosong, ambil ID jenis bayar pertama sebagai default
+            $default_query = $koneksi->query("SELECT id_bayar FROM tb_jenisbayar ORDER BY id_bayar ASC LIMIT 1");
+            if ($default_query && $default_query->num_rows > 0) {
+                $default_row = $default_query->fetch_assoc();
+                $jenis_sql = intval($default_row['id_bayar']);
+            } else {
+                // Jika tidak ada jenis bayar sama sekali, error
+                $error_msg = 'Tidak ada jenis pembayaran tersedia. Silakan tambahkan jenis pembayaran terlebih dahulu.';
+                $post_error_msg = $error_msg;
+                error_log("Error: " . $error_msg);
+                include_once('../header.php');
+                exit(); // Stop execution
+            }
+        }
+
+        // Pastikan jenis_sql tidak kosong
+        if (empty($jenis_sql) || $jenis_sql <= 0) {
+            $error_msg = 'ID pembayaran tidak valid.';
+            $post_error_msg = $error_msg;
+            error_log("Error: " . $error_msg);
+        } else {
+            $query = "INSERT INTO transaksi (tgl, idpel, nama, id_bayar, harga, status, ket)
+                      VALUES ('$tgl', '$idpel', '$nama', $jenis_sql, $harga, '$status', '$ket')";
+
+            error_log("SQL Query: " . $query);
+            error_log("jenis_sql value: " . $jenis_sql);
+
+            $sql = $koneksi->query($query);
+
+            if ($sql) {
+                // Log aktivitas
+                require_once '../libs/log_activity.php';
+                @log_activity('create', 'transaksi', 'Menambah transaksi: ' . $nama . ' (ID: ' . $idpel . ')');
+
+                // Set session message untuk ditampilkan di halaman transaksi
+                if (!isset($_SESSION)) {
+                    session_start();
+                }
+                $_SESSION['success_message'] = 'Transaksi berhasil ditambahkan';
+
+                // Redirect langsung dengan header (sebelum output HTML)
+                header('Location: ' . base_url('transaksi/transaksi.php'));
+                exit();
+            } else {
+                $db_error = mysqli_error($koneksi);
+                error_log("Database Error: " . $db_error);
+                $error_msg = 'Gagal menyimpan transaksi: ' . $db_error;
+                $post_error_msg = $error_msg;
+            }
+        }
+    } else {
+        error_log("Validation Error: " . $error_msg);
+    }
+
+    // Simpan error untuk ditampilkan setelah header
+    $post_error_msg = $error_msg;
+}
+
+include_once('../header.php');
 
 // Fungsi untuk menentukan icon dan warna berdasarkan jenis pembayaran
 // Fungsi ini otomatis akan handle jenis pembayaran baru yang ditambahkan
@@ -244,6 +350,38 @@ if ($sql_jenis) {
         .produk-grid-item:active {
             transform: scale(0.98);
         }
+        .swal-toast-popup {
+            border-left: 5px solid #28a745 !important;
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3) !important;
+            border-radius: 8px !important;
+            background: #ffffff !important;
+            min-width: 320px !important;
+        }
+        .swal-toast-popup .swal2-title {
+            font-size: 19px !important;
+            font-weight: 800 !important;
+            color: #212529 !important;
+            margin-bottom: 8px !important;
+            letter-spacing: 0.5px !important;
+        }
+        .swal-toast-popup .swal2-content {
+            font-size: 17px !important;
+            color: #28a745 !important;
+            font-weight: 700 !important;
+            margin-top: 4px !important;
+            padding-top: 8px !important;
+        }
+        .swal-toast-popup .swal2-html-container {
+            display: block !important;
+            visibility: visible !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        .swal-toast-popup .swal2-icon {
+            width: 3em !important;
+            height: 3em !important;
+            margin: 0 1em 0 0 !important;
+        }
         .loading-spinner {
             display: inline-block;
             width: 20px;
@@ -299,7 +437,7 @@ if ($sql_jenis) {
                         </h4>
                     </div>
                     <div class="modern-card-body">
-                        <form action="#" method="POST" id="formTambahTransaksi" onsubmit="return validateForm()">
+                        <form action="" method="POST" id="formTambahTransaksi">
                             <!-- Grid Kategori - Paling Atas -->
                             <div class="modern-card mb-4" id="kategori-section">
                                 <div class="modern-card-header">
@@ -448,90 +586,26 @@ if ($sql_jenis) {
                     </div>
                 </div>
                 <?php
-                if (@$_POST['simpan']) {
-                $tgl    = @$_POST['tgl'];
-                $idpel  = @$_POST['idpel'];
-                $nama   = @$_POST['nama'];
-                $jenis  = @$_POST['jenis'];
-                $harga  = @$_POST['harga'];
-                $status = @$_POST['status'];
-                $ket    = @$_POST['ket'];
-
-                // Escape untuk keamanan
-                $tgl = mysqli_real_escape_string($koneksi, $tgl);
-                $idpel = mysqli_real_escape_string($koneksi, $idpel);
-                $nama = mysqli_real_escape_string($koneksi, $nama);
-                $jenis = mysqli_real_escape_string($koneksi, $jenis);
-                $harga = floatval($harga);
-                $status = mysqli_real_escape_string($koneksi, $status);
-                $ket = mysqli_real_escape_string($koneksi, $ket);
-
-                $jenis_sql = ($jenis && $jenis !== '' && $jenis !== '0') ? "'$jenis'" : 'NULL';
-
-                $sql = $koneksi->query("INSERT INTO transaksi (tgl, idpel, nama, id_bayar, harga, status, ket)
-                                        VALUES ('$tgl', '$idpel', '$nama', $jenis_sql, $harga, '$status', '$ket')");
-
-                if ($sql) {
-					// Log aktivitas
-					require_once '../libs/log_activity.php';
-					@log_activity('create', 'transaksi', 'Menambah transaksi: ' . $nama . ' (ID: ' . $idpel . ')');
+                // Tampilkan error jika ada (dari proses POST di atas)
+                if (isset($post_error_msg) && !empty($post_error_msg)) {
                 ?>
-                <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
                 <script>
-				// Tunggu hingga DOM dan SweetAlert ready
-				document.addEventListener('DOMContentLoaded', function() {
-					// Tunggu sedikit untuk memastikan SweetAlert ter-load
-					setTimeout(function() {
-						if (typeof Swal !== 'undefined') {
-							Swal.fire({
-								icon: 'success',
-								title: 'Berhasil!',
-								text: 'Transaksi Berhasil Ditambahkan',
-								confirmButtonColor: '#28a745',
-								timer: 2000,
-								timerProgressBar: true,
-								showConfirmButton: true,
-								confirmButtonText: 'OK'
-							}).then((result) => {
-								// Redirect ke halaman transaksi
-								window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
-							});
-
-							// Fallback redirect setelah 2.5 detik
-							setTimeout(function() {
-								window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
-							}, 2500);
-						} else {
-							// Fallback jika SweetAlert tidak tersedia
-							alert('Transaksi Berhasil Ditambahkan!');
-							window.location.href = "<?=base_url('transaksi/transaksi.php')?>";
-						}
-					}, 100);
-				});
+                document.addEventListener('DOMContentLoaded', function() {
+                    console.error('Error:', <?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>);
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: <?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>,
+                            confirmButtonColor: '#dc3545',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        alert(<?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>);
+                    }
+                });
                 </script>
                 <?php
-                } else {
-                ?>
-                <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
-                <script>
-				document.addEventListener('DOMContentLoaded', function() {
-					setTimeout(function() {
-						if (typeof Swal !== 'undefined') {
-							Swal.fire({
-								icon: 'error',
-								title: 'Gagal!',
-								text: 'Terjadi kesalahan saat menambahkan transaksi',
-								confirmButtonColor: '#dc3545',
-								confirmButtonText: 'OK'
-							});
-						} else {
-							alert('Terjadi kesalahan saat menambahkan transaksi');
-						}
-					}, 100);
-				});
-                </script>
-                <?php
-                }
                 }
                 ?>
             </div>
@@ -653,69 +727,70 @@ if ($sql_jenis) {
                         kategoriCards[0].focus();
                     }, 500);
                 }
-
-                // Show success message menggunakan toast
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Form Direset',
-                        text: 'Form telah dikembalikan ke kondisi awal',
-                        showConfirmButton: false,
-                        timer: 2000,
-                        timerProgressBar: true,
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer);
-                            toast.addEventListener('mouseleave', Swal.resumeTimer);
-                        }
-                    });
-                }
             }
 
             // Validasi form sebelum submit
             window.validateForm = function() {
-                // Cek apakah kategori sudah dipilih (optional, karena bisa manual)
-                // Cek apakah harga sudah diisi
-                const harga = parseFloat(hargaInput.value) || 0;
-                if (harga <= 0) {
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'Harga Belum Diisi!',
-                            text: 'Mohon isi harga transaksi atau pilih produk untuk mengisi harga otomatis.',
-                            confirmButtonColor: '#ffc107'
-                        });
-                    } else {
-                        alert('Mohon isi harga transaksi atau pilih produk untuk mengisi harga otomatis.');
-                    }
-                    if (hargaInput) hargaInput.focus();
-                    return false;
-                }
+                try {
+                    console.log('Validasi form dimulai...');
 
-                // Cek apakah ID pelanggan sudah diisi
-                const idpel = document.getElementById('idpel') ? document.getElementById('idpel').value.trim() : '';
-                if (!idpel) {
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: 'ID Pelanggan Belum Diisi!',
-                            text: 'Mohon pilih pelanggan terlebih dahulu.',
-                            confirmButtonColor: '#ffc107'
-                        });
-                    } else {
-                        alert('Mohon pilih pelanggan terlebih dahulu.');
+                    // Cek apakah harga sudah diisi
+                    const hargaVal = hargaInput ? hargaInput.value : '';
+                    const harga = parseFloat(hargaVal) || 0;
+                    console.log('Harga:', harga, 'Original:', hargaVal);
+
+                    if (harga <= 0) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Harga Belum Diisi!',
+                                text: 'Mohon isi harga transaksi atau pilih produk untuk mengisi harga otomatis.',
+                                confirmButtonColor: '#ffc107'
+                            });
+                        } else {
+                            alert('Mohon isi harga transaksi atau pilih produk untuk mengisi harga otomatis.');
+                        }
+                        if (hargaInput) hargaInput.focus();
+                        return false;
                     }
+
+                    // Cek apakah ID pelanggan sudah diisi
                     const idpelInput = document.getElementById('idpel');
-                    if (idpelInput) {
-                        const searchBtn = idpelInput.closest('.input-group').querySelector('[data-toggle="modal"]');
-                        if (searchBtn) searchBtn.click();
-                    }
-                    return false;
-                }
+                    const idpel = idpelInput ? idpelInput.value.trim() : '';
+                    console.log('ID Pelanggan:', idpel);
 
-                return true;
+                    if (!idpel) {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'ID Pelanggan Belum Diisi!',
+                                text: 'Mohon pilih pelanggan terlebih dahulu.',
+                                confirmButtonColor: '#ffc107'
+                            });
+                        } else {
+                            alert('Mohon pilih pelanggan terlebih dahulu.');
+                        }
+                        if (idpelInput) {
+                            const inputGroup = idpelInput.closest('.input-group');
+                            if (inputGroup) {
+                                const searchBtn = inputGroup.querySelector('[data-toggle="modal"]');
+                                if (searchBtn) searchBtn.click();
+                            }
+                        }
+                        return false;
+                    }
+
+                    console.log('Validasi berhasil, form akan di-submit');
+                    return true;
+                } catch (error) {
+                    console.error('Error dalam validasi:', error);
+                    // Jika ada error, tetap izinkan submit (fallback)
+                    return true;
+                }
             };
+
+            // HAPUS SEMUA EVENT LISTENER - BIARKAN FORM SUBMIT MURNI
+            // Form akan submit langsung tanpa ada JavaScript yang menghalangi
 
             kategoriCards.forEach(function(card) {
                 card.addEventListener('click', function() {
@@ -971,24 +1046,21 @@ if ($sql_jenis) {
                         }
                     }, 300);
 
-                    // Show success notification menggunakan toast dengan tampilan lebih baik
+                    // Show success notification menggunakan SweetAlert modal
                     if (typeof Swal !== 'undefined') {
                         const hargaFormatted = parseInt(harga).toLocaleString('id-ID');
                         Swal.fire({
-                            toast: true,
-                            position: 'top-end',
                             icon: 'success',
-                            title: '<div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Produk Dipilih</div><div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;"><span style="font-weight: 600; color: #212529;">' + kode + '</span><span style="font-weight: 700; color: #28a745; font-size: 15px;">Rp ' + hargaFormatted + '</span></div>',
-                            html: true,
-                            showConfirmButton: false,
-                            timer: 2500,
+                            title: 'Produk Dipilih',
+                            html: '<div style="text-align: left; padding: 15px 0;"><div style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">' + kode + '</div><div style="font-size: 22px; color: #28a745; font-weight: 800;">Rp ' + hargaFormatted + '</div></div>',
+                            showConfirmButton: true,
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#28a745',
+                            timer: 2000,
                             timerProgressBar: true,
-                            width: '400px',
-                            padding: '18px 22px',
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer);
-                                toast.addEventListener('mouseleave', Swal.resumeTimer);
-                            }
+                            allowOutsideClick: true,
+                            allowEscapeKey: true,
+                            width: '420px'
                         });
                     }
                 }
