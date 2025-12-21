@@ -14,6 +14,9 @@ if (!isset($_GET['id'])) {
 
 // PROSES POST UPDATE HARUS SEBELUM HEADER UNTUK REDIRECT
 if (isset($_POST['edit'])) {
+    // Debug: Log semua POST data
+    error_log("=== EDIT POST DATA ===");
+    error_log("POST: " . print_r($_POST, true));
 
     $id     = isset($_POST['id']) ? intval($_POST['id']) : 0;
     $tgl    = isset($_POST['tgl']) ? trim($_POST['tgl']) : '';
@@ -23,6 +26,8 @@ if (isset($_POST['edit'])) {
     $harga  = isset($_POST['harga']) ? trim($_POST['harga']) : '';
     $status = isset($_POST['status']) ? trim($_POST['status']) : '';
     $ket    = isset($_POST['ket']) ? trim($_POST['ket']) : '';
+
+    error_log("Parsed values - ID: $id, tgl: $tgl, idpel: $idpel, nama: $nama, jenis: $jenis, harga: $harga, status: $status, ket: $ket");
 
     // Validasi input
     $error_msg = '';
@@ -50,10 +55,14 @@ if (isset($_POST['edit'])) {
 
         // Handle id_bayar - kolom tidak boleh NULL, harus ada nilai valid
         // Pastikan selalu ada nilai, tidak boleh NULL
+        $jenis_sql = null; // Initialize variable
+
         if (!empty($jenis) && $jenis !== '' && $jenis !== '0' && $jenis !== 'null') {
             $jenis_sql = intval($jenis); // Pastikan integer
-        } else {
-            // Jika jenis kosong, ambil ID jenis bayar pertama sebagai default
+        }
+
+        // Jika jenis_sql masih null atau kosong, ambil ID jenis bayar pertama sebagai default
+        if (empty($jenis_sql) || $jenis_sql <= 0) {
             $default_query = $koneksi->query("SELECT id_bayar FROM tb_jenisbayar ORDER BY id_bayar ASC LIMIT 1");
             if ($default_query && $default_query->num_rows > 0) {
                 $default_row = $default_query->fetch_assoc();
@@ -62,42 +71,78 @@ if (isset($_POST['edit'])) {
                 // Jika tidak ada jenis bayar sama sekali, error
                 $error_msg = 'Tidak ada jenis pembayaran tersedia. Silakan tambahkan jenis pembayaran terlebih dahulu.';
                 $post_error_msg = $error_msg;
+                error_log("Edit Error: Tidak ada jenis pembayaran tersedia di database");
             }
         }
 
-        // Pastikan jenis_sql tidak kosong
-        if (empty($jenis_sql) || $jenis_sql <= 0) {
-            $error_msg = 'ID pembayaran tidak valid.';
+        // Pastikan jenis_sql sudah didefinisikan dan valid sebelum eksekusi query
+        if (empty($error_msg) && (!isset($jenis_sql) || empty($jenis_sql) || $jenis_sql <= 0)) {
+            $error_msg = 'ID pembayaran tidak valid. Jenis input: ' . htmlspecialchars($jenis);
             $post_error_msg = $error_msg;
-        } else {
+            error_log("Edit Error: ID pembayaran tidak valid. jenis input: $jenis, jenis_sql: " . (isset($jenis_sql) ? $jenis_sql : 'not set'));
+        }
+
+        // Jika tidak ada error, eksekusi query UPDATE
+        if (empty($error_msg) && isset($jenis_sql) && $jenis_sql > 0) {
             $query = "UPDATE transaksi SET tgl='$tgl', idpel='$idpel', nama='$nama', id_bayar=$jenis_sql, harga=$harga, status='$status', ket='$ket' WHERE id_transaksi=$id";
+
+            error_log("Edit Query: " . $query);
+            error_log("Edit Data - ID: $id, jenis_sql: $jenis_sql, harga: $harga, tgl: $tgl, idpel: $idpel, nama: $nama");
 
             $sql = $koneksi->query($query);
 
-            if ($sql) {
+            if ($sql === false) {
+                // Query gagal
+                $db_error = mysqli_error($koneksi);
+                $error_msg = 'Gagal menyimpan perubahan: ' . $db_error;
+                $post_error_msg = $error_msg;
+                error_log("Edit Database Error: " . $db_error);
+                error_log("Edit Failed Query: " . $query);
+            } else {
+                // Query berhasil
+                $affected_rows = mysqli_affected_rows($koneksi);
+
+                if ($affected_rows > 0) {
+                    error_log("Edit Success: $affected_rows row(s) affected. ID: $id");
+                } else {
+                    error_log("Edit Warning: Query executed but no rows affected. ID: $id - Data mungkin sama dengan sebelumnya");
+                }
+
                 // Log aktivitas
                 require_once '../libs/log_activity.php';
                 @log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id);
 
-                // Set session message
+                // Set session message - pastikan session sudah start
                 if (!isset($_SESSION)) {
                     session_start();
                 }
                 $_SESSION['success_message'] = 'Transaksi berhasil diedit';
+                error_log("Session success message set. Redirecting to: " . base_url('transaksi/transaksi.php'));
+
+                // Pastikan tidak ada output sebelum redirect
+                if (ob_get_length()) {
+                    ob_clean();
+                }
 
                 // Redirect langsung dengan header (sebelum output HTML)
-                header('Location: ' . base_url('transaksi/transaksi.php'));
+                $redirect_url = base_url('transaksi/transaksi.php');
+                header('Location: ' . $redirect_url);
                 exit();
-            } else {
-                $db_error = mysqli_error($koneksi);
-                $error_msg = 'Gagal menyimpan perubahan: ' . $db_error;
-                $post_error_msg = $error_msg;
             }
         }
     }
 
     // Simpan error untuk ditampilkan setelah header
-    $post_error_msg = $error_msg;
+    if (!empty($error_msg)) {
+        $post_error_msg = $error_msg;
+        error_log("Edit Validation Error: " . $error_msg);
+
+        // Set session untuk error message agar bisa ditampilkan setelah redirect
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        $_SESSION['error_message'] = $error_msg;
+    }
 }
 
 include_once('../header.php');
@@ -392,7 +437,7 @@ if ($sql_jenis) {
                             </h4>
                         </div>
                         <div class="modern-card-body">
-                            <form action="<?=$_SERVER['PHP_SELF']?>" method="POST" id="formEditTransaksi">
+                            <form action="" method="POST" id="formEditTransaksi">
                                 <input type="hidden" name="id" value="<?=$data['id_transaksi']?>">
 
                                 <!-- Grid Kategori - Paling Atas -->
@@ -535,12 +580,35 @@ if ($sql_jenis) {
 
                             <!-- Error Display -->
                             <?php if (isset($post_error_msg) && !empty($post_error_msg)): ?>
-                            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                                <i class="fa fa-exclamation-circle"></i> <?=htmlspecialchars($post_error_msg)?>
+                            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert" style="z-index: 9999; position: relative; background-color: #f8d7da; border-color: #f5c6cb;">
+                                <i class="fa fa-exclamation-circle"></i> <strong>Error:</strong> <?=htmlspecialchars($post_error_msg)?>
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
+                            <script>
+                                console.error('Edit Error:', '<?=addslashes($post_error_msg)?>');
+                                setTimeout(function() {
+                                    alert('Error: <?=addslashes($post_error_msg)?>');
+                                }, 100);
+                            </script>
+                            <?php endif; ?>
+
+                            <?php
+                            // Tampilkan error dari session jika ada
+                            if (isset($_SESSION['error_message']) && !empty($_SESSION['error_message'])):
+                                $session_error = $_SESSION['error_message'];
+                                unset($_SESSION['error_message']);
+                            ?>
+                            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                                <i class="fa fa-exclamation-circle"></i> <?=htmlspecialchars($session_error)?>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <script>
+                                alert('<?=addslashes($session_error)?>');
+                            </script>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -722,8 +790,37 @@ if ($sql_jenis) {
 
             if (formEdit && submitBtn) {
                 formEdit.addEventListener('submit', function(e) {
+                    console.log('=== FORM SUBMIT TRIGGERED ===');
+
+                    // Log semua input values
+                    const formData = new FormData(formEdit);
+                    console.log('=== FORM DATA ===');
+                    const formDataObj = {};
+                    for (let [key, value] of formData.entries()) {
+                        console.log(key + ': ' + value);
+                        formDataObj[key] = value;
+                    }
+
+                    // Validasi sederhana
+                    if (!formDataObj.id || formDataObj.id <= 0) {
+                        console.error('Error: ID tidak valid');
+                        alert('Error: ID transaksi tidak valid');
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    if (!formDataObj.tgl || !formDataObj.idpel || !formDataObj.nama || !formDataObj.harga) {
+                        console.error('Error: Field wajib belum diisi');
+                        alert('Error: Pastikan semua field wajib sudah diisi (Tanggal, ID Pelanggan, Nama, Harga)');
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    console.log('Form validation passed, submitting...');
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Menyimpan...';
+
+                    // Allow form to submit
                     return true;
                 });
             }
