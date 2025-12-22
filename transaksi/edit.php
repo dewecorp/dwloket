@@ -5,14 +5,24 @@ if (!ob_get_level()) {
 }
 
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+ini_set('display_errors', 0); // Disable display errors untuk mencegah output sebelum redirect
+ini_set('display_startup_errors', 0);
+ini_set('log_errors', 1); // Tetap log errors tapi tidak tampilkan
 
 include_once('../config/config.php');
 require_once '../libs/produk_helper.php';
 
+// Pastikan session sudah start
+if (!isset($_SESSION)) {
+    session_start();
+}
+
 // Validasi ID parameter
 if (!isset($_GET['id'])) {
+    // Bersihkan output buffer sebelum redirect
+    if (ob_get_level()) {
+        ob_end_clean();
+    }
     header('Location: ' . base_url('transaksi/transaksi.php'));
     exit();
 }
@@ -123,31 +133,31 @@ if (isset($_POST['edit'])) {
 
                 // Jika tidak ada error, lanjutkan dengan log dan redirect
                 if (empty($error_msg)) {
-                    // Log aktivitas
-                    require_once '../libs/log_activity.php';
-                    @log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id);
+                    // Log aktivitas (gunakan @ untuk suppress error jika file tidak ada)
+                    @require_once '../libs/log_activity.php';
+                    if (function_exists('log_activity')) {
+                        @log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id);
+                    }
 
                     // Set session message
                     $_SESSION['success_message'] = 'Transaksi berhasil diedit';
-                    error_log("Edit Success: Transaksi ID $id berhasil diupdate. Redirecting...");
 
-                    // Bersihkan semua output buffer
+                    // Bersihkan semua output buffer sebelum redirect
                     while (ob_get_level()) {
                         ob_end_clean();
                     }
 
-                    // Redirect langsung dengan header (sebelum output HTML)
+                    // Redirect langsung dengan header
                     $redirect_url = base_url('transaksi/transaksi.php');
-                    error_log("Redirect URL: " . $redirect_url);
 
-                    // Pastikan header belum dikirim
+                    // Pastikan tidak ada output sebelum redirect
                     if (!headers_sent()) {
                         header('Location: ' . $redirect_url);
+                        header('HTTP/1.1 302 Found');
                         exit();
                     } else {
-                        // Jika header sudah dikirim, gunakan JavaScript redirect
-                        error_log("Warning: Headers already sent, using JavaScript redirect");
-                        echo '<script>window.location.href = "' . $redirect_url . '";</script>';
+                        // Fallback: jika header sudah dikirim, gunakan meta refresh dan JavaScript
+                        echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=' . htmlspecialchars($redirect_url) . '"></head><body><script>window.location.href = ' . json_encode($redirect_url) . ';</script><p>Redirecting... <a href="' . htmlspecialchars($redirect_url) . '">Click here if not redirected</a></p></body></html>';
                         exit();
                     }
                 }
