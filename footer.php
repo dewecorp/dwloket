@@ -16,14 +16,53 @@
 <script src="<?=base_url()?>/files/dist/js/sidebarmenu.js"></script>
 <!--Custom JavaScript -->
 <script src="<?=base_url()?>/files/dist/js/custom.min.js"></script>
-<!--This page JavaScript -->
-<script src="<?=base_url()?>/files/assets/extra-libs/c3/d3.min.js"></script>
-<script src="<?=base_url()?>/files/assets/extra-libs/c3/c3.min.js"></script>
-<script src="<?=base_url()?>/files/assets/libs/chartist/dist/chartist.min.js"></script>
-<script src="<?=base_url()?>/files/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
-<script src="<?=base_url()?>/files/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js"></script>
-<script src="<?=base_url()?>/files/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js"></script>
-<script src="<?=base_url()?>/files/dist/js/pages/dashboards/dashboard1.min.js"></script>
+<!--This page JavaScript - Chart scripts hanya dimuat jika diperlukan -->
+<script>
+// Cek apakah ada elemen dashboard di halaman sebelum memuat chart scripts
+(function() {
+    var hasDashboardElements = document.getElementById('campaign-v2') ||
+                                document.querySelector('.net-income') ||
+                                document.getElementById('visitbylocate') ||
+                                document.querySelector('.stats') ||
+                                document.getElementById('chart-transaksi') ||
+                                document.getElementById('chart-pendapatan');
+
+    if (hasDashboardElements) {
+        // Load chart scripts hanya jika elemen dashboard ada
+        var scripts = [
+            '<?=base_url()?>/files/assets/extra-libs/c3/d3.min.js',
+            '<?=base_url()?>/files/assets/extra-libs/c3/c3.min.js',
+            '<?=base_url()?>/files/assets/libs/chartist/dist/chartist.min.js',
+            '<?=base_url()?>/files/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js',
+            '<?=base_url()?>/files/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js',
+            '<?=base_url()?>/files/assets/extra-libs/jvector/jquery-jvectormap-world-mill-en.js'
+        ];
+
+        var loadedCount = 0;
+        scripts.forEach(function(src, index) {
+            var script = document.createElement('script');
+            script.src = src;
+            script.async = false;
+            script.onerror = function() {
+                console.warn('Failed to load script: ' + src);
+            };
+            script.onload = function() {
+                loadedCount++;
+                // Load dashboard script setelah semua chart scripts dimuat
+                if (loadedCount === scripts.length && typeof jQuery !== 'undefined' && typeof Chartist !== 'undefined') {
+                    var dashboardScript = document.createElement('script');
+                    dashboardScript.src = '<?=base_url()?>/files/dist/js/pages/dashboards/dashboard1.min.js';
+                    dashboardScript.onerror = function() {
+                        console.warn('Dashboard script failed to load');
+                    };
+                    document.body.appendChild(dashboardScript);
+                }
+            };
+            document.body.appendChild(script);
+        });
+    }
+})();
+</script>
 <script src="<?=base_url()?>/files/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?=base_url()?>/files/dist/js/pages/datatable/datatable-basic.init.js"></script>
 <!-- <script src="<?=base_url()?>/files/dist/js/sweetalert2@11.js"></script> -->

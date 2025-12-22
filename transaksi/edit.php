@@ -1,4 +1,9 @@
 <?php
+// Start output buffering di awal untuk mencegah output sebelum redirect
+if (!ob_get_level()) {
+    ob_start();
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -99,35 +104,53 @@ if (isset($_POST['edit'])) {
                 error_log("Edit Database Error: " . $db_error);
                 error_log("Edit Failed Query: " . $query);
             } else {
-                // Query berhasil
+                // Query berhasil (meskipun affected_rows = 0, tetap dianggap berhasil)
                 $affected_rows = mysqli_affected_rows($koneksi);
 
                 if ($affected_rows > 0) {
                     error_log("Edit Success: $affected_rows row(s) affected. ID: $id");
                 } else {
-                    error_log("Edit Warning: Query executed but no rows affected. ID: $id - Data mungkin sama dengan sebelumnya");
+                    // Cek apakah data benar-benar ada di database
+                    $check_query = $koneksi->query("SELECT id_transaksi FROM transaksi WHERE id_transaksi=$id");
+                    if ($check_query && $check_query->num_rows > 0) {
+                        error_log("Edit Success: Data tidak berubah (nilai sama dengan sebelumnya). ID: $id");
+                    } else {
+                        error_log("Edit Warning: Data tidak ditemukan di database. ID: $id");
+                        $error_msg = 'Data transaksi tidak ditemukan.';
+                        $post_error_msg = $error_msg;
+                    }
                 }
 
-                // Log aktivitas
-                require_once '../libs/log_activity.php';
-                @log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id);
+                // Jika tidak ada error, lanjutkan dengan log dan redirect
+                if (empty($error_msg)) {
+                    // Log aktivitas
+                    require_once '../libs/log_activity.php';
+                    @log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id);
 
-                // Set session message - pastikan session sudah start
-                if (!isset($_SESSION)) {
-                    session_start();
+                    // Set session message
+                    $_SESSION['success_message'] = 'Transaksi berhasil diedit';
+                    error_log("Edit Success: Transaksi ID $id berhasil diupdate. Redirecting...");
+
+                    // Bersihkan semua output buffer
+                    while (ob_get_level()) {
+                        ob_end_clean();
+                    }
+
+                    // Redirect langsung dengan header (sebelum output HTML)
+                    $redirect_url = base_url('transaksi/transaksi.php');
+                    error_log("Redirect URL: " . $redirect_url);
+
+                    // Pastikan header belum dikirim
+                    if (!headers_sent()) {
+                        header('Location: ' . $redirect_url);
+                        exit();
+                    } else {
+                        // Jika header sudah dikirim, gunakan JavaScript redirect
+                        error_log("Warning: Headers already sent, using JavaScript redirect");
+                        echo '<script>window.location.href = "' . $redirect_url . '";</script>';
+                        exit();
+                    }
                 }
-                $_SESSION['success_message'] = 'Transaksi berhasil diedit';
-                error_log("Session success message set. Redirecting to: " . base_url('transaksi/transaksi.php'));
-
-                // Pastikan tidak ada output sebelum redirect
-                if (ob_get_length()) {
-                    ob_clean();
-                }
-
-                // Redirect langsung dengan header (sebelum output HTML)
-                $redirect_url = base_url('transaksi/transaksi.php');
-                header('Location: ' . $redirect_url);
-                exit();
             }
         }
     }
@@ -136,12 +159,7 @@ if (isset($_POST['edit'])) {
     if (!empty($error_msg)) {
         $post_error_msg = $error_msg;
         error_log("Edit Validation Error: " . $error_msg);
-
-        // Set session untuk error message agar bisa ditampilkan setelah redirect
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-        $_SESSION['error_message'] = $error_msg;
+        // Error akan ditampilkan di halaman yang sama, tidak perlu redirect
     }
 }
 
@@ -530,10 +548,18 @@ if ($sql_jenis) {
                                                     <input type="text" name="nama" id="nama" placeholder="Nama Pelanggan" class="form-control" value="<?=$data['nama'];?>" readonly>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label for="produk" class="form-label">
+                                                        <i class="fa fa-box text-info"></i> Produk
+                                                    </label>
+                                                    <input type="text" name="produk" id="produk" class="form-control" placeholder="Kode produk akan terisi otomatis saat memilih produk" readonly>
+                                                    <small class="form-text text-muted">Pilih produk dari kategori di atas untuk mengisi otomatis</small>
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="ket" class="form-label">
                                                         <i class="fa fa-comment text-warning"></i> Keterangan
                                                     </label>
-                                                    <input type="text" name="ket" class="form-control" placeholder="Isi Keterangan Transaksi" value="<?=$data['ket'];?>">
+                                                    <input type="text" name="ket" id="ket" class="form-control" placeholder="Keterangan transaksi (opsional)" value="<?=$data['ket'];?>">
+                                                    <small class="form-text text-muted">Field ini dapat dikosongkan</small>
                                                 </div>
                                             </div>
                                             <div class="col-lg-6">
@@ -587,27 +613,20 @@ if ($sql_jenis) {
                                 </button>
                             </div>
                             <script>
-                                console.error('Edit Error:', '<?=addslashes($post_error_msg)?>');
-                                setTimeout(function() {
-                                    alert('Error: <?=addslashes($post_error_msg)?>');
-                                }, 100);
-                            </script>
-                            <?php endif; ?>
-
-                            <?php
-                            // Tampilkan error dari session jika ada
-                            if (isset($_SESSION['error_message']) && !empty($_SESSION['error_message'])):
-                                $session_error = $_SESSION['error_message'];
-                                unset($_SESSION['error_message']);
-                            ?>
-                            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                                <i class="fa fa-exclamation-circle"></i> <?=htmlspecialchars($session_error)?>
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <script>
-                                alert('<?=addslashes($session_error)?>');
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    console.error('Edit Error:', <?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>);
+                                    if (typeof Swal !== 'undefined') {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Gagal!',
+                                            text: <?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>,
+                                            confirmButtonColor: '#dc3545',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    } else {
+                                        alert(<?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>);
+                                    }
+                                });
                             </script>
                             <?php endif; ?>
                         </div>
@@ -624,10 +643,28 @@ if ($sql_jenis) {
             const produkAccordion = document.getElementById('produkAccordion');
             const jenisInput = document.getElementById('jenis');
             const hargaInput = document.querySelector('input[name="harga"]');
-            const ketInput = document.querySelector('input[name="ket"]');
+            const ketInput = document.getElementById('ket');
+            const produkInput = document.getElementById('produk');
 
             let selectedKategori = '';
             let selectedProdukKode = '';
+
+            // Parse data keterangan yang ada untuk memisahkan produk dan keterangan
+            // Jika keterangan berformat "KODE - KETERANGAN", pisahkan
+            if (ketInput && ketInput.value) {
+                const ketValue = ketInput.value.trim();
+                // Cek apakah format "KODE - KETERANGAN"
+                const match = ketValue.match(/^([A-Z0-9]+)\s*-\s*(.+)$/);
+                if (match && produkInput) {
+                    // Pisahkan kode produk dan keterangan
+                    produkInput.value = match[1];
+                    ketInput.value = match[2];
+                } else if (produkInput) {
+                    // Jika tidak ada format, coba ambil kode produk dari awal (jika ada)
+                    // Atau biarkan kosong
+                    produkInput.value = '';
+                }
+            }
 
             // Handle kategori card clicks
             kategoriCards.forEach(function(card) {
@@ -760,20 +797,57 @@ if ($sql_jenis) {
                     if (kode && harga > 0) {
                         selectedProdukKode = kode;
 
+                        // Isi field harga
                         if (hargaInput) hargaInput.value = harga;
-                        if (ketInput) {
-                            const keteranganClean = keterangan.replace(/&quot;/g, '"');
-                            ketInput.value = kode + (keteranganClean ? ' - ' + keteranganClean : '');
+
+                        // Isi field produk dengan kode produk
+                        if (produkInput) {
+                            produkInput.value = kode;
                         }
+
+                        // Field keterangan bisa diisi manual atau dibiarkan kosong
+                        // Jika ada keterangan dari produk, bisa diisi otomatis (opsional)
+                        if (ketInput) {
+                            const keteranganClean = keterangan.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+                            // Hanya isi jika keterangan kosong atau user ingin update
+                            // Biarkan user memilih apakah ingin mengisi keterangan atau tidak
+                            if (!ketInput.value || ketInput.value.trim() === '') {
+                                // Jika kosong, isi dengan keterangan produk (opsional)
+                                ketInput.value = keteranganClean || '';
+                            }
+                            // Jika sudah ada isi, biarkan user yang memutuskan
+                        }
+
+                        // Set id_bayar jika ada
                         if (idBayar && idBayar !== '' && idBayar !== 'null' && jenisInput) {
                             jenisInput.value = idBayar;
                         }
 
+                        // Highlight selected produk
                         document.querySelectorAll('.produk-grid-item').forEach(function(card) {
                             card.classList.remove('selected');
                         });
                         produkCard.classList.add('selected');
 
+                        // Show success notification
+                        if (typeof Swal !== 'undefined') {
+                            const hargaFormatted = parseInt(harga).toLocaleString('id-ID');
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Produk Dipilih',
+                                html: '<div style="text-align: left; padding: 15px 0;"><div style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">' + kode + '</div><div style="font-size: 22px; color: #28a745; font-weight: 800;">Rp ' + hargaFormatted + '</div></div>',
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#28a745',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                allowOutsideClick: true,
+                                allowEscapeKey: true,
+                                width: '420px'
+                            });
+                        }
+
+                        // Scroll to form
                         setTimeout(function() {
                             if (hargaInput) {
                                 hargaInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -784,7 +858,7 @@ if ($sql_jenis) {
                 }
             });
 
-            // Form submit handler - hanya disable button, tidak validasi
+            // Form submit handler - hanya disable button untuk mencegah double submit
             const formEdit = document.getElementById('formEditTransaksi');
             const submitBtn = formEdit ? formEdit.querySelector('button[type="submit"][name="edit"]') : null;
 
@@ -792,7 +866,7 @@ if ($sql_jenis) {
                 formEdit.addEventListener('submit', function(e) {
                     console.log('=== FORM SUBMIT TRIGGERED ===');
 
-                    // Log semua input values
+                    // Log semua input values untuk debugging
                     const formData = new FormData(formEdit);
                     console.log('=== FORM DATA ===');
                     const formDataObj = {};
@@ -801,30 +875,75 @@ if ($sql_jenis) {
                         formDataObj[key] = value;
                     }
 
-                    // Validasi sederhana
-                    if (!formDataObj.id || formDataObj.id <= 0) {
-                        console.error('Error: ID tidak valid');
-                        alert('Error: ID transaksi tidak valid');
+                    // Validasi minimal - hanya cek field yang benar-benar wajib
+                    const harga = parseFloat(formDataObj.harga) || 0;
+                    if (harga <= 0) {
+                        console.error('Error: Harga tidak valid');
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Harga Belum Diisi!',
+                                text: 'Mohon isi harga transaksi.',
+                                confirmButtonColor: '#ffc107'
+                            });
+                        } else {
+                            alert('Error: Harga transaksi harus diisi dan lebih dari 0.');
+                        }
                         e.preventDefault();
                         return false;
                     }
 
-                    if (!formDataObj.tgl || !formDataObj.idpel || !formDataObj.nama || !formDataObj.harga) {
+                    if (!formDataObj.tgl || !formDataObj.idpel || !formDataObj.nama) {
                         console.error('Error: Field wajib belum diisi');
-                        alert('Error: Pastikan semua field wajib sudah diisi (Tanggal, ID Pelanggan, Nama, Harga)');
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Data Belum Lengkap!',
+                                text: 'Pastikan semua field wajib sudah diisi (Tanggal, ID Pelanggan, Nama).',
+                                confirmButtonColor: '#ffc107'
+                            });
+                        } else {
+                            alert('Error: Pastikan semua field wajib sudah diisi (Tanggal, ID Pelanggan, Nama).');
+                        }
                         e.preventDefault();
                         return false;
                     }
+
+                    // Field keterangan dan produk adalah optional, tidak perlu validasi
 
                     console.log('Form validation passed, submitting...');
+
+                    // Disable button untuk mencegah double submit
                     submitBtn.disabled = true;
                     submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Menyimpan...';
 
-                    // Allow form to submit
+                    // Allow form to submit - jangan preventDefault jika validasi berhasil
                     return true;
                 });
             }
         });
+
+        // Suppress chart-related errors on non-dashboard pages
+        // These errors occur because chart scripts are loaded but elements don't exist
+        window.addEventListener('error', function(e) {
+            // Suppress errors from chartist and jvectormap if they're trying to access non-existent elements
+            if (e.filename && (
+                e.filename.includes('chartist') ||
+                e.filename.includes('jvectormap') ||
+                e.message.includes('querySelector') ||
+                e.message.includes('NaN') && e.message.includes('transform')
+            )) {
+                // Only suppress if it's a chart-related error on a non-dashboard page
+                var isDashboardPage = document.getElementById('campaign-v2') ||
+                                     document.getElementById('chart-transaksi') ||
+                                     document.getElementById('chart-pendapatan');
+                if (!isDashboardPage) {
+                    e.preventDefault();
+                    console.warn('Chart script error suppressed (non-dashboard page):', e.message);
+                    return true;
+                }
+            }
+        }, true);
         </script>
     </body>
 </html>
