@@ -269,6 +269,7 @@ if (isset($_POST['restore_file'])) {
 // Semua request delete sekarang ditangani oleh delete_backup_handler.php melalui AJAX
 
 // Include header SETELAH handle backup selesai
+$page_title = 'Backup & Restore';
 include_once('../header.php');
 require_once '../libs/backup_restore.php';
 

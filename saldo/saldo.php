@@ -1,4 +1,5 @@
 <?php
+$page_title = 'Saldo';
 include_once('../header.php');
 ?>
 <!DOCTYPE html>
@@ -7,7 +8,6 @@ include_once('../header.php');
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Saldo</title>
     </head>
     <body>
         <div class="page-breadcrumb">
@@ -36,7 +36,9 @@ include_once('../header.php');
                         </div>
                         <div class="modern-card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-                                <div class="mb-2 mb-md-0"></div>
+                                <div class="mb-2 mb-md-0">
+                                    <small class="text-muted" id="selectedCount">Terpilih: <strong>0</strong></small>
+                                </div>
                                 <div class="d-flex align-items-center">
                                     <a href="<?=base_url('export_excel.php?page=saldo')?>" class="btn btn-success btn-sm mr-2">
                                         <i class="fa fa-file-excel"></i> Excel
@@ -44,6 +46,9 @@ include_once('../header.php');
                                     <a href="<?=base_url('export_pdf.php?page=saldo')?>" target="_blank" class="btn btn-danger btn-sm mr-2">
                                         <i class="fa fa-file-pdf"></i> PDF
                                     </a>
+                                    <button type="button" class="btn btn-sm btn-danger mr-2" id="btnHapusMultiple" disabled onclick="hapusMultiple()">
+                                        <i class="fa fa-trash"></i> Hapus Terpilih
+                                    </button>
                                     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
                                     data-target="#modaltambah"><i class="fa fa-plus"></i> Tambah</button>
                                 </div>
@@ -52,6 +57,9 @@ include_once('../header.php');
                                 <table id="zero_config" class="table modern-table no-wrap">
                                     <thead>
                                         <tr>
+                                            <th style="width: 30px;">
+                                                <input type="checkbox" id="selectAll" title="Pilih Semua">
+                                            </th>
                                             <th style="width: 5px;">No</th>
                                             <th>Tanggal Deposit</th>
                                             <th>Jumlah Saldo</th>
@@ -67,6 +75,9 @@ include_once('../header.php');
 
                                         ?>
                                         <tr>
+                                            <td>
+                                                <input type="checkbox" class="checkbox-saldo" value="<?=$data['id_saldo']?>" data-tanggal="<?=date('d/m/Y', strtotime($tgl))?>" data-saldo="Rp. <?=number_format($data['saldo'], 0, ",", ".");?>">
+                                            </td>
                                             <td><?=$no++.'.'?></td>
                                             <td><?=date('d/m/Y', strtotime($tgl));?></td>
                                             <td>Rp. <?=number_format($data['saldo'], 0, ",", ".");?></td>
@@ -91,6 +102,143 @@ include_once('../header.php');
         </div>
         <?php
         include_once('../footer.php');
+        ?>
+
+        <script>
+            // Fungsi untuk handle checkbox selection
+            $(document).ready(function() {
+                const selectAll = $('#selectAll');
+                const checkboxes = $('.checkbox-saldo');
+                const btnHapusMultiple = $('#btnHapusMultiple');
+                const selectedCount = $('#selectedCount');
+
+                function updateButtonState() {
+                    const selected = $('.checkbox-saldo:checked');
+                    const count = selected.length;
+
+                    selectedCount.html('Terpilih: <strong>' + count + '</strong>');
+                    btnHapusMultiple.prop('disabled', count === 0);
+                }
+
+                function updateSelectAllState() {
+                    const allChecked = checkboxes.length > 0 && checkboxes.length === $('.checkbox-saldo:checked').length;
+                    const someChecked = $('.checkbox-saldo:checked').length > 0;
+                    selectAll.prop('checked', allChecked);
+                    selectAll.prop('indeterminate', someChecked && !allChecked);
+                }
+
+                // Select All checkbox
+                selectAll.on('change', function() {
+                    checkboxes.prop('checked', $(this).prop('checked'));
+                    updateButtonState();
+                });
+
+                // Individual checkbox
+                checkboxes.on('change', function() {
+                    updateSelectAllState();
+                    updateButtonState();
+                });
+
+                // Initialize
+                updateButtonState();
+            });
+
+            // Fungsi untuk hapus multiple
+            function hapusMultiple() {
+                const selected = Array.from(document.querySelectorAll('.checkbox-saldo:checked'));
+                if (selected.length === 0) {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Tidak ada yang dipilih',
+                            text: 'Silakan pilih saldo yang akan dihapus terlebih dahulu.'
+                        });
+                    } else {
+                        alert('Silakan pilih saldo yang akan dihapus terlebih dahulu.');
+                    }
+                    return;
+                }
+
+                const ids = selected.map(cb => cb.value);
+                const details = selected.map(cb => cb.getAttribute('data-tanggal') + ' - ' + cb.getAttribute('data-saldo'));
+
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'Yakin Hapus?',
+                        html: 'Anda akan menghapus <strong>' + ids.length + '</strong> saldo:<br><small>' + details.slice(0, 5).join('<br>') + (details.length > 5 ? '<br>...' : '') + '</small><br><br>Data yang dihapus tidak dapat dikembalikan!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, Hapus Semua!',
+                        cancelButtonText: 'Batal',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Submit form untuk hapus multiple
+                            const form = document.createElement('form');
+                            form.method = 'POST';
+                            form.action = 'hapus_saldo_multiple.php';
+
+                            ids.forEach(id => {
+                                const input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = 'id_saldo[]';
+                                input.value = id;
+                                form.appendChild(input);
+                            });
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
+                } else {
+                    if (confirm('Yakin ingin menghapus ' + ids.length + ' saldo yang dipilih?')) {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = 'hapus_saldo_multiple.php';
+
+                        ids.forEach(id => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'id_saldo[]';
+                            input.value = id;
+                            form.appendChild(input);
+                        });
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                }
+            }
+        </script>
+
+        <?php
+        // Tampilkan pesan hapus multiple jika ada
+        if (isset($_SESSION['hapus_message'])) {
+            $hapus_message = $_SESSION['hapus_message'];
+            $hapus_success = isset($_SESSION['hapus_success']) ? $_SESSION['hapus_success'] : false;
+            unset($_SESSION['hapus_message']);
+            unset($_SESSION['hapus_success']);
+            ?>
+            <script>
+                $(document).ready(function() {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: '<?=$hapus_success ? 'success' : 'error'?>',
+                            title: '<?=$hapus_success ? 'Berhasil' : 'Gagal'?>',
+                            text: '<?=addslashes($hapus_message)?>',
+                            timer: 3000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        alert('<?=addslashes($hapus_message)?>');
+                    }
+                });
+            </script>
+            <?php
+        }
         ?>
     </body>
 </html>

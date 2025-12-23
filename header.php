@@ -19,7 +19,7 @@ if (isset($_SESSION['level']) == "") {
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="<?=base_url()?>/files/assets/images/dwloket_icon.png">
-    <title>DW LOKET JEPARA <?= date('Y') ?></title>
+    <title><?= isset($page_title) && !empty($page_title) ? htmlspecialchars($page_title) . ' - ' : '' ?>DW LOKET JEPARA <?= date('Y') ?></title>
     <!-- Custom CSS -->
     <link href="<?=base_url()?>/files/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
     <link href="<?=base_url()?>/files/assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">

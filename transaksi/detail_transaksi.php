@@ -1,4 +1,5 @@
 <?php
+$page_title = 'Detail Transaksi';
 include_once('../header.php');
 include_once('../config/config.php');
 $id = @$_GET['id'];

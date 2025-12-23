@@ -1,4 +1,5 @@
 <?php
+$page_title = 'Dashboard';
 include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/log_activity.php';

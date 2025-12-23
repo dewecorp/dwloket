@@ -36,6 +36,7 @@ if(isset($_POST['edit']) && isset($koneksi)) {
     exit;
 }
 
+$page_title = 'Pelanggan';
 include_once('../header.php');
 ?>
 <!DOCTYPE html>

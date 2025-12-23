@@ -1,4 +1,5 @@
 <?php
+$page_title = 'OrderKuota Config';
 include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/orderkuota_api.php';

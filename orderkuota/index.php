@@ -2,6 +2,7 @@
 /**
  * Halaman utama OrderKuota - Lengkap dengan Daftar Produk, Form Pembayaran, dan Riwayat
  */
+$page_title = 'OrderKuota';
 include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/orderkuota_api.php';

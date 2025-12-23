@@ -1,4 +1,5 @@
 <?php
+$page_title = 'Tambah Transaksi';
 include_once('../config/config.php');
 require_once '../libs/produk_helper.php';
 
@@ -211,7 +212,6 @@ if ($sql_jenis) {
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Tambah Transaksi</title>
         <style>
         .jenis-bayar-card {
             cursor: pointer !important;
