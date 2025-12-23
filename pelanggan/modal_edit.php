@@ -1,4 +1,5 @@
 <?php
+// Generate modal untuk setiap pelanggan
 $sql = $koneksi->query("SELECT * FROM pelanggan");
 while($data = $sql->fetch_assoc()){
 ?>
@@ -18,12 +19,12 @@ while($data = $sql->fetch_assoc()){
                     <div class="form-group">
                         <label for="nama">Nama</label>
                         <input type="text" name="nama" class="form-control" placeholder="Nama Pelanggan"
-                        value="<?=$data['nama'];?>">
+                        value="<?=htmlspecialchars($data['nama']);?>" required>
                     </div>
                     <div class="form-group">
-                        <label for="nama">No. ID/PEL</label>
+                        <label for="idpel">No. ID/PEL</label>
                         <input type="text" name="idpel" class="form-control" placeholder="No. ID/PEL"
-                        value="<?=$data['no_idpel'];?>">
+                        value="<?=htmlspecialchars($data['no_idpel']);?>" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -35,27 +36,5 @@ while($data = $sql->fetch_assoc()){
     </div>
 </div>
 <?php
-if(@$_POST['edit']) {
-$id    = @$_POST['id'];
-$nama  = @$_POST['nama'];
-$idpel = @$_POST['idpel'];
-$koneksi->query("UPDATE  pelanggan SET nama='$nama', no_idpel='$idpel' WHERE id_pelanggan='$id'");
-?>
-<script>
-Swal.fire({
-position: 'top-center',
-icon: 'success',
-title: '<?=$nama;?>',
-text: 'Berhasil Diedit',
-showConfirmButton: true,
-timer: 3000
-}, 10);
-window.setTimeout(function() {
-document.location.href = '<?=base_url('
-pelanggan')?>';
-}, 1500);
-</script>
-<?php
-}
 }
 ?>

@@ -6,7 +6,7 @@ include_once('../config/config.php');
 $filter_status = $_GET['status'] ?? '';
 $filter_date_from = $_GET['date_from'] ?? '';
 $filter_date_to = $_GET['date_to'] ?? '';
-$filter_jenis_bayar = $_GET['jenis_bayar'] ?? '';
+$filter_produk = $_GET['produk'] ?? '';
 $search = $_GET['search'] ?? '';
 
 // Build query conditions
@@ -24,8 +24,9 @@ if ($filter_date_to) {
     $where_conditions[] = "transaksi.tgl <= '" . mysqli_real_escape_string($koneksi, $filter_date_to) . "'";
 }
 
-if ($filter_jenis_bayar) {
-    $where_conditions[] = "transaksi.id_bayar = " . (int)$filter_jenis_bayar;
+if ($filter_produk) {
+    $filter_produk_escaped = mysqli_real_escape_string($koneksi, $filter_produk);
+    $where_conditions[] = "transaksi.produk = '$filter_produk_escaped'";
 }
 
 if ($search) {
@@ -49,19 +50,35 @@ $total_count = $count_query ? $count_query->fetch_assoc()['total'] : 0;
 $total_pages = ceil($total_count / $per_page);
 
 // Get transaksi data with pagination
-$sql = $koneksi->query("SELECT transaksi.*, tb_jenisbayar.jenis_bayar
+// Menggunakan produk jika ada, fallback ke jenis_bayar untuk kompatibilitas
+$sql = $koneksi->query("SELECT transaksi.*, tb_jenisbayar.jenis_bayar,
+                               COALESCE(transaksi.produk, tb_jenisbayar.jenis_bayar) as produk_display
                         FROM transaksi
                         JOIN tb_jenisbayar ON transaksi.id_bayar = tb_jenisbayar.id_bayar
                         WHERE $where_clause
                         ORDER BY transaksi.tgl DESC, transaksi.id_transaksi DESC
                         LIMIT $per_page OFFSET $offset");
 
-// Get jenis bayar untuk filter dropdown
-$jenis_bayar_list = [];
-$jenis_bayar_query = $koneksi->query("SELECT * FROM tb_jenisbayar ORDER BY jenis_bayar ASC");
-if ($jenis_bayar_query) {
-    while ($row = $jenis_bayar_query->fetch_assoc()) {
-        $jenis_bayar_list[] = $row;
+// Get produk untuk filter dropdown (ambil dari tabel tb_produk_orderkuota)
+$produk_list = [];
+$produk_query = $koneksi->query("SELECT DISTINCT produk FROM tb_produk_orderkuota WHERE produk IS NOT NULL AND produk != '' AND status = 1 ORDER BY produk ASC");
+if ($produk_query) {
+    while ($row = $produk_query->fetch_assoc()) {
+        if (!empty($row['produk'])) {
+            $produk_list[] = $row['produk'];
+        }
+    }
+}
+
+// Jika tidak ada dari tabel produk, ambil dari transaksi sebagai fallback
+if (empty($produk_list)) {
+    $produk_query_fallback = $koneksi->query("SELECT DISTINCT produk FROM transaksi WHERE produk IS NOT NULL AND produk != '' ORDER BY produk ASC");
+    if ($produk_query_fallback) {
+        while ($row = $produk_query_fallback->fetch_assoc()) {
+            if (!empty($row['produk'])) {
+                $produk_list[] = $row['produk'];
+            }
+        }
     }
 }
 
@@ -224,12 +241,12 @@ $month_stats = $month_query->fetch_assoc();
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <label>Jenis Bayar</label>
-                        <select name="jenis_bayar" class="form-control">
-                            <option value="">Semua Jenis</option>
-                            <?php foreach ($jenis_bayar_list as $jb): ?>
-                            <option value="<?=$jb['id_bayar']?>" <?=$filter_jenis_bayar == $jb['id_bayar'] ? 'selected' : ''?>>
-                                <?=htmlspecialchars($jb['jenis_bayar'])?>
+                        <label>Produk</label>
+                        <select name="produk" class="form-control">
+                            <option value="">Semua Produk</option>
+                            <?php foreach ($produk_list as $produk): ?>
+                            <option value="<?=htmlspecialchars($produk, ENT_QUOTES)?>" <?=$filter_produk == $produk ? 'selected' : ''?>>
+                                <?=htmlspecialchars($produk)?>
                             </option>
                             <?php endforeach; ?>
                         </select>
@@ -267,11 +284,10 @@ $month_stats = $month_query->fetch_assoc();
                     <!-- Hidden input to preserve per_page when form is submitted -->
                     <input type="hidden" name="per_page" value="<?=$per_page?>">
                 </form>
-            </div>
         </div>
 
         <!-- Statistik Filtered -->
-        <?php if ($filter_date_from || $filter_date_to || $filter_status || $filter_jenis_bayar || $search): ?>
+        <?php if ($filter_date_from || $filter_date_to || $filter_status || $filter_produk || $search): ?>
         <div class="alert alert-info">
             <i class="fa fa-filter"></i> <strong>Hasil Filter:</strong>
             Menampilkan <strong><?=$filtered_stats['total'] ?? 0?></strong> transaksi
@@ -305,23 +321,33 @@ $month_stats = $month_query->fetch_assoc();
                                 <a href="<?=base_url('laporan/rekap_transaksi.php')?>" target="_blank" class="btn btn-sm btn-secondary">
                                     <i class="fa fa-print"></i> Cetak
                                 </a>
-                                <a href="<?=base_url('export_excel.php?page=transaksi&status=' . urlencode($filter_status) . '&date_from=' . urlencode($filter_date_from) . '&date_to=' . urlencode($filter_date_to) . '&jenis_bayar=' . urlencode($filter_jenis_bayar) . '&search=' . urlencode($search))?>" class="btn btn-sm btn-success ml-2">
+                                <a href="<?=base_url('export_excel.php?page=transaksi&status=' . urlencode($filter_status) . '&date_from=' . urlencode($filter_date_from) . '&date_to=' . urlencode($filter_date_to) . '&produk=' . urlencode($filter_produk) . '&search=' . urlencode($search))?>" class="btn btn-sm btn-success ml-2 mb-2">
                                     <i class="fa fa-file-excel"></i> Excel
                                 </a>
-                                <a href="<?=base_url('export_pdf.php?page=transaksi&status=' . urlencode($filter_status) . '&date_from=' . urlencode($filter_date_from) . '&date_to=' . urlencode($filter_date_to) . '&jenis_bayar=' . urlencode($filter_jenis_bayar) . '&search=' . urlencode($search))?>" target="_blank" class="btn btn-sm btn-danger ml-2">
+                                <a href="<?=base_url('export_pdf.php?page=transaksi&status=' . urlencode($filter_status) . '&date_from=' . urlencode($filter_date_from) . '&date_to=' . urlencode($filter_date_to) . '&produk=' . urlencode($filter_produk) . '&search=' . urlencode($search))?>" target="_blank" class="btn btn-sm btn-danger ml-2 mb-2">
                                     <i class="fa fa-file-pdf"></i> PDF
                                 </a>
+                                <button type="button" class="btn btn-sm btn-danger ml-2 mb-2" id="btnHapusMultiple" disabled onclick="hapusMultiple()">
+                                    <i class="fa fa-trash"></i> Hapus Terpilih
+                                </button>
                             </div>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Menampilkan: <strong><?=$total_count?></strong> transaksi</small>
+                            <small class="text-muted ml-2" id="selectedCount">| Terpilih: <strong>0</strong></small>
                         </div>
                         <div class="table-responsive mt-3">
                             <table class="table modern-table table-hover">
                                 <thead>
                                     <tr>
+                                        <th style="width: 30px;">
+                                            <input type="checkbox" id="selectAll" title="Pilih Semua">
+                                        </th>
                                         <th style="width: 5px;">No</th>
                                         <th>Tanggal</th>
                                         <th>No. ID/PEL</th>
                                         <th>Nama Pelanggan</th>
-                                        <th>Jenis Bayar</th>
+                                        <th>Produk</th>
                                         <th>Harga</th>
                                         <th>Status</th>
                                         <th style="width: 200px;">Keterangan</th>
@@ -337,26 +363,16 @@ $month_stats = $month_query->fetch_assoc();
                                             $status = ($data['status'] == 'Lunas')? "<span class='badge badge-pill badge-success'>Lunas</span>" : "<span class='badge badge-pill badge-danger'>Belum Bayar</span>";
                                     ?>
                                     <tr>
+                                        <td>
+                                            <input type="checkbox" class="checkbox-transaksi" value="<?=$data['id_transaksi']?>" data-nama="<?=htmlspecialchars($data['nama'], ENT_QUOTES)?>">
+                                        </td>
                                         <td><?=$no++;?></td>
                                         <td><?=date('d/m/Y', strtotime($tgl));?></td>
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <code class="mr-2"><?=$data['idpel'];?></code>
-                                                <button class="btn btn-xs btn-outline-primary"
-                                                        onclick="copyIdPel('<?=htmlspecialchars($data['idpel'], ENT_QUOTES)?>', this)"
-                                                        data-toggle="tooltip"
-                                                        data-placement="top"
-                                                        title="Copy ID/PEL untuk pembayaran manual"
-                                                        id="copyBtn_<?=$data['id_transaksi']?>">
-                                                    <i class="fa fa-copy"></i>
-                                                </button>
-                                                <span class="copy-feedback ml-2" id="copyFeedback_<?=$data['id_transaksi']?>" style="display: none; color: #28a745; font-size: 0.75rem; font-weight: 500;">
-                                                    <i class="fa fa-check"></i> Sudah Disalin
-                                                </span>
-                                            </div>
+                                            <code><?=$data['idpel'];?></code>
                                         </td>
                                         <td><?=htmlspecialchars($data['nama']);?></td>
-                                        <td><?=htmlspecialchars($data['jenis_bayar']);?></td>
+                                        <td><?=htmlspecialchars($data['produk_display'] ?? $data['produk'] ?? $data['jenis_bayar'] ?? '-');?></td>
                                         <td><strong>Rp <?=number_format($data['harga'], 0, ",", ".");?></strong></td>
                                         <td><?=$status?></td>
                                         <td><small><?=htmlspecialchars(mb_substr($data['ket'], 0, 50)) . (mb_strlen($data['ket']) > 50 ? '...' : '');?></small></td>
@@ -365,7 +381,7 @@ $month_stats = $month_query->fetch_assoc();
                                                 <a href="detail_transaksi.php?id=<?=$data['id_transaksi'];?>" class="btn btn-sm btn-info" data-toggle="tooltip" data-placement="top" title="Detail Transaksi">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
-                                                <a href="edit.php?id=<?=$data['id_transaksi']; ?>" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Transaksi">
+                                                <a href="<?=base_url('transaksi/edit.php?id=' . $data['id_transaksi'])?>" class="btn btn-sm btn-warning" data-toggle="tooltip" data-placement="top" title="Edit Transaksi">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                                 <a href="hapus.php?id=<?=$data['id_transaksi']; ?>" onclick="return swalConfirmDelete(this.href, 'Yakin Hapus Transaksi?', 'Transaksi ini akan dihapus secara permanen!')" class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="top" title="Hapus Transaksi">
@@ -379,7 +395,7 @@ $month_stats = $month_query->fetch_assoc();
                                     else:
                                     ?>
                                     <tr>
-                                        <td colspan="9" class="text-center">
+                                        <td colspan="10" class="text-center">
                                             <div class="alert alert-info">
                                                 <i class="fa fa-info-circle"></i> Tidak ada data transaksi
                                             </div>
@@ -442,144 +458,182 @@ $month_stats = $month_query->fetch_assoc();
             window.location.href = '?' + urlParams.toString();
         }
 
-        // Function to copy ID/PEL to clipboard
-        function copyIdPel(idpel, buttonElement) {
-            // Get feedback element
-            var buttonId = buttonElement ? buttonElement.id : '';
-            var transaksiId = buttonId ? buttonId.replace('copyBtn_', '') : '';
-            var feedbackElement = transaksiId ? document.getElementById('copyFeedback_' + transaksiId) : null;
-
-            // Copy function
-            function doCopy() {
-                // Try modern clipboard API first
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(idpel).then(function() {
-                        showCopySuccess(buttonElement, feedbackElement);
-                    }).catch(function(err) {
-                        console.error('Clipboard API failed:', err);
-                        // Fallback to old method
-                        fallbackCopy(idpel, buttonElement, feedbackElement);
-                    });
-                } else {
-                    // Fallback for older browsers
-                    fallbackCopy(idpel, buttonElement, feedbackElement);
-                }
-            }
-
-            // Execute copy
-            doCopy();
-        }
-
-        // Show copy success feedback
-        function showCopySuccess(buttonElement, feedbackElement) {
-            if (!buttonElement) return;
-
-            // Save original tooltip title before removing
-            var originalTitle = buttonElement.getAttribute('title') || buttonElement.getAttribute('data-original-title') || 'Copy ID/PEL untuk pembayaran manual';
-
-            // Disable/hide tooltip saat copy berhasil
-            if (typeof $ !== 'undefined' && $(buttonElement).data('bs.tooltip')) {
-                $(buttonElement).tooltip('hide');
-                $(buttonElement).tooltip('disable');
-            }
-
-            // Remove tooltip attributes to prevent tooltip from showing
-            buttonElement.removeAttribute('data-toggle');
-            buttonElement.removeAttribute('title');
-            buttonElement.removeAttribute('data-placement');
-            buttonElement.setAttribute('data-tooltip-disabled', 'true');
-
-            // Change button appearance
-            buttonElement.classList.remove('btn-outline-primary');
-            buttonElement.classList.add('btn-success');
-            var originalHTML = buttonElement.innerHTML;
-            buttonElement.innerHTML = '<i class="fa fa-check"></i>';
-
-            // Show feedback text
-            if (feedbackElement) {
-                feedbackElement.style.display = 'inline';
-            }
-
-            // Tidak perlu SweetAlert - cukup feedback visual di tombol dan teks
-            // Feedback visual sudah cukup jelas
-
-            // Reset button after 2 seconds
-            setTimeout(function() {
-                if (buttonElement) {
-                    buttonElement.classList.remove('btn-success');
-                    buttonElement.classList.add('btn-outline-primary');
-                    buttonElement.innerHTML = originalHTML;
-
-                    // Restore tooltip attributes
-                    buttonElement.setAttribute('data-toggle', 'tooltip');
-                    buttonElement.setAttribute('data-placement', 'top');
-                    buttonElement.setAttribute('title', originalTitle);
-                    buttonElement.removeAttribute('data-tooltip-disabled');
-
-                    // Re-initialize tooltip
-                    if (typeof $ !== 'undefined') {
-                        $(buttonElement).tooltip('dispose'); // Remove old tooltip instance
-                        $(buttonElement).tooltip(); // Re-initialize tooltip
-                    }
-                }
-                if (feedbackElement) {
-                    feedbackElement.style.display = 'none';
-                }
-            }, 2000);
-        }
-
-        // Fallback copy method for older browsers
-        function fallbackCopy(idpel, buttonElement, feedbackElement) {
-            const textArea = document.createElement('textarea');
-            textArea.value = idpel;
-            textArea.style.position = 'fixed';
-            textArea.style.top = '0';
-            textArea.style.left = '0';
-            textArea.style.width = '2em';
-            textArea.style.height = '2em';
-            textArea.style.padding = '0';
-            textArea.style.border = 'none';
-            textArea.style.outline = 'none';
-            textArea.style.boxShadow = 'none';
-            textArea.style.background = 'transparent';
-            textArea.style.opacity = '0';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-
-            try {
-                var successful = document.execCommand('copy');
-                if (successful) {
-                    showCopySuccess(buttonElement, feedbackElement);
-                } else {
-                    // Tampilkan SweetAlert jika gagal
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal!',
-                        text: 'Gagal menyalin. Silakan salin manual: ' + idpel,
-                        confirmButtonColor: '#dc3545',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            } catch (err) {
-                console.error('Copy failed:', err);
-                // Tampilkan SweetAlert jika gagal
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal!',
-                    text: 'Gagal menyalin. Silakan salin manual: ' + idpel,
-                    confirmButtonColor: '#dc3545',
-                    confirmButtonText: 'OK'
-                });
-            }
-
-            document.body.removeChild(textArea);
-        }
-
         // Initialize tooltips
         $(document).ready(function() {
             $('[data-toggle="tooltip"]').tooltip();
         });
+
+        // Tampilkan SweetAlert jika ada success message
+        <?php if (isset($_SESSION['success_message']) && !empty($_SESSION['success_message'])): ?>
+        $(document).ready(function() {
+            setTimeout(function() {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '<?=addslashes($_SESSION['success_message'])?>',
+                        confirmButtonColor: '#28a745',
+                        confirmButtonText: 'OK',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        showConfirmButton: false,
+                        allowOutsideClick: true,
+                        allowEscapeKey: true
+                    });
+                } else {
+                    alert('<?=addslashes($_SESSION['success_message'])?>');
+                }
+            }, 100);
+        });
+        <?php
+            // Hapus session message setelah ditampilkan
+            unset($_SESSION['success_message']);
+            if (isset($_SESSION['success_type'])) {
+                unset($_SESSION['success_type']);
+            }
+        ?>
+        <?php endif; ?>
+    </script>
+
+    <?php
+    // Tampilkan pesan hapus multiple jika ada
+    if (isset($_SESSION['hapus_message'])) {
+        $hapus_message = $_SESSION['hapus_message'];
+        $hapus_success = isset($_SESSION['hapus_success']) ? $_SESSION['hapus_success'] : false;
+        unset($_SESSION['hapus_message']);
+        unset($_SESSION['hapus_success']);
+        ?>
+        <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: '<?=$hapus_success ? 'success' : 'error'?>',
+                        title: '<?=$hapus_success ? 'Berhasil!' : 'Gagal!'?>',
+                        text: <?=json_encode($hapus_message, JSON_UNESCAPED_UNICODE)?>,
+                        confirmButtonColor: '<?=$hapus_success ? '#28a745' : '#dc3545'?>',
+                        timer: 3000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                } else {
+                    alert(<?=json_encode($hapus_message, JSON_UNESCAPED_UNICODE)?>);
+                }
+            }, 100);
+        });
+        </script>
+        <?php
+    }
+    ?>
+
+    <script>
+        // Fungsi untuk handle checkbox selection
+        $(document).ready(function() {
+            const selectAll = $('#selectAll');
+            const checkboxes = $('.checkbox-transaksi');
+            const btnHapusMultiple = $('#btnHapusMultiple');
+            const selectedCount = $('#selectedCount');
+
+            function updateButtonState() {
+                const selected = $('.checkbox-transaksi:checked');
+                const count = selected.length;
+
+                selectedCount.html('| Terpilih: <strong>' + count + '</strong>');
+                btnHapusMultiple.prop('disabled', count === 0);
+            }
+
+            function updateSelectAllState() {
+                const allChecked = checkboxes.length > 0 && checkboxes.length === $('.checkbox-transaksi:checked').length;
+                const someChecked = $('.checkbox-transaksi:checked').length > 0;
+                selectAll.prop('checked', allChecked);
+                selectAll.prop('indeterminate', someChecked && !allChecked);
+            }
+
+            // Select All checkbox
+            selectAll.on('change', function() {
+                checkboxes.prop('checked', $(this).prop('checked'));
+                updateButtonState();
+            });
+
+            // Individual checkbox
+            checkboxes.on('change', function() {
+                updateSelectAllState();
+                updateButtonState();
+            });
+
+            // Initialize
+            updateButtonState();
+        });
+
+        // Fungsi untuk hapus multiple
+        function hapusMultiple() {
+            const selected = Array.from(document.querySelectorAll('.checkbox-transaksi:checked'));
+            if (selected.length === 0) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Tidak ada yang dipilih',
+                        text: 'Silakan pilih transaksi yang akan dihapus terlebih dahulu.'
+                    });
+                } else {
+                    alert('Silakan pilih transaksi yang akan dihapus terlebih dahulu.');
+                }
+                return;
+            }
+
+            const ids = selected.map(cb => cb.value);
+            const namas = selected.map(cb => cb.getAttribute('data-nama'));
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Yakin Hapus?',
+                    html: 'Anda akan menghapus <strong>' + ids.length + '</strong> transaksi:<br><small>' + namas.slice(0, 5).join(', ') + (namas.length > 5 ? '...' : '') + '</small><br><br>Data yang dihapus tidak dapat dikembalikan!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, Hapus Semua!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Submit form untuk hapus multiple
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = 'hapus_transaksi_multiple.php';
+
+                        ids.forEach(id => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'id_transaksi[]';
+                            input.value = id;
+                            form.appendChild(input);
+                        });
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    }
+                });
+            } else {
+                if (confirm('Anda akan menghapus ' + ids.length + ' transaksi. Lanjutkan?')) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'hapus_transaksi_multiple.php';
+
+                    ids.forEach(id => {
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'id_transaksi[]';
+                        input.value = id;
+                        form.appendChild(input);
+                    });
+
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        }
     </script>
 
     <?php

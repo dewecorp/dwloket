@@ -31,19 +31,57 @@ if (isset($_SESSION['level']) == "") {
     <link href="<?=base_url()?>/files/dist/css/modern-style.css" rel="stylesheet">
     <script src="<?=base_url()?>/files/assets/libs/jquery/dist/jquery.min.js"></script>
     <link href="<?=base_url()?>/files/dist/css/sweetalert2.min.css" rel="stylesheet">
+    <style>
+        /* Responsive header styles - prevent logo and date overlap */
+        .navbar-brand .dark-logo {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Ensure navbar content doesn't overlap */
+        .navbar-collapse {
+            flex-wrap: wrap;
+        }
+
+        .navbar-nav.float-left {
+            min-width: 0;
+            flex: 1 1 auto;
+            margin-right: 1rem;
+        }
+
+        /* Logo responsive sizing */
+        @media (max-width: 991px) {
+            .navbar-brand .dark-logo {
+                width: 150px !important;
+                height: auto;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .navbar-brand .dark-logo {
+                width: 120px !important;
+                height: auto;
+            }
+
+            /* Styling untuk tanggal di mobile */
+            .navbar-collapse .text-muted {
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: #6c757d !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand .dark-logo {
+                width: 100px !important;
+                height: auto;
+            }
+        }
+    </style>
 
 </head>
 
 <body>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
-    <div class="preloader">
-        <div class="lds-ripple">
-            <div class="lds-pos"></div>
-            <div class="lds-pos"></div>
-        </div>
-    </div>
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -82,9 +120,15 @@ if (isset($_SESSION['level']) == "") {
                 <!-- End Logo -->
                 <!-- ============================================================== -->
                 <div class="navbar-collapse collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav float-left mr-auto ml-3 pl-1">
+                    <!-- Tanggal untuk desktop dan tablet -->
+                    <ul class="navbar-nav float-left mr-auto ml-3 pl-1 d-none d-md-flex">
                         <?php $date = date('Y-m-d'); echo format_hari_tanggal($date) ?>
                     </ul>
+
+                    <!-- Tanggal untuk mobile (ditampilkan di baris terpisah) -->
+                    <div class="d-flex d-md-none w-100 justify-content-center mb-2 px-3">
+                        <span class="text-muted small"><?php $date = date('Y-m-d'); echo format_hari_tanggal($date) ?></span>
+                    </div>
 
                     <ul class="navbar-nav float-right">
                         <li class="nav-item dropdown">
@@ -158,12 +202,6 @@ if (isset($_SESSION['level']) == "") {
                             <a class="sidebar-link sidebar-link" href="<?=base_url('orderkuota/index.php')?>"
                                 aria-expanded="false"><i data-feather="smartphone" class="feather-icon"></i><span
                                     class="hide-menu">OrderKuota</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('orderkuota/history.php')?>"
-                                aria-expanded="false"><i data-feather="clock" class="feather-icon"></i><span
-                                    class="hide-menu">Riwayat Pembayaran</span>
                             </a>
                         </li>
                         <li class="sidebar-item">

@@ -4,10 +4,12 @@ setlocale(LC_ALL, 'id-ID', 'id_ID');
 date_default_timezone_set('Asia/Jakarta');
 
 $id = @$_GET['id'];
-$sql = $koneksi->query("SELECT * FROM transaksi JOIN tb_jenisbayar ON transaksi.id_bayar = tb_jenisbayar.id_bayar WHERE id_transaksi = '$id'");
+$sql = $koneksi->query("SELECT transaksi.*, tb_jenisbayar.jenis_bayar FROM transaksi LEFT JOIN tb_jenisbayar ON transaksi.id_bayar = tb_jenisbayar.id_bayar WHERE id_transaksi = '$id'");
 $data = $sql->fetch_assoc();
 $tgl = $data['tgl'];
-$harga = $data['harga'];?>
+$harga = $data['harga'];
+// Ambil produk dari kolom produk, jika kosong ambil dari jenis_bayar sebagai fallback
+$produk_display = !empty($data['produk']) ? $data['produk'] : (!empty($data['jenis_bayar']) ? $data['jenis_bayar'] : '-');?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,7 +20,6 @@ $harga = $data['harga'];?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="icon" type="image/png" sizes="16x16" href="files/assets/images/dwloket_icon.png">
-    <link href="files/dist/css/style.min.css" rel="stylesheet">
     <style>
         * {
             color: #000 !important;
@@ -27,121 +28,104 @@ $harga = $data['harga'];?>
             box-sizing: border-box;
         }
         body {
-            font-family: 'Arial', 'Helvetica', sans-serif;
+            font-family: 'Courier New', 'Courier', 'Lucida Console', monospace;
             margin: 0;
             padding: 0;
-            font-size: 13px;
+            font-size: 14px;
         }
         .receipt-container {
             max-width: 100%;
             margin: 0 auto;
             background: #fff;
-            padding: 12px 18px;
-            min-height: 82.5mm;
-            max-height: 82.5mm;
+            padding: 8px 12px;
             page-break-inside: avoid;
-            border-bottom: 1px dashed #ccc;
-        }
-        .receipt-container:last-child {
-            border-bottom: none;
         }
         .receipt-header {
-            text-align: center;
-            border-bottom: 1px solid #000;
-            padding-bottom: 10px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+        }
+        .receipt-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 4px;
+        }
+        .receipt-logo {
+            font-weight: bold;
+            font-size: 14px;
         }
         .receipt-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            letter-spacing: 1px;
-            margin: 0 0 5px 0;
+            text-align: center;
             text-transform: uppercase;
+            margin: 4px 0;
+            letter-spacing: 1px;
         }
         .receipt-date {
             font-size: 12px;
-            color: #000;
+            text-align: right;
             margin: 0;
         }
         .receipt-content {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .detail-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
+        .data-container {
+            margin-bottom: 6px;
+        }
+        .data-row {
+            margin-bottom: 3px;
             font-size: 13px;
+            line-height: 1.4;
         }
-        .detail-table td {
-            padding: 6px 0;
-            font-size: 13px;
-            border-bottom: 1px solid #e0e0e0;
-            line-height: 1.5;
-        }
-        .detail-table td:first-child {
+        .data-label {
+            font-weight: 600;
+            display: inline-block;
             width: 35%;
+        }
+        .data-separator {
+            display: inline-block;
+            margin: 0 4px;
+        }
+        .data-value {
+            display: inline-block;
+            text-align: left;
+        }
+        .total-section {
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 6px 0;
+            margin: 8px 0;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        .total-label {
             font-weight: 600;
-            color: #000;
         }
-        .detail-table td:nth-child(2) {
-            width: 5%;
-            text-align: center;
-            color: #000;
-        }
-        .detail-table td:last-child {
-            width: 60%;
-            color: #000;
-        }
-        .detail-table tr:last-child td {
-            border-bottom: none;
-        }
-        .price-highlight {
-            font-size: 15px;
+        .total-value {
             font-weight: bold;
-            color: #000;
+            font-size: 16px;
         }
-        .terbilang-section {
+        .serial-section {
             text-align: center;
-            margin: 10px 0;
-            padding: 10px;
-            background: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            font-size: 11px;
-        }
-        .terbilang-section h5 {
-            margin: 0 0 4px 0;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .terbilang-section i {
-            font-size: 11px;
-            font-style: italic;
-        }
-        .info-message {
-            text-align: center;
-            font-size: 10px;
-            color: #000;
             margin: 8px 0;
-            line-height: 1.5;
-        }
-        .thank-you {
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-            margin: 8px 0;
-            color: #000;
+            padding: 6px;
+            font-size: 11px;
+            word-break: break-all;
         }
         .receipt-footer {
-            margin-top: 10px;
-            padding-top: 8px;
-            border-top: 1px dashed #000;
             text-align: center;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed #000;
+            font-size: 12px;
+            line-height: 1.5;
         }
         .receipt-footer p {
-            font-size: 10px;
-            font-style: italic;
-            color: #000;
-            margin: 0;
+            margin: 2px 0;
         }
         @media print {
             * {
@@ -153,16 +137,11 @@ $harga = $data['harga'];?>
                 color: #000 !important;
                 padding: 0;
                 margin: 0;
+                font-family: 'Courier New', 'Courier', 'Lucida Console', monospace !important;
+                font-size: 14px !important;
             }
             .receipt-container {
-                padding: 12px 18px;
-                min-height: 82.5mm;
-                max-height: 82.5mm;
-                page-break-inside: avoid;
-                border-bottom: 1px dashed #ccc;
-            }
-            .receipt-container:last-child {
-                border-bottom: none;
+                padding: 8px 12px;
             }
             @page {
                 size: F4;
@@ -175,68 +154,56 @@ $harga = $data['harga'];?>
 <body>
     <div class="receipt-container">
         <div class="receipt-header">
+            <div class="receipt-header-top">
+                <div class="receipt-logo">DW LOKET</div>
+                <div class="receipt-date"><?=date('d/m/Y H:i:s');?></div>
+            </div>
             <h1 class="receipt-title">STRUK TRANSAKSI</h1>
-            <p class="receipt-date"><?=date('d F Y, H:i:s');?></p>
         </div>
 
         <div class="receipt-content">
-            <table class="detail-table">
-                <tr>
-                    <td>ID Transaksi</td>
-                    <td>:</td>
-                    <td><strong><?=$data['id_transaksi'];?></strong></td>
-                </tr>
-                <tr>
-                    <td>Tanggal Transaksi</td>
-                    <td>:</td>
-                    <td><?=date('d F Y', strtotime($tgl));?></td>
-                </tr>
-                <tr>
-                    <td>ID Pelanggan</td>
-                    <td>:</td>
-                    <td><strong><?=$data['idpel'];?></strong></td>
-                </tr>
-                <tr>
-                    <td>Nama Pelanggan</td>
-                    <td>:</td>
-                    <td><?=htmlspecialchars($data['nama'] ?: '-');?></td>
-                </tr>
-                <tr>
-                    <td>Jenis Pembayaran</td>
-                    <td>:</td>
-                    <td><?=htmlspecialchars($data['jenis_bayar']);?></td>
-                </tr>
-                <tr>
-                    <td>Harga</td>
-                    <td>:</td>
-                    <td class="price-highlight">Rp <?=number_format($data['harga'], 0, ",", ".");?></td>
-                </tr>
+            <div class="data-container">
+                <div class="data-row">
+                    <span class="data-label">ID Transaksi</span>
+                    <span class="data-separator">:</span>
+                    <span class="data-value"><strong><?=$data['id_transaksi'];?></strong></span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">ID Pelanggan</span>
+                    <span class="data-separator">:</span>
+                    <span class="data-value"><strong><?=$data['idpel'];?></strong></span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Nama</span>
+                    <span class="data-separator">:</span>
+                    <span class="data-value"><?=htmlspecialchars($data['nama'] ?: '-');?></span>
+                </div>
+                <div class="data-row">
+                    <span class="data-label">Produk</span>
+                    <span class="data-separator">:</span>
+                    <span class="data-value"><?=htmlspecialchars($produk_display);?></span>
+                </div>
                 <?php if (!empty($data['ket'])): ?>
-                <tr>
-                    <td style="vertical-align: top;">Keterangan</td>
-                    <td style="vertical-align: top;">:</td>
-                    <td><?=htmlspecialchars($data['ket']);?></td>
-                </tr>
+                <div class="data-row">
+                    <span class="data-label">Keterangan</span>
+                    <span class="data-separator">:</span>
+                    <span class="data-value"><?=htmlspecialchars($data['ket']);?></span>
+                </div>
                 <?php endif; ?>
-            </table>
-
-            <div class="terbilang-section">
-                <h5>Terbilang:</h5>
-                <i><?=terbilang($harga);?> Rupiah</i>
             </div>
 
-            <div class="info-message">
-                Struk ini sebagai bukti transaksi di DW LOKET.<br>
-                Informasi hubungi 082331838221.
-            </div>
-
-            <div class="thank-you">
-                Terima Kasih Atas Kepercayaan Anda
+            <div class="total-section">
+                <div class="total-row">
+                    <span class="total-label">TOTAL BAYAR</span>
+                    <span class="total-value">Rp <?=number_format($data['harga'], 0, ",", ".");?></span>
+                </div>
             </div>
         </div>
 
         <div class="receipt-footer">
-            <p>Supported by <strong>OrderKuota</strong></p>
+            <p>Terima kasih atas pembayarannya</p>
+            <p>Informasi Hubungi Call Center atau Agen Terdekat</p>
+            <p><strong>Supported by OrderKuota</strong></p>
         </div>
     </div>
 

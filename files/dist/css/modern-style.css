@@ -9,6 +9,8 @@
     overflow: hidden;
     transition: transform 0.2s, box-shadow 0.2s;
     margin-bottom: 25px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .modern-card:hover {
@@ -160,8 +162,10 @@
     background: white;
     border-radius: 15px;
     padding: 20px;
-    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
     margin-bottom: 25px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .filter-box-modern .form-control,
@@ -517,6 +521,52 @@
 
 .alert-modern.alert-dismissible {
     padding-right: 60px;
+}
+
+/* Responsive Header */
+.navbar-brand .dark-logo {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 991px) {
+    .navbar-brand .dark-logo {
+        width: 150px !important;
+        height: auto;
+    }
+
+    .navbar-nav.float-left {
+        width: 100%;
+        margin-bottom: 0.5rem;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+        text-align: center;
+    }
+}
+
+@media (max-width: 767px) {
+    .navbar-brand .dark-logo {
+        width: 120px !important;
+        height: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-brand .dark-logo {
+        width: 100px !important;
+        height: auto;
+    }
+}
+
+/* Ensure navbar content doesn't overlap */
+.navbar-collapse {
+    flex-wrap: wrap;
+}
+
+.navbar-nav.float-left {
+    min-width: 0;
+    flex: 1 1 auto;
+    margin-right: 1rem;
 }
 
 /* Responsive */

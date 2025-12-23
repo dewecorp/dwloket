@@ -2,6 +2,15 @@
 include_once('../config/config.php');
 require_once '../libs/produk_helper.php';
 
+// Cek dan tambahkan kolom produk jika belum ada
+$check_column = $koneksi->query("SHOW COLUMNS FROM transaksi LIKE 'produk'");
+if (!$check_column || $check_column->num_rows == 0) {
+    // Kolom produk belum ada, tambahkan
+    $add_column_query = "ALTER TABLE `transaksi` ADD COLUMN `produk` VARCHAR(255) NULL AFTER `nama`";
+    $koneksi->query($add_column_query);
+    error_log("Kolom produk berhasil ditambahkan ke tabel transaksi");
+}
+
 // PROSES POST HARUS SEBELUM HEADER UNTUK REDIRECT
 // Debug: Log semua POST untuk debugging
 if (!empty($_POST)) {
@@ -17,7 +26,7 @@ if (isset($_POST['simpan'])) {
     $tgl    = isset($_POST['tgl']) ? trim($_POST['tgl']) : '';
     $idpel  = isset($_POST['idpel']) ? trim($_POST['idpel']) : '';
     $nama   = isset($_POST['nama']) ? trim($_POST['nama']) : '';
-    $jenis  = isset($_POST['jenis']) ? trim($_POST['jenis']) : '';
+    $produk = isset($_POST['produk']) ? trim($_POST['produk']) : '';
     $harga  = isset($_POST['harga']) ? trim($_POST['harga']) : '';
     $status = isset($_POST['status']) ? trim($_POST['status']) : '';
     $ket    = isset($_POST['ket']) ? trim($_POST['ket']) : '';
@@ -39,72 +48,69 @@ if (isset($_POST['simpan'])) {
         $tgl = mysqli_real_escape_string($koneksi, $tgl);
         $idpel = mysqli_real_escape_string($koneksi, $idpel);
         $nama = mysqli_real_escape_string($koneksi, $nama);
-        $jenis = mysqli_real_escape_string($koneksi, $jenis);
+        $produk = mysqli_real_escape_string($koneksi, $produk);
         $harga = floatval($harga);
-        $status = mysqli_real_escape_string($koneksi, $status);
-        $ket = mysqli_real_escape_string($koneksi, $ket);
+        $status = !empty($status) ? mysqli_real_escape_string($koneksi, $status) : '';
+        // Keterangan bisa kosong, gunakan empty string jika kosong (karena kolom NOT NULL di database)
+        $ket = !empty($ket) ? mysqli_real_escape_string($koneksi, $ket) : '';
 
-        // Handle id_bayar - kolom tidak boleh NULL, harus ada nilai valid
-        // Pastikan selalu ada nilai, tidak boleh NULL
-        if (!empty($jenis) && $jenis !== '' && $jenis !== '0' && $jenis !== 'null') {
-            $jenis_sql = intval($jenis); // Pastikan integer
-        } else {
-            // Jika jenis kosong, ambil ID jenis bayar pertama sebagai default
-            $default_query = $koneksi->query("SELECT id_bayar FROM tb_jenisbayar ORDER BY id_bayar ASC LIMIT 1");
-            if ($default_query && $default_query->num_rows > 0) {
-                $default_row = $default_query->fetch_assoc();
-                $jenis_sql = intval($default_row['id_bayar']);
-            } else {
-                // Jika tidak ada jenis bayar sama sekali, error
-                $error_msg = 'Tidak ada jenis pembayaran tersedia. Silakan tambahkan jenis pembayaran terlebih dahulu.';
-                $post_error_msg = $error_msg;
-                error_log("Error: " . $error_msg);
-                include_once('../header.php');
-                exit(); // Stop execution
-            }
+        // Ambil id_bayar default (karena kolom masih required di database)
+        // Menggunakan id_bayar pertama sebagai default
+        $default_query = $koneksi->query("SELECT id_bayar FROM tb_jenisbayar ORDER BY id_bayar ASC LIMIT 1");
+        $id_bayar_default = 1; // Default fallback
+        if ($default_query && $default_query->num_rows > 0) {
+            $default_row = $default_query->fetch_assoc();
+            $id_bayar_default = intval($default_row['id_bayar']);
         }
 
-        // Pastikan jenis_sql tidak kosong
-        if (empty($jenis_sql) || $jenis_sql <= 0) {
-            $error_msg = 'ID pembayaran tidak valid.';
-            $post_error_msg = $error_msg;
-            error_log("Error: " . $error_msg);
+        // Cek apakah kolom produk ada di tabel
+        $check_column = $koneksi->query("SHOW COLUMNS FROM transaksi LIKE 'produk'");
+        $has_produk_column = ($check_column && $check_column->num_rows > 0);
+
+        // Handle produk - jika kosong, set NULL, jika ada, gunakan nilai yang sudah di-escape
+        $produk_sql = !empty($produk) ? "'$produk'" : "NULL";
+
+        // Pastikan ket menggunakan empty string jika kosong (untuk kolom NOT NULL)
+        // $ket sudah di-escape di atas, jadi langsung gunakan
+        $ket_sql = "'" . $ket . "'";
+
+        // Query INSERT - gunakan produk hanya jika kolom ada
+        if ($has_produk_column) {
+            $query = "INSERT INTO transaksi (tgl, idpel, nama, produk, id_bayar, harga, status, ket)
+                      VALUES ('$tgl', '$idpel', '$nama', $produk_sql, $id_bayar_default, $harga, '$status', $ket_sql)";
         } else {
+            // Jika kolom produk belum ada, gunakan query tanpa produk
             $query = "INSERT INTO transaksi (tgl, idpel, nama, id_bayar, harga, status, ket)
-                      VALUES ('$tgl', '$idpel', '$nama', $jenis_sql, $harga, '$status', '$ket')";
+                      VALUES ('$tgl', '$idpel', '$nama', $id_bayar_default, $harga, '$status', $ket_sql)";
+        }
 
-            error_log("SQL Query: " . $query);
-            error_log("jenis_sql value: " . $jenis_sql);
+        error_log("SQL Query: " . $query);
 
-            $sql = $koneksi->query($query);
+        $sql = $koneksi->query($query);
 
-            if ($sql) {
-                // Log aktivitas
-                require_once '../libs/log_activity.php';
-                @log_activity('create', 'transaksi', 'Menambah transaksi: ' . $nama . ' (ID: ' . $idpel . ')');
+        if ($sql) {
+            // Log aktivitas
+            require_once '../libs/log_activity.php';
+            @log_activity('create', 'transaksi', 'Menambah transaksi: ' . $nama . ' (ID: ' . $idpel . ')');
 
-                // Set session message untuk ditampilkan di halaman transaksi
-                if (!isset($_SESSION)) {
-                    session_start();
-                }
-                $_SESSION['success_message'] = 'Transaksi berhasil ditambahkan';
+            // Set flag sukses untuk ditampilkan SweetAlert di halaman transaksi
+            // Session sudah dimulai di config.php
+            $_SESSION['success_message'] = 'Transaksi berhasil ditambahkan';
+            $_SESSION['success_type'] = 'tambah';
 
-                // Redirect langsung dengan header (sebelum output HTML)
-                header('Location: ' . base_url('transaksi/transaksi.php'));
-                exit();
-            } else {
-                $db_error = mysqli_error($koneksi);
-                error_log("Database Error: " . $db_error);
-                $error_msg = 'Gagal menyimpan transaksi: ' . $db_error;
-                $post_error_msg = $error_msg;
-            }
+            // Redirect langsung ke halaman transaksi
+            header('Location: ' . base_url('transaksi/transaksi.php'));
+            exit();
+        } else {
+            $db_error = mysqli_error($koneksi);
+            error_log("Database Error: " . $db_error);
+            $error_msg = 'Gagal menyimpan transaksi: ' . $db_error;
+            $post_error_msg = $error_msg;
         }
     } else {
         error_log("Validation Error: " . $error_msg);
+        $post_error_msg = $error_msg;
     }
-
-    // Simpan error untuk ditampilkan setelah header
-    $post_error_msg = $error_msg;
 }
 
 include_once('../header.php');
@@ -382,18 +388,6 @@ if ($sql_jenis) {
             height: 3em !important;
             margin: 0 1em 0 0 !important;
         }
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0,0,0,.1);
-            border-radius: 50%;
-            border-top-color: #007bff;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
         /* Custom styling untuk toast notification */
         .swal2-toast-custom {
             box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
@@ -431,10 +425,13 @@ if ($sql_jenis) {
         <div class="row">
             <div class="col-12">
                 <div class="modern-card">
-                    <div class="modern-card-header">
+                    <div class="modern-card-header d-flex justify-content-between align-items-center">
                         <h4>
                             <i class="fa fa-plus"></i> Tambah Transaksi
                         </h4>
+                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern">
+                            <i class="fa fa-arrow-left"></i> Kembali
+                        </a>
                     </div>
                     <div class="modern-card-body">
                         <form action="" method="POST" id="formTambahTransaksi">
@@ -488,9 +485,6 @@ if ($sql_jenis) {
                                 </div>
                             </div>
 
-                            <!-- Jenis Pembayaran (Hidden, akan diisi otomatis atau manual) -->
-                            <input type="hidden" name="jenis" id="jenis">
-
                             <!-- Form Pembayaran -->
                             <div class="modern-card">
                                 <div class="modern-card-header">
@@ -501,13 +495,13 @@ if ($sql_jenis) {
                                 <div class="modern-card-body">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <div class="form-group">
+                                            <div class="form-group mb-3">
                                                 <label for="tgl" class="form-label">
                                                     <i class="fa fa-calendar-alt text-primary"></i> Tanggal Transaksi
                                                 </label>
                                                 <input type="date" name="tgl" value="<?=date('Y-m-d')?>" class="form-control" required>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group mb-3">
                                                 <label for="idpel" class="form-label">
                                                     <i class="fa fa-user text-info"></i> ID Pelanggan
                                                 </label>
@@ -521,22 +515,22 @@ if ($sql_jenis) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group mb-3">
                                                 <label for="nama" class="form-label">
                                                     <i class="fa fa-user-circle text-success"></i> Nama Pelanggan
                                                 </label>
                                                 <input type="text" name="nama" id="nama" placeholder="Nama Pelanggan" class="form-control" readonly>
                                             </div>
-                                            <div class="form-group">
-                                                <label for="ket" class="form-label">
-                                                    <i class="fa fa-comment text-warning"></i> Keterangan / Kode Produk
+                                            <div class="form-group mb-3">
+                                                <label for="produk" class="form-label">
+                                                    <i class="fa fa-box text-info"></i> Produk
                                                 </label>
-                                                <input type="text" name="ket" id="ket" class="form-control" placeholder="Kode produk akan terisi otomatis saat memilih produk">
+                                                <input type="text" name="produk" id="produk" class="form-control" placeholder="Nama produk akan terisi otomatis saat memilih produk" readonly>
                                                 <small class="form-text text-muted">Pilih produk dari kategori di atas untuk mengisi otomatis</small>
                                             </div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <div class="form-group">
+                                            <div class="form-group mb-3">
                                                 <label for="harga" class="form-label">
                                                     <i class="fa fa-money-bill-wave text-success"></i> Harga <span class="text-danger">*</span>
                                                 </label>
@@ -546,12 +540,16 @@ if ($sql_jenis) {
                                                     </div>
                                                     <input type="number" name="harga" id="harga" class="form-control" placeholder="0" required>
                                                 </div>
-                                                <small class="form-text text-muted">
-                                                    Pilih produk dari kategori di atas untuk mengisi harga otomatis
-                                                </small>
+                                                <small class="form-text text-muted">Pilih produk dari kategori di atas untuk mengisi harga otomatis</small>
                                             </div>
-
-                                            <div class="form-group">
+                                            <div class="form-group mb-3">
+                                                <label for="ket" class="form-label">
+                                                    <i class="fa fa-comment text-warning"></i> Keterangan
+                                                </label>
+                                                <input type="text" name="ket" id="ket" class="form-control" placeholder="Kode produk akan terisi otomatis saat memilih produk, atau isi manual">
+                                                <small class="form-text text-muted">Pilih produk dari kategori di atas untuk mengisi otomatis, atau isi manual dengan keterangan lain</small>
+                                            </div>
+                                            <div class="form-group mb-3">
                                                 <label for="status" class="form-label">
                                                     <i class="fa fa-info-circle text-primary"></i> Status
                                                 </label>
@@ -563,22 +561,19 @@ if ($sql_jenis) {
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <!-- Tombol Aksi -->
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="d-flex justify-content-end align-items-center flex-wrap" style="gap: 0.5rem;">
-                                        <button type="button" class="btn btn-secondary btn-modern" onclick="resetForm()">
-                                            <i class="fa fa-refresh"></i> Reset Form
-                                        </button>
-                                        <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern">
-                                            <i class="fa fa-arrow-left"></i> Kembali
-                                        </a>
-                                        <button type="submit" name="simpan" class="btn btn-success btn-modern">
-                                            <i class="fa fa-save"></i> Simpan Transaksi
-                                        </button>
+                                    <!-- Tombol Reset dan Simpan di dalam box Form Pembayaran -->
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-end align-items-center flex-wrap" style="gap: 0.5rem;">
+                                                <button type="button" class="btn btn-secondary btn-modern" onclick="resetForm()">
+                                                    <i class="fa fa-refresh"></i> Reset Form
+                                                </button>
+                                                <button type="submit" name="simpan" class="btn btn-success btn-modern">
+                                                    <i class="fa fa-save"></i> Simpan Transaksi
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -589,20 +584,22 @@ if ($sql_jenis) {
                 // Tampilkan error jika ada (dari proses POST di atas)
                 if (isset($post_error_msg) && !empty($post_error_msg)) {
                 ?>
+                <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {
-                    console.error('Error:', <?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>);
-                    if (typeof Swal !== 'undefined') {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: <?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>,
-                            confirmButtonColor: '#dc3545',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        alert(<?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>);
-                    }
+                    setTimeout(function() {
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: <?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>,
+                                confirmButtonColor: '#dc3545',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            alert(<?=json_encode($post_error_msg, JSON_UNESCAPED_UNICODE)?>);
+                        }
+                    }, 100);
                 });
                 </script>
                 <?php
@@ -619,7 +616,7 @@ if ($sql_jenis) {
             const produkAccordion = document.getElementById('produkAccordion');
             const hargaInput = document.getElementById('harga');
             const ketInput = document.getElementById('ket');
-            const jenisInput = document.getElementById('jenis');
+            const produkInput = document.getElementById('produk');
             let selectedKategori = '';
             let selectedProdukKode = '';
 
@@ -679,11 +676,11 @@ if ($sql_jenis) {
                     // Reset harga
                     if (hargaInput) hargaInput.value = '';
 
+                    // Reset produk
+                    if (produkInput) produkInput.value = '';
+
                     // Reset keterangan
                     if (ketInput) ketInput.value = '';
-
-                    // Reset jenis (id_bayar)
-                    if (jenisInput) jenisInput.value = '';
 
                     // Reset status
                     const statusInput = form.querySelector('select[name="status"]');
@@ -831,8 +828,8 @@ if ($sql_jenis) {
                     return;
                 }
 
-                // Show loading dengan animasi
-                produkAccordion.innerHTML = '<div class="text-center p-4"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-3 text-muted">Memuat produk dari kategori <strong>' + kategori + '</strong>...</p></div>';
+                // Show loading
+                produkAccordion.innerHTML = '<div class="text-center p-4"><p class="mt-3 text-muted">Memuat produk dari kategori <strong>' + kategori + '</strong>...</p></div>';
                 produkAccordionContainer.style.display = 'block';
 
                 // Load produk via AJAX dengan timeout
@@ -903,6 +900,7 @@ if ($sql_jenis) {
                                     const kode = produk.kode || '';
                                     const harga = parseFloat(produk.harga) || 0;
                                     const keterangan = (produk.keterangan || produk.produk || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                                    const namaProduk = (produk.produk || produk.keterangan || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                                     const idBayar = produk.id_bayar || null;
 
                                     html += `
@@ -911,6 +909,7 @@ if ($sql_jenis) {
                                                  data-kode="${kode}"
                                                  data-harga="${harga}"
                                                  data-keterangan="${keterangan}"
+                                                 data-produk="${namaProduk}"
                                                  data-id-bayar="${idBayar || ''}"
                                                  style="cursor: pointer;">
                                                 <div class="card-body p-2">
@@ -989,6 +988,7 @@ if ($sql_jenis) {
                     const kode = produkCard.getAttribute('data-kode') || '';
                     const harga = parseFloat(produkCard.getAttribute('data-harga')) || 0;
                     const keterangan = produkCard.getAttribute('data-keterangan') || '';
+                    const namaProduk = produkCard.getAttribute('data-produk') || keterangan;
                     const idBayar = produkCard.getAttribute('data-id-bayar');
 
                     // Validasi data
@@ -1014,15 +1014,14 @@ if ($sql_jenis) {
                         // Trigger change event untuk validasi
                         hargaInput.dispatchEvent(new Event('change', { bubbles: true }));
                     }
+                    if (produkInput) {
+                        const namaProdukClean = namaProduk.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+                        produkInput.value = namaProdukClean || keterangan.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&') || kode;
+                    }
                     if (ketInput) {
                         const keteranganClean = keterangan.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
                         const ketValue = kode + (keteranganClean ? ' - ' + keteranganClean : '');
                         ketInput.value = ketValue;
-                    }
-
-                    // Set id_bayar jika ada (decode HTML entities)
-                    if (idBayar && idBayar !== '' && idBayar !== 'null' && jenisInput) {
-                        jenisInput.value = idBayar;
                     }
 
                     // Highlight selected produk dengan animasi

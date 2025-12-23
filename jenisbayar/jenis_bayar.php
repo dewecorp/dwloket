@@ -3045,9 +3045,6 @@ if ($table_exists) {
                             <?php endif; ?>
 
                             <div id="loadingImport" style="display:none;" class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
                                 <p class="mt-3 text-muted" style="font-size: 16px;">Sedang memproses import, mohon tunggu...</p>
                             </div>
 
@@ -3106,7 +3103,7 @@ if ($table_exists) {
                                 if (alertInfo) alertInfo.style.display = 'none';
                                 if (btnImport) {
                                     btnImport.disabled = true;
-                                    btnImport.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memproses...';
+                                    btnImport.innerHTML = 'Memproses...';
                                 }
                                 if (btnCancel) btnCancel.disabled = true;
 
@@ -3307,9 +3304,7 @@ if ($table_exists) {
                     </div>
                     <div class="modal-body" id="produkDetailContent">
                         <div class="text-center">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="sr-only">Loading...</span>
-                            </div>
+                            <p>Memuat detail produk...</p>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -3355,7 +3350,7 @@ if ($table_exists) {
         function viewProdukDetail(id_produk) {
             // Ambil data produk dari database via AJAX
             const contentDiv = document.getElementById('produkDetailContent');
-            contentDiv.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>';
+            contentDiv.innerHTML = '<div class="text-center"><p>Memuat detail produk...</p></div>';
 
             // Buat request ke server untuk mendapatkan detail produk
             fetch('<?=base_url('jenisbayar/get_detail_produk.php')?>?id=' + id_produk)
