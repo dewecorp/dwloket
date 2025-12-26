@@ -396,66 +396,92 @@ include_once('../header.php');
             document.body.removeChild(textArea);
         }
 
-        // Fungsi untuk handle checkbox selection
-        document.addEventListener('DOMContentLoaded', function() {
-            const selectAll = document.getElementById('selectAll');
-            const checkboxes = document.querySelectorAll('.checkbox-pelanggan');
-            const btnHapusMultiple = document.getElementById('btnHapusMultiple');
-            const btnEditMultiple = document.getElementById('btnEditMultiple');
-            const selectedCount = document.getElementById('selectedCount');
+        // Fungsi untuk handle checkbox selection dengan dukungan paginasi DataTables
+        $(document).ready(function() {
+            // Set untuk menyimpan ID yang dipilih (persisten di semua paginasi)
+            // Simpan di window scope agar bisa diakses dari fungsi lain
+            window.selectedPelangganIds = window.selectedPelangganIds || new Set();
+            const selectedIds = window.selectedPelangganIds;
 
-            // Select All checkbox
-            if (selectAll) {
-                selectAll.addEventListener('change', function() {
-                    checkboxes.forEach(checkbox => {
-                        checkbox.checked = this.checked;
-                    });
-                    updateButtonState();
-                });
+            const table = $('#zero_config').DataTable();
+            const btnHapusMultiple = $('#btnHapusMultiple');
+            const btnEditMultiple = $('#btnEditMultiple');
+            const selectedCount = $('#selectedCount');
+
+            // Fungsi untuk update button state
+            function updateButtonState() {
+                const count = selectedIds.size;
+                selectedCount.html('| Terpilih: <strong>' + count + '</strong>');
+                btnHapusMultiple.prop('disabled', count === 0);
+                btnEditMultiple.prop('disabled', count === 0);
             }
 
-            // Individual checkbox
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    updateSelectAllState();
-                    updateButtonState();
+            // Fungsi untuk update select all state
+            function updateSelectAllState() {
+                const selectAll = $('#selectAll');
+                if (selectAll.length === 0) return;
+
+                // Hitung checkbox yang terlihat di halaman saat ini
+                const visibleCheckboxes = $('.checkbox-pelanggan:visible');
+                const visibleChecked = visibleCheckboxes.filter(function() {
+                    return selectedIds.has($(this).val());
+                }).length;
+                const allVisibleChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.length === visibleChecked;
+                const someVisibleChecked = visibleChecked > 0;
+
+                selectAll.prop('checked', allVisibleChecked);
+                selectAll.prop('indeterminate', someVisibleChecked && !allVisibleChecked);
+            }
+
+            // Restore checkbox states saat DataTables draw (setelah pagination/search)
+            table.on('draw', function() {
+                // Restore checkbox states dari Set
+                $('.checkbox-pelanggan').each(function() {
+                    const id = $(this).val();
+                    $(this).prop('checked', selectedIds.has(id));
                 });
+                updateSelectAllState();
+                updateButtonState();
             });
 
-            function updateSelectAllState() {
-                if (selectAll) {
-                    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                    const someChecked = Array.from(checkboxes).some(cb => cb.checked);
-                    selectAll.checked = allChecked;
-                    selectAll.indeterminate = someChecked && !allChecked;
-                }
-            }
+            // Select All checkbox
+            $(document).on('change', '#selectAll', function() {
+                const isChecked = $(this).prop('checked');
+                // Update semua checkbox yang terlihat di halaman saat ini
+                $('.checkbox-pelanggan:visible').each(function() {
+                    const id = $(this).val();
+                    $(this).prop('checked', isChecked);
+                    if (isChecked) {
+                        selectedIds.add(id);
+                    } else {
+                        selectedIds.delete(id);
+                    }
+                });
+                updateButtonState();
+            });
 
-            function updateButtonState() {
-                const selected = Array.from(document.querySelectorAll('.checkbox-pelanggan:checked'));
-                const count = selected.length;
-
-                if (selectedCount) {
-                    selectedCount.innerHTML = '| Terpilih: <strong>' + count + '</strong>';
+            // Individual checkbox
+            $(document).on('change', '.checkbox-pelanggan', function() {
+                const id = $(this).val();
+                if ($(this).prop('checked')) {
+                    selectedIds.add(id);
+                } else {
+                    selectedIds.delete(id);
                 }
-
-                if (btnHapusMultiple) {
-                    btnHapusMultiple.disabled = count === 0;
-                }
-
-                if (btnEditMultiple) {
-                    btnEditMultiple.disabled = count === 0;
-                }
-            }
+                updateSelectAllState();
+                updateButtonState();
+            });
 
             // Initialize
             updateButtonState();
         });
 
-        // Fungsi untuk hapus multiple
+        // Fungsi untuk hapus multiple (menggunakan Set yang persisten)
         function hapusMultiple() {
-            const selected = Array.from(document.querySelectorAll('.checkbox-pelanggan:checked'));
-            if (selected.length === 0) {
+            // Ambil selectedIds dari closure atau window scope
+            const selectedIds = window.selectedPelangganIds || new Set();
+
+            if (selectedIds.size === 0) {
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         icon: 'warning',
@@ -468,8 +494,14 @@ include_once('../header.php');
                 return;
             }
 
-            const ids = selected.map(cb => cb.value);
-            const namas = selected.map(cb => cb.getAttribute('data-nama'));
+            const ids = Array.from(selectedIds);
+            // Ambil nama dari checkbox yang terlihat atau dari data attribute
+            const namas = [];
+            $('.checkbox-pelanggan').each(function() {
+                if (selectedIds.has($(this).val())) {
+                    namas.push($(this).data('nama') || 'Pelanggan');
+                }
+            });
 
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
@@ -521,10 +553,12 @@ include_once('../header.php');
             }
         }
 
-        // Fungsi untuk edit multiple
+        // Fungsi untuk edit multiple (menggunakan Set yang persisten)
         function editMultiple() {
-            const selected = Array.from(document.querySelectorAll('.checkbox-pelanggan:checked'));
-            if (selected.length === 0) {
+            // Ambil selectedIds dari closure atau window scope
+            const selectedIds = window.selectedPelangganIds || new Set();
+
+            if (selectedIds.size === 0) {
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({
                         icon: 'warning',
@@ -537,7 +571,7 @@ include_once('../header.php');
                 return;
             }
 
-            const ids = selected.map(cb => cb.value);
+            const ids = Array.from(selectedIds);
             window.location.href = 'edit_pelanggan_multiple.php?ids=' + ids.join(',');
         }
     </script>

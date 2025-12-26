@@ -63,6 +63,11 @@ if (isset($_POST['pay'])) {
                 // Log aktivitas
                 log_activity('payment', 'orderkuota', "Pembayaran OrderKuota berhasil - Produk: $product_code, Target: $target, Harga: Rp " . number_format($harga, 0, ',', '.'));
 
+                // Proses saldo (status selalu Lunas untuk orderkuota)
+                require_once '../libs/saldo_helper.php';
+                $ket_saldo = 'OrderKuota: ' . $product_code . ' - Ref: ' . ($payment_result['data']['ref_id'] ?? $ref_id);
+                proses_saldo_transaksi($koneksi, 'Lunas', $harga, $ket_saldo, $transaction_id);
+
                 // Redirect ke detail transaksi
                 header('Location: ' . base_url('orderkuota/detail.php?id=' . $transaction_id));
                 exit;

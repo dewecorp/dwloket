@@ -2,6 +2,7 @@
 $page_title = 'Transaksi';
 include_once('../header.php');
 include_once('../config/config.php');
+require_once '../libs/saldo_helper.php';
 
 // Get filter parameters
 $filter_status = $_GET['status'] ?? '';
@@ -168,6 +169,24 @@ $month_stats = $month_query->fetch_assoc();
             transform: none !important;
             box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
         }
+        /* Style untuk widget saldo yang lebih compact */
+        .stat-card-modern {
+            padding: 0.75rem !important;
+        }
+        .stat-card-modern .stat-icon {
+            width: 40px !important;
+            height: 40px !important;
+            min-width: 40px !important;
+        }
+        .stat-card-modern .stat-value {
+            font-size: 1.2rem !important;
+            line-height: 1.2 !important;
+            margin-top: 0.3rem !important;
+        }
+        .stat-card-modern .stat-label {
+            font-size: 0.75rem !important;
+            margin-top: 0.2rem !important;
+        }
     </style>
 </head>
 
@@ -190,6 +209,26 @@ $month_stats = $month_query->fetch_assoc();
     <div class="container-fluid">
         <!-- Statistik -->
         <div class="row mb-4">
+            <!-- Widget Saldo - Extra Compact version -->
+            <?php
+            $total_saldo = get_total_saldo($koneksi);
+            $saldo_color = $total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745');
+            $saldo_status = $total_saldo < 0 ? 'Saldo Negatif!' : ($total_saldo < 100000 ? 'Saldo Rendah' : 'Saldo Aktif');
+            ?>
+            <div class="col-md-3">
+                <div class="stat-card-modern" style="border-left: 2px solid <?=$saldo_color?>; padding: 0.75rem !important;">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, <?=$saldo_color?> 0%, <?=$saldo_color?>dd 100%); width: 40px; height: 40px; min-width: 40px;">
+                        <i class="fa fa-wallet" style="color: white !important; font-size: 18px !important;"></i>
+                    </div>
+                    <div class="stat-value" style="color: <?=$saldo_color?>; font-weight: 600; font-size: 1.2rem; line-height: 1.2; margin-top: 0.3rem;">
+                        Rp <?=number_format($total_saldo, 0, ',', '.')?>
+                    </div>
+                    <div class="stat-label" style="font-size: 0.75rem; margin-top: 0.2rem;">Saldo Tersedia</div>
+                    <small class="<?=$total_saldo < 0 ? 'text-danger' : ($total_saldo < 100000 ? 'text-warning' : 'text-success')?>" style="font-weight: 500; font-size: 0.7rem;">
+                        <i class="fa fa-<?=$total_saldo < 0 ? 'exclamation-triangle' : ($total_saldo < 100000 ? 'exclamation-circle' : 'check-circle')?>"></i> <?=$saldo_status?>
+                    </small>
+                </div>
+            </div>
             <div class="col-md-3">
                 <div class="stat-card-modern">
                     <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
@@ -214,8 +253,10 @@ $month_stats = $month_query->fetch_assoc();
                         <i class="fa fa-calendar-check" style="color: white !important; font-size: 28px !important;"></i>
                     </div>
                     <div class="stat-value"><?=$today_stats['total'] ?? 0?></div>
-                    <div class="stat-label">Hari Ini</div>
-                    <small class="text-success">Rp <?=number_format($today_stats['nominal'] ?? 0, 0, ',', '.')?></small>
+                    <div class="stat-label">Transaksi Hari Ini</div>
+                    <small class="text-success" style="font-weight: 600;">
+                        <i class="fa fa-dollar-sign"></i> Rp <?=number_format($today_stats['nominal'] ?? 0, 0, ',', '.')?>
+                    </small>
                 </div>
             </div>
             <div class="col-md-3">
@@ -224,8 +265,10 @@ $month_stats = $month_query->fetch_assoc();
                         <i class="fa fa-calendar-alt" style="color: white !important; font-size: 28px !important;"></i>
                     </div>
                     <div class="stat-value"><?=$month_stats['total'] ?? 0?></div>
-                    <div class="stat-label">Bulan Ini</div>
-                    <small class="text-success">Rp <?=number_format($month_stats['nominal'] ?? 0, 0, ',', '.')?></small>
+                    <div class="stat-label">Transaksi Bulan Ini</div>
+                    <small class="text-success" style="font-weight: 600;">
+                        <i class="fa fa-dollar-sign"></i> Rp <?=number_format($month_stats['nominal'] ?? 0, 0, ',', '.')?>
+                    </small>
                 </div>
             </div>
         </div>

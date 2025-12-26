@@ -90,14 +90,30 @@ if (isset($_POST['simpan'])) {
         $sql = $koneksi->query($query);
 
         if ($sql) {
+            $id_transaksi = $koneksi->insert_id; // Ambil ID transaksi yang baru dibuat
+
             // Log aktivitas
             require_once '../libs/log_activity.php';
             @log_activity('create', 'transaksi', 'Menambah transaksi: ' . $nama . ' (ID: ' . $idpel . ')');
 
+            // Proses saldo jika status Lunas
+            require_once '../libs/saldo_helper.php';
+            $ket_saldo = 'Transaksi: ' . $nama . ' (ID: ' . $idpel . ')';
+            if (!empty($produk)) {
+                $ket_saldo .= ' - ' . $produk;
+            }
+            $saldo_result = proses_saldo_transaksi($koneksi, $status, $harga, $ket_saldo, $id_transaksi);
+
             // Set flag sukses untuk ditampilkan SweetAlert di halaman transaksi
             // Session sudah dimulai di config.php
-            $_SESSION['success_message'] = 'Transaksi berhasil ditambahkan';
-            $_SESSION['success_type'] = 'tambah';
+            if ($saldo_result['success']) {
+                $_SESSION['success_message'] = 'Transaksi berhasil ditambahkan';
+            } else {
+                // Jika saldo tidak cukup, tetap simpan transaksi tapi beri peringatan
+                $_SESSION['success_message'] = 'Transaksi berhasil ditambahkan. ' . $saldo_result['message'];
+                $_SESSION['success_type'] = 'warning';
+            }
+            $_SESSION['success_type'] = $_SESSION['success_type'] ?? 'tambah';
 
             // Redirect langsung ke halaman transaksi
             header('Location: ' . base_url('transaksi/transaksi.php'));

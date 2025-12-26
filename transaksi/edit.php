@@ -63,6 +63,16 @@ if (isset($_POST['edit'])) {
         // Keterangan bisa kosong, gunakan empty string jika kosong (karena kolom NOT NULL di database)
         $ket = !empty($ket) ? mysqli_real_escape_string($koneksi, $ket) : '';
 
+        // Ambil data transaksi lama sebelum update (untuk adjust saldo)
+        $data_lama_query = $koneksi->query("SELECT status, harga FROM transaksi WHERE id_transaksi=" . intval($id) . " LIMIT 1");
+        $status_lama = 'Belum';
+        $harga_lama = 0;
+        if ($data_lama_query && $data_lama_query->num_rows > 0) {
+            $data_lama = $data_lama_query->fetch_assoc();
+            $status_lama = $data_lama['status'] ?? 'Belum';
+            $harga_lama = floatval($data_lama['harga'] ?? 0);
+        }
+
         // Ambil id_bayar dari database yang sudah ada (jangan ubah id_bayar yang sudah ada)
         // Sebelum query UPDATE, ambil id_bayar yang sudah ada
         $id_bayar_query = $koneksi->query("SELECT id_bayar FROM transaksi WHERE id_transaksi=" . intval($id) . " LIMIT 1");
@@ -109,8 +119,21 @@ if (isset($_POST['edit'])) {
             require_once '../libs/log_activity.php';
             @log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id);
 
+            // Proses adjust saldo jika ada perubahan status atau harga
+            require_once '../libs/saldo_helper.php';
+            $ket_saldo = 'Edit transaksi: ' . $nama . ' (ID: ' . $idpel . ')';
+            if (!empty($produk)) {
+                $ket_saldo .= ' - ' . $produk;
+            }
+            $saldo_result = proses_saldo_edit_transaksi($koneksi, $id, $status_lama, $status, $harga_lama, $harga, $ket_saldo);
+
             // Set flag sukses untuk ditampilkan SweetAlert di halaman transaksi
-            $_SESSION['success_message'] = 'Transaksi berhasil diedit';
+            if ($saldo_result['success']) {
+                $_SESSION['success_message'] = 'Transaksi berhasil diedit';
+            } else {
+                $_SESSION['success_message'] = 'Transaksi berhasil diedit. ' . $saldo_result['message'];
+                $_SESSION['success_type'] = 'warning';
+            }
 
             // Redirect langsung ke halaman transaksi - sama seperti tambah.php
             header('Location: ' . base_url('transaksi/transaksi.php'));

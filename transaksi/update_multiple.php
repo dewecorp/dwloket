@@ -27,6 +27,8 @@ $updated_count = 0;
 $error_count = 0;
 $errors = [];
 
+require_once '../libs/saldo_helper.php';
+
 foreach ($_POST['transaksi'] as $id_transaksi => $data) {
     $id_transaksi = intval($id_transaksi);
     $tgl = mysqli_real_escape_string($koneksi, $data['tgl'] ?? '');
@@ -38,6 +40,16 @@ foreach ($_POST['transaksi'] as $id_transaksi => $data) {
     $ket = mysqli_real_escape_string($koneksi, $data['ket'] ?? '');
 
     if ($id_transaksi > 0 && !empty($tgl) && !empty($idpel) && !empty($nama) && $harga > 0) {
+        // Ambil data transaksi lama sebelum update (untuk adjust saldo)
+        $data_lama_query = $koneksi->query("SELECT status, harga FROM transaksi WHERE id_transaksi = $id_transaksi LIMIT 1");
+        $status_lama = 'Belum';
+        $harga_lama = 0;
+        if ($data_lama_query && $data_lama_query->num_rows > 0) {
+            $data_lama = $data_lama_query->fetch_assoc();
+            $status_lama = $data_lama['status'] ?? 'Belum';
+            $harga_lama = floatval($data_lama['harga'] ?? 0);
+        }
+
         $id_bayar_sql = $id_bayar > 0 ? $id_bayar : 'NULL';
         $update_query = "UPDATE transaksi
                         SET tgl = '$tgl',
@@ -52,6 +64,10 @@ foreach ($_POST['transaksi'] as $id_transaksi => $data) {
         if ($koneksi->query($update_query)) {
             $updated_count++;
             @log_activity('update', 'transaksi', 'Mengedit transaksi ID: ' . $id_transaksi);
+
+            // Proses adjust saldo jika ada perubahan status atau harga
+            $ket_saldo = 'Edit multiple transaksi: ' . $nama . ' (ID: ' . $idpel . ')';
+            proses_saldo_edit_transaksi($koneksi, $id_transaksi, $status_lama, $status, $harga_lama, $harga, $ket_saldo);
         } else {
             $error_count++;
             $errors[] = "Gagal mengupdate transaksi ID $id_transaksi: " . $koneksi->error;

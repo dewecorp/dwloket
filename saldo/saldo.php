@@ -105,36 +105,76 @@ include_once('../header.php');
         ?>
 
         <script>
-            // Fungsi untuk handle checkbox selection
+            // Fungsi untuk handle checkbox selection dengan dukungan paginasi DataTables
             $(document).ready(function() {
-                const selectAll = $('#selectAll');
-                const checkboxes = $('.checkbox-saldo');
+                // Set untuk menyimpan ID yang dipilih (persisten di semua paginasi)
+                // Simpan di window scope agar bisa diakses dari fungsi lain
+                window.selectedSaldoIds = window.selectedSaldoIds || new Set();
+                const selectedIds = window.selectedSaldoIds;
+
+                const table = $('#zero_config').DataTable();
                 const btnHapusMultiple = $('#btnHapusMultiple');
                 const selectedCount = $('#selectedCount');
 
+                // Fungsi untuk update button state
                 function updateButtonState() {
-                    const selected = $('.checkbox-saldo:checked');
-                    const count = selected.length;
-
+                    const count = selectedIds.size;
                     selectedCount.html('Terpilih: <strong>' + count + '</strong>');
                     btnHapusMultiple.prop('disabled', count === 0);
                 }
 
+                // Fungsi untuk update select all state
                 function updateSelectAllState() {
-                    const allChecked = checkboxes.length > 0 && checkboxes.length === $('.checkbox-saldo:checked').length;
-                    const someChecked = $('.checkbox-saldo:checked').length > 0;
-                    selectAll.prop('checked', allChecked);
-                    selectAll.prop('indeterminate', someChecked && !allChecked);
+                    const selectAll = $('#selectAll');
+                    if (selectAll.length === 0) return;
+
+                    // Hitung checkbox yang terlihat di halaman saat ini
+                    const visibleCheckboxes = $('.checkbox-saldo:visible');
+                    const visibleChecked = visibleCheckboxes.filter(function() {
+                        return selectedIds.has($(this).val());
+                    }).length;
+                    const allVisibleChecked = visibleCheckboxes.length > 0 && visibleCheckboxes.length === visibleChecked;
+                    const someVisibleChecked = visibleChecked > 0;
+
+                    selectAll.prop('checked', allVisibleChecked);
+                    selectAll.prop('indeterminate', someVisibleChecked && !allVisibleChecked);
                 }
 
+                // Restore checkbox states saat DataTables draw (setelah pagination/search)
+                table.on('draw', function() {
+                    // Restore checkbox states dari Set
+                    $('.checkbox-saldo').each(function() {
+                        const id = $(this).val();
+                        $(this).prop('checked', selectedIds.has(id));
+                    });
+                    updateSelectAllState();
+                    updateButtonState();
+                });
+
                 // Select All checkbox
-                selectAll.on('change', function() {
-                    checkboxes.prop('checked', $(this).prop('checked'));
+                $(document).on('change', '#selectAll', function() {
+                    const isChecked = $(this).prop('checked');
+                    // Update semua checkbox yang terlihat di halaman saat ini
+                    $('.checkbox-saldo:visible').each(function() {
+                        const id = $(this).val();
+                        $(this).prop('checked', isChecked);
+                        if (isChecked) {
+                            selectedIds.add(id);
+                        } else {
+                            selectedIds.delete(id);
+                        }
+                    });
                     updateButtonState();
                 });
 
                 // Individual checkbox
-                checkboxes.on('change', function() {
+                $(document).on('change', '.checkbox-saldo', function() {
+                    const id = $(this).val();
+                    if ($(this).prop('checked')) {
+                        selectedIds.add(id);
+                    } else {
+                        selectedIds.delete(id);
+                    }
                     updateSelectAllState();
                     updateButtonState();
                 });
@@ -143,10 +183,12 @@ include_once('../header.php');
                 updateButtonState();
             });
 
-            // Fungsi untuk hapus multiple
+            // Fungsi untuk hapus multiple (menggunakan Set yang persisten)
             function hapusMultiple() {
-                const selected = Array.from(document.querySelectorAll('.checkbox-saldo:checked'));
-                if (selected.length === 0) {
+                // Ambil selectedIds dari window scope
+                const selectedIds = window.selectedSaldoIds || new Set();
+
+                if (selectedIds.size === 0) {
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
                             icon: 'warning',
@@ -159,8 +201,16 @@ include_once('../header.php');
                     return;
                 }
 
-                const ids = selected.map(cb => cb.value);
-                const details = selected.map(cb => cb.getAttribute('data-tanggal') + ' - ' + cb.getAttribute('data-saldo'));
+                const ids = Array.from(selectedIds);
+                // Ambil detail dari checkbox yang terlihat atau dari data attribute
+                const details = [];
+                $('.checkbox-saldo').each(function() {
+                    if (selectedIds.has($(this).val())) {
+                        const tanggal = $(this).data('tanggal') || '';
+                        const saldo = $(this).data('saldo') || '';
+                        details.push(tanggal + ' - ' + saldo);
+                    }
+                });
 
                 if (typeof Swal !== 'undefined') {
                     Swal.fire({

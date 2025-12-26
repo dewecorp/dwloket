@@ -13,6 +13,13 @@ if (empty($id) || !is_numeric($id)) {
     exit;
 }
 
+// Ambil data transaksi sebelum dihapus (untuk kembalikan saldo jika status Lunas)
+$data_transaksi = null;
+$data_query = $koneksi->query("SELECT status, harga FROM transaksi WHERE id_transaksi='$id' LIMIT 1");
+if ($data_query && $data_query->num_rows > 0) {
+    $data_transaksi = $data_query->fetch_assoc();
+}
+
 // Hapus data
 $delete_sql = $koneksi->query("DELETE FROM transaksi WHERE id_transaksi='$id'");
 
@@ -20,6 +27,14 @@ if ($delete_sql) {
     // Log aktivitas hanya jika berhasil
     require_once '../libs/log_activity.php';
     @log_activity('delete', 'transaksi', 'Menghapus transaksi ID: ' . $id);
+
+    // Kembalikan saldo jika transaksi yang dihapus statusnya Lunas
+    if ($data_transaksi) {
+        require_once '../libs/saldo_helper.php';
+        $status = $data_transaksi['status'] ?? 'Belum';
+        $harga = floatval($data_transaksi['harga'] ?? 0);
+        proses_saldo_hapus_transaksi($koneksi, $id, $status, $harga);
+    }
 }
 ?>
 <!DOCTYPE html>

@@ -3,6 +3,7 @@ $page_title = 'Dashboard';
 include_once('../header.php');
 include_once('../config/config.php');
 require_once '../libs/log_activity.php';
+require_once '../libs/saldo_helper.php';
 
 $id = @$_GET['id'];
 $data_pelanggan = $koneksi->query("SELECT * FROM pelanggan");
@@ -11,8 +12,9 @@ $data_transaksi = $koneksi->query("SELECT * FROM transaksi");
 $jumlah_transaksi = $data_transaksi->num_rows;
 $data_jenisbayar = $koneksi->query("SELECT * FROM tb_jenisbayar");
 $jumlah_jenisbayar = $data_jenisbayar->num_rows;
-$sql = $koneksi->query("SELECT * FROM tb_saldo WHERE id_saldo ORDER BY tgl DESC");
-$data = $sql->fetch_assoc();
+
+// Hitung total saldo menggunakan fungsi helper (SUM semua saldo termasuk yang negatif)
+$total_saldo = get_total_saldo($koneksi);
 
 // Data untuk grafik transaksi per bulan (12 bulan terakhir / 1 tahun)
 $chart_labels = [];
@@ -297,12 +299,18 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                     </div>
                 </div>
                 <div class="col-md-3">
-                    <div class="stat-card-modern">
-                        <div class="stat-icon" style="background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);">
-                            <i class="fa fa-credit-card" style="color: white !important; font-size: 28px !important;"></i>
+                    <div class="stat-card-modern" style="border-left: 4px solid <?=$total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745')?>;">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, <?=$total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745')?> 0%, <?=$total_saldo < 0 ? '#c82333' : ($total_saldo < 100000 ? '#dda20a' : '#17a673')?> 100%);">
+                            <i class="fa fa-wallet" style="color: white !important; font-size: 28px !important;"></i>
                         </div>
-                        <div class="stat-value">Rp <?=number_format($data['saldo'], 0, ',', '.')?></div>
+                        <div class="stat-value" style="color: <?=$total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745')?>; font-weight: 700;">
+                            Rp <?=number_format($total_saldo, 0, ',', '.')?>
+                        </div>
                         <div class="stat-label">Saldo Akhir</div>
+                        <small class="<?=$total_saldo < 0 ? 'text-danger' : ($total_saldo < 100000 ? 'text-warning' : 'text-success')?>" style="font-weight: 600;">
+                            <i class="fa fa-<?=$total_saldo < 0 ? 'exclamation-triangle' : ($total_saldo < 100000 ? 'exclamation-circle' : 'check-circle')?>"></i>
+                            <?=$total_saldo < 0 ? 'Saldo Negatif!' : ($total_saldo < 100000 ? 'Saldo Rendah' : 'Saldo Aktif')?>
+                        </small>
                     </div>
                 </div>
             </div>
