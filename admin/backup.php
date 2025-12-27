@@ -9,7 +9,6 @@ if (isset($_GET['download'])) {
 
     // Pastikan tidak ada output sebelumnya
     if (headers_sent($file, $line)) {
-        error_log("Headers already sent in $file on line $line");
         die("Error: Headers already sent. Cannot download file.");
     }
 
@@ -54,7 +53,6 @@ if (isset($_GET['download'])) {
 
         // Pastikan headers belum terkirim
         if (headers_sent($file, $line)) {
-            error_log("Headers already sent in $file on line $line before download headers");
             die("Error: Headers already sent. Cannot download file.");
         }
 
@@ -118,7 +116,6 @@ if (isset($_POST['restore']) && isset($_FILES['backup_file'])) {
 
     // Pastikan tidak ada output sebelumnya
     if (headers_sent($file, $line)) {
-        error_log("Headers already sent in $file on line $line before restore");
         die("Error: Headers already sent. Cannot proceed with restore.");
     }
 
@@ -197,7 +194,6 @@ if (isset($_POST['restore_file'])) {
 
     // Pastikan tidak ada output sebelumnya
     if (headers_sent($file, $line)) {
-        error_log("Headers already sent in $file on line $line before restore_file");
         die("Error: Headers already sent. Cannot proceed with restore.");
     }
 
@@ -337,19 +333,14 @@ if (isset($_GET['success'])) {
         }
 
         $retry_count++;
-        error_log('Retry #' . $retry_count . ' - File found in list: ' . ($file_found_in_list ? 'Yes' : 'No') . ', Total backups: ' . count($backups));
     }
 
     // Jika masih belum muncul setelah semua retry, log warning
     if (!$file_found_in_list && $expected_filename) {
-        error_log('WARNING: File ' . $expected_filename . ' not found in list after ' . $max_retries . ' retries');
         // Cek apakah file benar-benar ada di directory
         $backup_dir = $backup_restore->getBackupDirectory();
         $file_path = $backup_dir . DIRECTORY_SEPARATOR . $expected_filename;
-        error_log('  - File exists: ' . (file_exists($file_path) ? 'Yes' : 'No'));
         if (file_exists($file_path)) {
-            error_log('  - File size: ' . filesize($file_path));
-            error_log('  - File readable: ' . (is_readable($file_path) ? 'Yes' : 'No'));
         }
     }
 }
@@ -360,21 +351,16 @@ if (isset($_GET['found']) && $_GET['found'] == '0') {
     sleep(1); // 1 detik lagi
     clearstatcache(true);
     $backups = $backup_restore->getBackups();
-    error_log('Retry getBackups() after found=0, now found: ' . count($backups));
 }
 
 // Debug logging
-error_log('admin/backup.php - Total backups found: ' . count($backups));
 if (count($backups) > 0) {
-    error_log('First backup: ' . $backups[0]['filename']);
 } else {
     // Cek apakah ada file di directory tapi tidak muncul
     $backup_dir_check = $backup_restore->getBackupDirectory();
     $files_check = glob($backup_dir_check . DIRECTORY_SEPARATOR . '*.sql');
     if (is_array($files_check) && count($files_check) > 0) {
-        error_log('WARNING: Found ' . count($files_check) . ' files in directory but getBackups() returned 0');
         foreach ($files_check as $file) {
-            error_log('  File: ' . basename($file) . ' (Size: ' . filesize($file) . ', Readable: ' . (is_readable($file) ? 'Yes' : 'No') . ')');
         }
     }
 }
@@ -703,7 +689,6 @@ if (count($backups) > 0) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
             Swal.fire({
                 icon: 'error',
                 title: 'Error!',
@@ -843,7 +828,6 @@ if (count($backups) > 0) {
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',

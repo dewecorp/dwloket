@@ -22,7 +22,7 @@ if (file_exists($autoload_path)) {
             $use_phpspreadsheet = true;
         }
     } catch (Exception $e) {
-        error_log("Template Error (Autoload): " . $e->getMessage());
+        // Error handling
     }
 }
 
@@ -164,7 +164,6 @@ if ($use_phpspreadsheet) {
         $error_message = $e->getMessage();
         $error_file = $e->getFile();
         $error_line = $e->getLine();
-        error_log("Template Excel Error: " . $error_message . " in " . $error_file . " on line " . $error_line);
 
         // Clean output buffer sebelum menampilkan error
         while (ob_get_level()) {
@@ -178,7 +177,6 @@ if ($use_phpspreadsheet) {
         $error_message = $e->getMessage();
         $error_file = $e->getFile();
         $error_line = $e->getLine();
-        error_log("Template Excel Fatal Error: " . $error_message . " in " . $error_file . " on line " . $error_line);
 
         while (ob_get_level()) {
             ob_end_clean();

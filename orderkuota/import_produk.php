@@ -135,7 +135,7 @@ if (!isset($data['value'])) {
         // Jika langsung array, wrap ke dalam 'value'
         $data = ['value' => $data];
     } else {
-        $error_msg = "Error: Format JSON tidak valid. Key 'value' tidak ditemukan. Struktur yang ditemukan: " . print_r(array_keys($data), true);
+        $error_msg = "Error: Format JSON tidak valid. Key 'value' tidak ditemukan.";
         if ($is_cli) {
             die($error_msg . "\n");
         } else {

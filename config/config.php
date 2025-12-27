@@ -1,6 +1,22 @@
 <?php
 date_default_timezone_set('Asia/Jakarta');
-session_start();
+
+// Konfigurasi session timeout - perpanjang waktu idle menjadi 2 jam (7200 detik)
+// Default PHP session timeout adalah 24 menit, ini diperpanjang untuk mengurangi masalah setelah idle
+ini_set('session.gc_maxlifetime', 7200); // 2 jam dalam detik
+ini_set('session.cookie_lifetime', 7200); // Cookie session juga 2 jam
+
+// Pengaturan keamanan session untuk mencegah session hijacking dan fixation
+ini_set('session.cookie_httponly', 1); // Mencegah akses cookie melalui JavaScript
+ini_set('session.cookie_secure', 0); // Set ke 1 jika menggunakan HTTPS
+ini_set('session.use_strict_mode', 1); // Mencegah session fixation
+ini_set('session.cookie_samesite', 'Strict'); // CSRF protection
+
+// Pastikan session_start hanya dipanggil sekali
+if (session_status() === PHP_SESSION_NONE) {
+	session_start();
+}
+
 include_once "koneksi.php";
 
 function base_url($url = null) {

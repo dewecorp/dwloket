@@ -121,8 +121,6 @@ if (!isset($_SESSION)) {
 }
 
 // Debug: log session sebelum diambil
-@error_log("Import Check: Session import_message exists: " . (isset($_SESSION['import_message']) ? 'YES' : 'NO'));
-@error_log("Import Check: Session import_success_count exists: " . (isset($_SESSION['import_success_count']) ? 'YES (' . $_SESSION['import_success_count'] . ')' : 'NO'));
 
 if (isset($_SESSION['import_message']) || isset($_SESSION['import_success_count']) || isset($_SESSION['import_success'])) {
     $import_message = isset($_SESSION['import_message']) ? $_SESSION['import_message'] : '';
@@ -132,7 +130,6 @@ if (isset($_SESSION['import_message']) || isset($_SESSION['import_success_count'
     $import_error_count = isset($_SESSION['import_error_count']) ? intval($_SESSION['import_error_count']) : 0;
 
     // Debug: log nilai yang diambil
-    @error_log("Import: Retrieved from session - message: " . substr($import_message, 0, 50) . ", success_count: $import_success_count");
 
     // Clear session SETELAH diambil agar tidak muncul lagi setelah reload
     unset($_SESSION['import_message']);
@@ -220,7 +217,6 @@ function readExcelWithSheets($file_path) {
             // Dapatkan semua nama sheet terlebih dahulu
             $sheetNames = $spreadsheet->getSheetNames();
             $totalSheets = count($sheetNames);
-            error_log("Import Excel: Found " . $totalSheets . " sheet(s): " . implode(", ", $sheetNames));
 
             $sheets_data = [];
 
@@ -234,7 +230,6 @@ function readExcelWithSheets($file_path) {
                 $sheet_name = trim($sheet_name_raw);
 
                 // Debug: log nama sheet yang sedang diproses
-                error_log("Import Excel: Processing sheet #" . ($sheetIndex + 1) . "/" . $totalSheets . ": '" . $sheet_name_raw . "'");
 
                 // Bersihkan karakter khusus yang tidak valid
                 $sheet_name = preg_replace('/[^\p{L}\p{N}\s\-_]/u', '', $sheet_name); // Hanya huruf, angka, spasi, dash, underscore
@@ -267,32 +262,21 @@ function readExcelWithSheets($file_path) {
                 if (!empty($sheet_data)) {
                     $sheets_data[$sheet_name] = $sheet_data;
                     // Debug: log jumlah baris data yang ditemukan di sheet ini
-                    error_log("Import Excel: ✓ Sheet '$sheet_name' has " . count($sheet_data) . " rows - DATA SAVED");
                 } else {
-                    error_log("Import Excel: ✗ Sheet '$sheet_name' is empty or has no valid data - SKIPPED");
                 }
             }
 
             // Debug: log total sheet yang berhasil dibaca
             $sheet_names_list = implode(", ", array_keys($sheets_data));
-            error_log("Import Excel: ===== SUMMARY =====");
-            error_log("Import Excel: Total sheets in file: " . $totalSheets);
-            error_log("Import Excel: Sheets with data: " . count($sheets_data));
-            error_log("Import Excel: Sheet names imported: " . $sheet_names_list);
-            error_log("Import Excel: ====================");
 
             return ['success' => true, 'sheets' => $sheets_data];
         } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
-            @error_log("Import Excel Reader Error: " . $e->getMessage());
             return ['success' => false, 'message' => 'Error membaca file Excel: ' . $e->getMessage() . '. Pastikan file Excel tidak korup dan format benar.'];
         } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
-            @error_log("Import Excel PhpSpreadsheet Error: " . $e->getMessage());
             return ['success' => false, 'message' => 'Error memproses file Excel: ' . $e->getMessage() . '. Pastikan file Excel valid.'];
         } catch (Exception $e) {
-            @error_log("Import Excel General Error: " . $e->getMessage());
             return ['success' => false, 'message' => 'Error membaca Excel: ' . $e->getMessage()];
         } catch (Error $e) {
-            @error_log("Import Excel Fatal Error: " . $e->getMessage());
             return ['success' => false, 'message' => 'Fatal error membaca Excel: ' . $e->getMessage()];
         }
     }
@@ -318,7 +302,6 @@ if (isset($_POST['import_from_orderkuota']) && isset($_SESSION['level']) && $_SE
                 if (file_exists($file_path) && is_readable($file_path) && filesize($file_path) > 0) {
                     $excel_files[] = $file_path;
                 } else {
-                    @error_log("Import orderkuota: File $file tidak valid atau tidak bisa dibaca");
                 }
             }
         }
@@ -364,7 +347,6 @@ if (isset($_POST['import_from_orderkuota']) && isset($_SESSION['level']) && $_SE
     // Proses setiap file Excel
     foreach ($excel_files as $excel_file) {
         $filename = basename($excel_file);
-        @error_log("Import dari orderkuota: Memproses file $filename");
 
         // Validasi file sebelum diproses
         if (!file_exists($excel_file)) {
@@ -774,24 +756,15 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
             $sheets_data = $excel_result['sheets'];
 
             // Debug: log hasil pembacaan Excel dengan detail
-            @error_log("Import Excel: ===== START IMPORT =====");
-            @error_log("Import Excel: File name: " . $file['name']);
-            @error_log("Import Excel: File size: " . $file['size'] . " bytes");
-            @error_log("Import Excel: File extension: " . $ext);
-            @error_log("Import Excel: sheets_data count: " . count($sheets_data));
-            @error_log("Import Excel: sheets_data keys: " . implode(", ", array_keys($sheets_data)));
 
             // Log detail setiap sheet
             foreach ($sheets_data as $sheet_name => $sheet_rows) {
-                @error_log("Import Excel: Sheet '$sheet_name' has " . count($sheet_rows) . " rows");
                 if (count($sheet_rows) > 0) {
-                    @error_log("Import Excel: Sheet '$sheet_name' first row sample: " . json_encode(array_slice($sheet_rows[0], 0, 5)));
                 }
             }
 
             // Validasi: pastikan ada data sheet
             if (empty($sheets_data) || count($sheets_data) == 0) {
-                @error_log("Import Excel: ERROR - No sheets data found!");
                 throw new Exception("File Excel tidak memiliki data. Pastikan file memiliki sheet dengan data yang valid.\n\nTips:\n- Buka file Excel dan pastikan ada data di dalamnya\n- Pastikan sheet tidak kosong\n- Jika file dikonversi dari CSV, pastikan data sudah terisi dengan benar");
             }
 
@@ -807,7 +780,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                 }
             }
             if (!$has_data) {
-                @error_log("Import Excel: ERROR - All sheets are empty!");
                 $empty_sheets_list = implode(", ", $empty_sheets);
                 throw new Exception("Semua sheet di file Excel kosong. Pastikan file memiliki data yang valid.\n\nSheet yang ditemukan: " . (count($empty_sheets) > 0 ? $empty_sheets_list : "Tidak ada") . "\n\nTips:\n- Pastikan ada data di dalam sheet (setelah header)\n- Jika file dikonversi dari CSV, pastikan semua data sudah terisi\n- Format yang didukung: Kode, Produk, Harga, Status");
             }
@@ -826,23 +798,16 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
             }
 
             // Loop setiap sheet (kategori) - nama sheet = kategori
-            @error_log("Import Excel: ===== START PROCESSING SHEETS =====");
-            @error_log("Import Excel: Total sheets to process: " . count($sheets_data));
             $total_rows_all_sheets = 0;
             foreach ($sheets_data as $sheet_name_key => $rows) {
                 $total_rows_all_sheets += count($rows);
-                @error_log("Import Excel: ===== PROCESSING SHEET: '$sheet_name_key' =====");
-                @error_log("Import Excel: Sheet '$sheet_name_key' has " . count($rows) . " rows");
 
                 // Debug: log sample data dari beberapa baris pertama
                 if (count($rows) > 0) {
                     $sample_count = min(10, count($rows));
                     for ($s = 0; $s < $sample_count; $s++) {
-                        @error_log("Import Excel: Sample row " . ($s + 1) . " sheet '$sheet_name_key': " . json_encode(array_slice($rows[$s], 0, 8)));
                     }
-                    @error_log("Import Excel: Total rows in sheet '$sheet_name_key': " . count($rows));
                 } else {
-                    @error_log("Import Excel: WARNING - Sheet '$sheet_name_key' has NO ROWS!");
                 }
                 // Ambil kategori dari nama sheet - pastikan bersih dan valid
                 // Nama sheet sudah dibersihkan di fungsi readExcelWithSheets, tapi kita bersihkan lagi untuk memastikan
@@ -871,13 +836,11 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                 $row_index = 0;
 
                 // PENTING: $kategori sudah di-set dari nama sheet di awal loop, JANGAN di-overwrite di dalam loop ini
-                @error_log("Import Excel: Starting to process " . count($rows) . " rows in sheet '$kategori'");
                 foreach ($rows as $row) {
                     $row_index++;
 
                     // Pastikan $row adalah array
                     if (!is_array($row)) {
-                        @error_log("Import Excel: ✗ Row $row_index sheet '$kategori' - Row is not array: " . gettype($row) . " - Value: " . var_export($row, true));
                         $skip_count++;
                         continue;
                     }
@@ -886,9 +849,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                     $col_count = count($cols);
 
                     // Debug: log setiap baris untuk semua baris (untuk debugging)
-                    @error_log("Import Excel: [ROW $row_index] sheet '$kategori' - col_count: $col_count");
-                    @error_log("Import Excel: [ROW $row_index] - Raw cols: " . json_encode($cols));
-                    @error_log("Import Excel: [ROW $row_index] - Trimmed cols: " . json_encode(array_map('trim', array_slice($cols, 0, min(8, $col_count)))));
 
                     // Skip header baris pertama jika mengandung kata kunci (lebih spesifik)
                     // Untuk file Excel yang dikonversi dari CSV, header biasanya di baris pertama
@@ -910,14 +870,12 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
 
                         if ($is_likely_header) {
                             $header_skipped = true;
-                            @error_log("Import Excel: Row $row_index sheet '$kategori' di-skip sebagai header (keywords: $header_keywords, col_count: $col_count) - " . json_encode($cols));
                             continue;
                         }
                     }
 
                     // Minimum harus ada 1 kolom (untuk lebih fleksibel)
                     if ($col_count < 1) {
-                        @error_log("Import Excel: ✗ Row $row_index sheet '$kategori' di-skip karena tidak ada kolom");
                         $skip_count++;
                         continue;
                     }
@@ -931,11 +889,9 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                         }
                     }
                     if ($all_empty) {
-                        @error_log("Import Excel: [SKIP EMPTY] Row $row_index sheet '$kategori' - All columns empty");
                         continue; // Skip tanpa increment skip_count karena ini baris kosong
                     }
 
-                    @error_log("Import Excel: [PROCESSING] Row $row_index sheet '$kategori' - Has data, proceeding...");
 
                     $kode = '';
                     $produk_nama = '';
@@ -985,14 +941,12 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                             $status_val = strtolower(trim($cols[3]));
                             $status = (in_array($status_val, ['1', 'aktif', 'yes', 'y', 'true']) ? 1 : 0);
                         }
-                        @error_log("Import Excel: Row $row_index - Format 4 kolom terdeteksi - kode: '$kode', produk: '$produk_nama', harga: '$harga_str', status: $status");
                     } elseif ($col_count == 3) {
                         // Format 3 kolom: Kode, Produk, Harga (tanpa status, default aktif)
                         $kode = trim($cols[0]);
                         $produk_nama = !empty(trim($cols[1])) ? trim($cols[1]) : (!empty(trim($cols[0])) ? trim($cols[0]) : '');
                         $harga_str = isset($cols[2]) ? trim($cols[2]) : '';
                         $status = 1; // Default aktif
-                        @error_log("Import Excel: Row $row_index - Format 3 kolom terdeteksi - kode: '$kode', produk: '$produk_nama', harga: '$harga_str'");
                     } elseif ($col_count >= 6) {
                         // Format lengkap 6 kolom: Kode, Keterangan, Produk, Kategori, Harga, Status
                         // (Kategori dari sheet tetap digunakan, kolom kategori di Excel diabaikan)
@@ -1037,12 +991,10 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                                 $status_val = strtolower(trim($cols[3]));
                                 $status = (in_array($status_val, ['1', 'aktif', 'yes', 'y', 'true']) ? 1 : 0);
                             }
-                            @error_log("Import Excel: Row $row_index - Detected 4+ column format (Kode, Produk, Harga, Status) - kode: '$kode', produk: '$produk_nama', harga: '$harga_str'");
                         } else {
                             // Format alternatif: Produk/Deskripsi, Harga, ...
                             $produk_nama = trim($cols[0]);
                             $harga_str = isset($cols[1]) ? trim($cols[1]) : '';
-                            @error_log("Import Excel: Row $row_index - Detected alternative format - produk: '$produk_nama', harga: '$harga_str'");
                         }
                     } elseif ($col_count >= 3) {
                         // Cek apakah format Kode, Keterangan, Harga atau Kategori, Produk, Harga
@@ -1128,7 +1080,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                                     if (empty($produk_nama) && $i > 0) {
                                         $produk_nama = trim($cols[$i - 1]);
                                     }
-                                    @error_log("Import Excel: Row $row_index - harga_str ditemukan di kolom $i: $test_value_clean (parsed: $test_num)");
                                     break;
                                 }
                             }
@@ -1157,7 +1108,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                                 // Terima harga minimal 10 (untuk testing, bisa dinaikkan nanti)
                                 if ($test_num >= 10) {
                                     $harga_str = $test_value;
-                                    @error_log("Import Excel: Row $row_index - harga_str ditemukan di kolom $i: $test_value (parsed: $test_num)");
                                     break;
                                 }
                             }
@@ -1167,7 +1117,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                     // Parse harga - handle pemisah ribuan dengan benar (perbaikan untuk menghindari kelebihan 2 nol)
                     if (!empty($harga_str)) {
                         // Debug: log harga_str sebelum parsing
-                        @error_log("Import Excel: Row $row_index - Parsing harga_str: '$harga_str'");
 
                         $harga_temp = preg_replace('/^(Rp|IDR|USD|\$|\s)+/i', '', $harga_str);
                         $harga_temp = trim($harga_temp);
@@ -1175,7 +1124,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                         // Jika harga_str adalah angka langsung (tanpa pemisah), langsung parse
                         if (is_numeric($harga_temp)) {
                             $harga = floatval($harga_temp);
-                            @error_log("Import Excel: Row $row_index - Harga langsung numeric: $harga");
                         } else {
                             // Parse dengan deteksi pemisah ribuan
                             // Deteksi format: apakah menggunakan titik atau koma sebagai pemisah ribuan
@@ -1249,15 +1197,11 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
 
                             if (!empty($digit_only)) {
                                 $harga = floatval($digit_only);
-                                @error_log("Import Excel: Row $row_index - Harga setelah parsing: $harga (dari: $harga_str)");
                             }
                         }
                     }
 
                     // Debug: log data sebelum validasi untuk SEMUA baris (untuk debugging)
-                    @error_log("Import Excel: [BEFORE VALIDATION] Row $row_index sheet '$kategori'");
-                    @error_log("Import Excel: [BEFORE VALIDATION] - col_count: $col_count, kode: '$kode', produk: '$produk_nama', harga_str: '$harga_str', harga: $harga");
-                    @error_log("Import Excel: [BEFORE VALIDATION] - cols: " . json_encode(array_slice($cols, 0, min(8, $col_count))));
 
                     // Validasi - pastikan ada minimal produk_nama (bisa dari kode atau kolom manapun)
                     if (empty($produk_nama)) {
@@ -1306,7 +1250,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                         if (empty(trim($produk_nama))) {
                             $produk_nama = 'PRODUK_' . $kategori . '_' . $row_index;
                         }
-                        @error_log("Import Excel: Row $row_index sheet '$kategori' - produk_nama kosong, menggunakan: $produk_nama");
                     }
 
 
@@ -1416,7 +1359,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                                 // Terima harga minimal 10 (untuk testing, bisa dinaikkan nanti)
                                 if ($test_num >= 10) {
                                     $harga = $test_num;
-                                    @error_log("Import Excel: Row $row_index - Harga ditemukan di kolom $i: $harga (dari: " . trim($cols[$i]) . ")");
                                     break;
                                 }
                             }
@@ -1446,7 +1388,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                                 // Terima harga minimal 10 (untuk testing, bisa dinaikkan nanti)
                                 if ($test_num >= 10) {
                                     $harga = $test_num;
-                                    @error_log("Import Excel: Row $row_index - Harga ditemukan di kolom $i dengan parsing agresif: $harga (dari: " . trim($cols[$i]) . ")");
                                     break;
                                 }
                             }
@@ -1470,7 +1411,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                                 // Terima harga minimal 10 (untuk testing, bisa dinaikkan nanti)
                                 if ($test_num >= 10) {
                                     $harga = $test_num;
-                                    @error_log("Import Excel: Row $row_index - Harga ditemukan di kolom $i dengan parsing sangat agresif: $harga (dari: " . trim($cols[$i]) . ")");
                                     break;
                                 }
                             }
@@ -1482,7 +1422,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                         // Jika masih tidak ada harga, gunakan nilai default minimal (1000)
                         // Ini untuk memastikan data tetap bisa masuk meskipun harga tidak terdeteksi
                         $harga = 1000;
-                        @error_log("Import Excel: Row $row_index sheet '$kategori' - Harga tidak terdeteksi, menggunakan default 1000 (produk: $produk_nama)");
                     }
 
                     // Pastikan harga minimal 1 (bukan 0)
@@ -1559,10 +1498,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                                     updated_at = CURRENT_TIMESTAMP";
 
                     // Debug: log sebelum insert untuk SEMUA baris (untuk debugging)
-                    @error_log("Import Excel: [BEFORE INSERT] Row $row_index sheet '$kategori'");
-                    @error_log("Import Excel: [BEFORE INSERT] - kode: '$kode_escaped', produk: '$produk_escaped', kategori: '$kategori_escaped', harga: $harga_escaped, status: $status, id_bayar: $id_bayar_sql");
-                    @error_log("Import Excel: [BEFORE INSERT] - Original cols: " . json_encode(array_slice($cols, 0, min(8, $col_count))));
-                    @error_log("Import Excel: [BEFORE INSERT] - col_count: $col_count, produk_nama length: " . strlen($produk_nama) . ", harga: $harga");
 
                     // Validasi final sebelum insert - JANGAN SKIP, gunakan default jika kosong
                     if (empty(trim($produk_nama))) {
@@ -1572,12 +1507,10 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                         } else {
                             $produk_nama = 'PRODUK_' . $kategori . '_' . $row_index;
                         }
-                        @error_log("Import Excel: ⚠️ Row $row_index - produk_nama kosong, menggunakan: $produk_nama");
                     }
 
                     if ($harga <= 0) {
                         $harga = 1000; // Default harga
-                        @error_log("Import Excel: ⚠️ Row $row_index - harga <= 0, menggunakan default: $harga");
                     }
 
                     // Pastikan semua nilai valid sebelum insert
@@ -1591,32 +1524,23 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
 
                     // Test koneksi database
                     if (!$koneksi) {
-                        @error_log("Import Excel: ✗ FATAL ERROR - No database connection!");
                         $error_count++;
-                        @error_log("Import Excel: ✗ ERROR - Skipping row due to no database connection");
                         continue; // Skip row instead of throwing exception
                     }
 
                     if (isset($koneksi->connect_error) && $koneksi->connect_error) {
-                        @error_log("Import Excel: ✗ FATAL ERROR - Database connection failed: " . $koneksi->connect_error);
                         $error_count++;
-                        @error_log("Import Excel: ✗ ERROR - Skipping row due to database connection error");
                         continue; // Skip row instead of throwing exception
                     }
 
                     // Execute query
-                    @error_log("Import Excel: [EXECUTING QUERY] Row $row_index");
-                    @error_log("Import Excel: [QUERY] " . substr($insert_query, 0, 200));
                     $query_result = $koneksi->query($insert_query);
 
                     if ($query_result === true) {
                         $success_count++;
-                        @error_log("Import Excel: ✓✓✓ SUCCESS Row $row_index sheet '$kategori' - Kode: $kode, Produk: $produk_nama, Harga: $harga_escaped");
                     } else {
                         $error_count++;
                         $error_detail = $koneksi->error;
-                        @error_log("Import Excel: ✗✗✗ ERROR Row $row_index sheet '$kategori' - " . $error_detail);
-                        @error_log("Import Excel: ✗✗✗ ERROR Query: " . $insert_query);
 
                         // Jika error karena duplicate key, coba dengan kode yang berbeda
                         if (strpos($error_detail, 'Duplicate entry') !== false || strpos($error_detail, 'unique_kode') !== false) {
@@ -1639,7 +1563,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                             if ($koneksi->query($insert_query_retry)) {
                                 $success_count++;
                                 $error_count--; // Kurangi error count karena berhasil di retry
-                                @error_log("Import Excel: SUCCESS (Retry) Sheet '$kategori' Row $row_index - Kode: $kode_new, Produk: $produk_nama");
                             }
                         }
                     }
@@ -1649,33 +1572,19 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
             $import_success = ($success_count > 0);
 
             // Debug: Log hasil akhir import Excel
-            @error_log("Import Excel FINAL: ===== IMPORT SUMMARY =====");
-            @error_log("Import Excel FINAL: success_count=$success_count, skip_count=$skip_count, error_count=$error_count");
-            @error_log("Import Excel FINAL: Total sheets processed: " . count($sheets_data));
-            @error_log("Import Excel FINAL: Total rows in all sheets: $total_rows_all_sheets");
-            @error_log("Import Excel FINAL: Sheet names: " . implode(", ", array_keys($sheets_data)));
 
             // Log detail per sheet
             foreach ($sheets_data as $sheet_name => $rows) {
-                @error_log("Import Excel FINAL: Sheet '$sheet_name' - Total rows: " . count($rows));
             }
 
             // Log ratio
             if ($total_rows_all_sheets > 0) {
                 $success_ratio = ($success_count / $total_rows_all_sheets) * 100;
                 $skip_ratio = ($skip_count / $total_rows_all_sheets) * 100;
-                @error_log("Import Excel FINAL: Success ratio: " . number_format($success_ratio, 2) . "%, Skip ratio: " . number_format($skip_ratio, 2) . "%");
             }
 
             // Jika tidak ada data yang masuk, log detail untuk debugging
             if ($success_count == 0) {
-                @error_log("Import Excel FINAL: ⚠️ WARNING - Tidak ada data yang berhasil diimport!");
-                @error_log("Import Excel FINAL: ⚠️ Total rows: $total_rows_all_sheets, Skip: $skip_count, Error: $error_count");
-                @error_log("Import Excel FINAL: ⚠️ Kemungkinan penyebab:");
-                @error_log("Import Excel FINAL: ⚠️ 1. Semua baris di-skip karena tidak memenuhi kriteria");
-                @error_log("Import Excel FINAL: ⚠️ 2. Ada error saat insert ke database");
-                @error_log("Import Excel FINAL: ⚠️ 3. Format data tidak sesuai");
-                @error_log("Import Excel FINAL: ⚠️ 4. File Excel kosong atau corrupt");
             }
 
             // Buat pesan detail dengan informasi lebih lengkap
@@ -1733,7 +1642,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                 $import_message .= "- Pastikan harga dalam format angka (contoh: 10000 atau 10.000)\n";
                 $import_message .= "- Nama sheet akan digunakan sebagai kategori produk";
                 $import_success = false;
-                @error_log("Import Excel: No data imported - semua sheet mungkin kosong atau tidak valid");
             } else if ($success_count == 0) {
                 $import_message = "Tidak ada produk yang berhasil diimport.\n\n";
                 $import_message .= "Detail:\n";
@@ -1766,7 +1674,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
             $_SESSION['import_skip_count'] = (int)$skip_count;
             $_SESSION['import_error_count'] = (int)$error_count;
 
-            @error_log("Import Excel: Setting session before redirect - success=$success_count, skip=$skip_count, error=$error_count, message_length=" . strlen($import_message));
 
             header("Location: " . base_url('jenisbayar/jenis_bayar.php'));
             exit;
@@ -1915,7 +1822,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                             $status = 1; // Default aktif
                         }
                         $kategori = !empty($current_kategori) ? $current_kategori : 'UMUM';
-                        @error_log("Import CSV: Row " . ($index + 1) . " - Format 4 kolom terdeteksi - kode: '$kode', produk: '$produk_nama', harga: '$harga_str', status: $status");
                     } elseif ($col_count == 3) {
                         // Format 3 kolom: Kode, Produk, Harga (tanpa status, default aktif)
                         $kode = trim($cols[0]);
@@ -1923,7 +1829,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                         $harga_str = isset($cols[2]) ? trim($cols[2]) : '';
                         $status = 1; // Default aktif
                         $kategori = !empty($current_kategori) ? $current_kategori : 'UMUM';
-                        @error_log("Import CSV: Row " . ($index + 1) . " - Format 3 kolom terdeteksi - kode: '$kode', produk: '$produk_nama', harga: '$harga_str'");
                     } else {
                         // Cari kolom yang berisi angka (kemungkinan harga) - cari dari kanan ke kiri
                         // Prioritas: kolom terakhir biasanya harga
@@ -2073,7 +1978,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                         // Gunakan harga yang sudah ditemukan dari pencarian kolom
                         $harga = $harga_value;
                     } elseif (!empty($harga_str)) {
-                        @error_log("Import CSV: Row " . ($index + 1) . " - Parsing harga_str: '$harga_str'");
                         // Parse harga dari string - handle pemisah ribuan dengan benar (perbaikan untuk menghindari kelebihan 2 nol)
                         $harga_temp = preg_replace('/^(Rp|IDR|USD|\$|\s)+/i', '', $harga_str);
                         $harga_temp = trim($harga_temp);
@@ -2133,7 +2037,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
 
                         if (!empty($digit_only)) {
                             $harga = floatval($digit_only);
-                            @error_log("Import CSV: Row " . ($index + 1) . " - Harga setelah parsing: $harga (dari: $harga_str)");
                         } else {
                             $harga = 0;
                         }
@@ -2144,7 +2047,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                     // Jika harga masih 0, gunakan default 1000 (jangan skip)
                     if ($harga <= 0) {
                         $harga = 1000;
-                        @error_log("Import CSV: Row " . ($index + 1) . " - Harga <= 0, menggunakan default: 1000");
                     }
 
                     // Generate kode jika belum ada
@@ -2216,7 +2118,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                     } else {
                         $error_count++;
                         $error_detail = $koneksi->error;
-                        error_log("Import CSV Error Row " . ($index + 1) . ": " . $error_detail);
 
                         // Jika error karena duplicate key, coba dengan kode yang berbeda
                         if (strpos($error_detail, 'Duplicate entry') !== false || strpos($error_detail, 'unique_kode') !== false) {
@@ -2238,7 +2139,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
                             if ($koneksi->query($insert_query_retry)) {
                                 $success_count++;
                                 $error_count--; // Kurangi error count karena berhasil di retry
-                                error_log("Import CSV: SUCCESS (Retry) Row " . ($index + 1) . " - Kode: $kode_new");
                             }
                         }
                     }
@@ -2296,9 +2196,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
         $file_name = isset($file['name']) ? $file['name'] : 'unknown';
         $file_size = isset($file['size']) ? number_format($file['size'] / 1024, 2) . ' KB' : 'unknown';
 
-        @error_log("Import Error: " . $error_msg);
-        @error_log("Import Error File: " . $file_name . " (Size: " . $file_size . ")");
-        @error_log("Import Error Stack: " . $e->getTraceAsString());
 
         $import_message = "❌ Error Import: " . $error_msg;
         $import_message .= "\n\nFile: " . htmlspecialchars($file_name);
@@ -2315,9 +2212,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
         $skip_count = isset($skip_count) ? $skip_count : 0;
         $error_count = isset($error_count) ? $error_count : 1;
 
-        @error_log("Import CSV Error: " . $error_msg);
-        @error_log("Import CSV Error File: " . $file_name . " (Size: " . $file_size . ")");
-        @error_log("Import CSV Error Stack: " . $e->getTraceAsString());
     } catch (Error $e) {
         $error_msg = $e->getMessage();
         $import_message = "❌ Fatal Error Import: " . $error_msg . "\n\nDetail: Terjadi kesalahan sistem. Silakan hubungi administrator atau coba lagi.";
@@ -2325,9 +2219,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
         $success_count = isset($success_count) ? $success_count : 0;
         $skip_count = isset($skip_count) ? $skip_count : 0;
         $error_count = isset($error_count) ? $error_count : 1;
-        @error_log("Import CSV Fatal Error: " . $error_msg);
-        @error_log("Import CSV Fatal Error File: " . (isset($file['name']) ? $file['name'] : 'unknown'));
-        @error_log("Import CSV Fatal Error Stack: " . $e->getTraceAsString());
     }
 
     // Clear output buffer
@@ -2365,8 +2256,6 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
     }
 
     // Debug: log session values yang akan diset
-    @error_log("Import: Setting session - message: " . substr($import_message, 0, 100) . ", success_count: $success_count, skip_count: $skip_count, error_count: $error_count");
-    @error_log("Import: import_success value: " . ($import_success ? 'true' : 'false'));
 
     // Set session - PASTIKAN selalu di-set meskipun kosong
     $_SESSION['import_message'] = $import_message;
@@ -2376,10 +2265,8 @@ if (isset($_POST['import_csv']) && isset($_FILES['file_csv'])) {
     $_SESSION['import_error_count'] = (int)$error_count;
 
     // Debug: verifikasi session terset
-    @error_log("Import: Session after set - message: " . (isset($_SESSION['import_message']) ? 'SET' : 'NOT SET') . ", success_count: " . (isset($_SESSION['import_success_count']) ? $_SESSION['import_success_count'] : 'NOT SET'));
 
     // Debug: log sebelum redirect
-    @error_log("Import: Redirecting to jenis_bayar.php with session set");
 
     header("Location: " . base_url('jenisbayar/jenis_bayar.php'));
     exit;
@@ -3815,16 +3702,7 @@ if ($table_exists) {
             // Tampilkan alert jika ada import message atau ada count yang tidak nol
             // Sederhanakan kondisi - selalu tampilkan jika ada message atau count
             if (!empty($import_msg_display) || $success_count > 0 || $skip_count > 0 || $error_count > 0):
-            // DEBUG: Log untuk memastikan variabel ter-set
             ?>
-            console.log('Import Alert Check:', {
-                hasMessage: <?=json_encode(!empty($import_msg_display))?>,
-                message: <?=json_encode(substr($import_msg_display, 0, 100))?>,
-                success_count: <?=$success_count?>,
-                skip_count: <?=$skip_count?>,
-                error_count: <?=$error_count?>,
-                import_success: <?=json_encode($import_success_display)?>
-            });
             <?php
                 // Jika tidak ada message tapi ada count, buat message default
                 if (empty($import_msg_display)) {

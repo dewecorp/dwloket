@@ -182,7 +182,6 @@ if (empty($id) || $id <= 0) {
 
 $sql = $koneksi->query("SELECT * FROM transaksi WHERE id_transaksi='$id'");
 if (!$sql) {
-    error_log("Error fetching transaksi: " . mysqli_error($koneksi));
     header('Location: ' . base_url('transaksi/transaksi.php'));
     exit();
 }
@@ -207,7 +206,6 @@ try {
         }
     }
 } catch (Exception $e) {
-    error_log("Error in getAllKategori: " . $e->getMessage());
     $all_kategori = [];
 }
 
@@ -669,7 +667,6 @@ if ($sql_jenis) {
                     }
                 })
                 .catch(error => {
-                    console.error('Error loading produk:', error);
                     produkAccordion.innerHTML = '<div class="alert alert-danger text-center"><i class="fa fa-exclamation-triangle"></i> Gagal memuat produk. Silakan refresh halaman.</div>';
                 });
             }

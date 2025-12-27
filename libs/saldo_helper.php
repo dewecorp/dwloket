@@ -4,8 +4,98 @@
  */
 
 /**
+ * Dapatkan saldo tertua yang positif (untuk FIFO)
+ * @param mysqli $koneksi Koneksi database
+ * @return array|null Data saldo tertua atau null jika tidak ada
+ */
+function get_saldo_tertua($koneksi) {
+    if (!$koneksi) {
+        return null;
+    }
+
+    // Ambil saldo tertua yang positif, diurutkan berdasarkan tanggal dan id_saldo (FIFO)
+    $query = "SELECT * FROM tb_saldo WHERE CAST(saldo AS DECIMAL(15,2)) > 0 ORDER BY tgl ASC, id_saldo ASC LIMIT 1";
+    $result = $koneksi->query($query);
+
+    if ($result && $result->num_rows > 0) {
+        return $result->fetch_assoc();
+    }
+
+    return null;
+}
+
+/**
+ * Hapus saldo tertua secara otomatis jika total saldo menjadi minus
+ * Menggunakan metode FIFO (First In First Out) - saldo tertua yang dihapus terlebih dahulu
+ * @param mysqli $koneksi Koneksi database
+ * @return array ['success' => bool, 'message' => string, 'deleted_count' => int]
+ */
+function hapus_saldo_tertua_otomatis($koneksi) {
+    if (!$koneksi) {
+        return ['success' => false, 'message' => 'Koneksi tidak valid', 'deleted_count' => 0];
+    }
+
+    $deleted_count = 0;
+    $total_saldo = get_total_saldo($koneksi);
+    $messages = [];
+
+    // Hapus saldo tertua sampai total saldo tidak minus lagi
+    $iteration = 0;
+    $max_iterations = 100; // Safety limit untuk mencegah infinite loop
+
+    while ($total_saldo < 0 && $iteration < $max_iterations) {
+        $iteration++;
+
+        $saldo_tertua = get_saldo_tertua($koneksi);
+
+        if (!$saldo_tertua) {
+            // Tidak ada saldo positif lagi untuk dihapus
+            break;
+        }
+
+        $id_saldo = $saldo_tertua['id_saldo'];
+        $nilai_saldo = floatval($saldo_tertua['saldo']);
+        $tgl_saldo = $saldo_tertua['tgl'];
+
+        // Hapus saldo tertua
+        $query = "DELETE FROM tb_saldo WHERE id_saldo = ?";
+        $stmt = $koneksi->prepare($query);
+        $stmt->bind_param("i", $id_saldo);
+
+        if ($stmt->execute()) {
+            $deleted_count++;
+            $messages[] = "Saldo tertua (ID: $id_saldo, Tgl: $tgl_saldo, Nilai: Rp " . number_format($nilai_saldo, 0, ',', '.') . ") dihapus otomatis";
+
+            // Log aktivitas
+            require_once __DIR__ . '/log_activity.php';
+            @log_activity('delete', 'saldo', "Saldo tertua otomatis dihapus: ID $id_saldo, Tgl $tgl_saldo, Nilai Rp " . number_format($nilai_saldo, 0, ',', '.'));
+
+            // Hitung ulang total saldo setelah penghapusan
+            $total_saldo = get_total_saldo($koneksi);
+        } else {
+            // Jika gagal menghapus, hentikan loop
+            $messages[] = "Gagal menghapus saldo ID: $id_saldo - " . $stmt->error;
+            break;
+        }
+
+        $stmt->close();
+    }
+
+    $message = $deleted_count > 0
+        ? "Berhasil menghapus $deleted_count saldo tertua secara otomatis. " . implode('; ', $messages)
+        : "Tidak ada saldo yang perlu dihapus";
+
+    return [
+        'success' => true,
+        'message' => $message,
+        'deleted_count' => $deleted_count
+    ];
+}
+
+/**
  * Kurangi saldo saat transaksi dibuat dengan status Lunas
  * PENTING: Fungsi ini mengurangi dari TOTAL SALDO (SUM semua saldo), bukan dari record terakhir
+ * Setelah mengurangi, jika saldo menjadi minus, saldo tertua akan otomatis terhapus (FIFO)
  *
  * @param mysqli $koneksi Koneksi database
  * @param float $jumlah Jumlah yang akan dikurangi
@@ -22,9 +112,19 @@ function kurangi_saldo($koneksi, $jumlah, $keterangan = '', $id_transaksi = null
     // BUKAN mengambil record terakhir, tapi menghitung total semua saldo
     $total_saldo = get_total_saldo($koneksi);
 
-    // Validasi: pastikan total saldo mencukupi untuk pengurangan
-    if ($total_saldo < $jumlah) {
-        return ['success' => false, 'message' => 'Saldo tidak mencukupi. Saldo tersedia: Rp ' . number_format($total_saldo, 0, ',', '.')];
+    // Hitung jumlah saldo positif yang tersedia
+    $query_saldo_positif = "SELECT SUM(CAST(saldo AS DECIMAL(15,2))) as total_positif FROM tb_saldo WHERE CAST(saldo AS DECIMAL(15,2)) > 0";
+    $result_positif = $koneksi->query($query_saldo_positif);
+    $total_saldo_positif = 0;
+    if ($result_positif && $result_positif->num_rows > 0) {
+        $row_positif = $result_positif->fetch_assoc();
+        $total_saldo_positif = floatval($row_positif['total_positif'] ?? 0);
+    }
+
+    // Validasi: pastikan ada saldo positif yang bisa digunakan
+    // Jika tidak ada saldo positif sama sekali, tidak bisa mengurangi
+    if ($total_saldo_positif <= 0) {
+        return ['success' => false, 'message' => 'Tidak ada saldo yang tersedia untuk dikurangi'];
     }
 
     // Tambahkan record saldo keluar dengan nilai negatif
@@ -41,7 +141,23 @@ function kurangi_saldo($koneksi, $jumlah, $keterangan = '', $id_transaksi = null
         require_once __DIR__ . '/log_activity.php';
         @log_activity('update', 'saldo', 'Saldo dikurangi: Rp ' . number_format($jumlah, 0, ',', '.') . ' - ' . $ket);
 
-        return ['success' => true, 'message' => 'Saldo berhasil dikurangi'];
+        // Setelah mengurangi saldo, cek apakah total saldo menjadi minus
+        // Jika minus, hapus saldo tertua secara otomatis (FIFO)
+        $total_saldo_setelah = get_total_saldo($koneksi);
+
+        if ($total_saldo_setelah < 0) {
+            $hapus_result = hapus_saldo_tertua_otomatis($koneksi);
+
+            if ($hapus_result['success'] && $hapus_result['deleted_count'] > 0) {
+                $message = 'Saldo berhasil dikurangi. ' . $hapus_result['message'];
+            } else {
+                $message = 'Saldo berhasil dikurangi';
+            }
+        } else {
+            $message = 'Saldo berhasil dikurangi';
+        }
+
+        return ['success' => true, 'message' => $message];
     } else {
         return ['success' => false, 'message' => 'Gagal mengurangi saldo: ' . $koneksi->error];
     }

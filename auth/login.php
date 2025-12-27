@@ -2,8 +2,10 @@
 ob_start();
 include "../config/config.php";
 
-if (@$_SESSION['admin'] || @$_SESSION['user']) {
+// Perbaikan: Gunakan $_SESSION['level'] yang sesuai dengan session yang diset saat login
+if (isset($_SESSION['level']) && !empty($_SESSION['level'])) {
 	echo "<script>window.location='".base_url()."';</script>";
+	exit();
 } else {
 ?>
 
@@ -296,19 +298,46 @@ if (@$_SESSION['admin'] || @$_SESSION['user']) {
 </html>
 <?php
 if (isset($_POST['login'])) {
-	$username = $_POST['user'];
+	// Perbaikan keamanan: Gunakan prepared statement untuk mencegah SQL Injection
+	$username = trim($_POST['user']);
 	$pass = $_POST['pass'];
 
-	$sql = $koneksi->query("SELECT * FROM tb_user WHERE username='$username' AND password='$pass'");
-	$data = $sql->fetch_array();
-	$login = $sql->num_rows;
-	if ($login >=1) {
-		session_start();
+	// Validasi input
+	if (empty($username) || empty($pass)) {
+		?>
+		<script type="text/javascript">
+			Swal.fire({
+				icon: 'error',
+				title: 'Login Gagal!',
+				text: 'Username dan Password harus diisi!',
+				confirmButtonColor: '#dc3545',
+				confirmButtonText: 'OK'
+			});
+		</script>
+		<?php
+		exit();
+	}
+
+	// Gunakan prepared statement untuk mencegah SQL Injection
+	$stmt = $koneksi->prepare("SELECT * FROM tb_user WHERE username = ? AND password = ?");
+	$stmt->bind_param("ss", $username, $pass);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$data = $result->fetch_array();
+	$login = $result->num_rows;
+	$stmt->close();
+
+	if ($login >= 1) {
+		// Regenerate session ID setelah login untuk mencegah session hijacking
+		if (session_status() === PHP_SESSION_ACTIVE) {
+			session_regenerate_id(true);
+		}
 
 		$_SESSION['level'] = $data['level'];
 		$_SESSION['id_user'] = $data['id_user'];
 		$_SESSION['username'] = $data['username'];
 		$_SESSION['nama'] = $data['nama'];
+		$_SESSION['login_time'] = time(); // Simpan waktu login untuk tracking
 
 		// Log aktivitas
 		require_once '../libs/log_activity.php';

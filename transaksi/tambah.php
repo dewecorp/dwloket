@@ -9,20 +9,9 @@ if (!$check_column || $check_column->num_rows == 0) {
     // Kolom produk belum ada, tambahkan
     $add_column_query = "ALTER TABLE `transaksi` ADD COLUMN `produk` VARCHAR(255) NULL AFTER `nama`";
     $koneksi->query($add_column_query);
-    error_log("Kolom produk berhasil ditambahkan ke tabel transaksi");
-}
-
-// PROSES POST HARUS SEBELUM HEADER UNTUK REDIRECT
-// Debug: Log semua POST untuk debugging
-if (!empty($_POST)) {
-    error_log("=== POST DETECTED ===");
-    error_log("POST Keys: " . implode(', ', array_keys($_POST)));
 }
 
 if (isset($_POST['simpan'])) {
-    // Debug: Log data yang diterima
-    error_log("=== FORM SUBMIT DETECTED ===");
-    error_log("POST Data: " . print_r($_POST, true));
 
     $tgl    = isset($_POST['tgl']) ? trim($_POST['tgl']) : '';
     $idpel  = isset($_POST['idpel']) ? trim($_POST['idpel']) : '';
@@ -85,7 +74,6 @@ if (isset($_POST['simpan'])) {
                       VALUES ('$tgl', '$idpel', '$nama', $id_bayar_default, $harga, '$status', $ket_sql)";
         }
 
-        error_log("SQL Query: " . $query);
 
         $sql = $koneksi->query($query);
 
@@ -120,12 +108,10 @@ if (isset($_POST['simpan'])) {
             exit();
         } else {
             $db_error = mysqli_error($koneksi);
-            error_log("Database Error: " . $db_error);
             $error_msg = 'Gagal menyimpan transaksi: ' . $db_error;
             $post_error_msg = $error_msg;
         }
     } else {
-        error_log("Validation Error: " . $error_msg);
         $post_error_msg = $error_msg;
     }
 }
@@ -745,12 +731,10 @@ if ($sql_jenis) {
             // Validasi form sebelum submit
             window.validateForm = function() {
                 try {
-                    console.log('Validasi form dimulai...');
 
                     // Cek apakah harga sudah diisi
                     const hargaVal = hargaInput ? hargaInput.value : '';
                     const harga = parseFloat(hargaVal) || 0;
-                    console.log('Harga:', harga, 'Original:', hargaVal);
 
                     if (harga <= 0) {
                         if (typeof Swal !== 'undefined') {
@@ -770,7 +754,6 @@ if ($sql_jenis) {
                     // Cek apakah ID pelanggan sudah diisi
                     const idpelInput = document.getElementById('idpel');
                     const idpel = idpelInput ? idpelInput.value.trim() : '';
-                    console.log('ID Pelanggan:', idpel);
 
                     if (!idpel) {
                         if (typeof Swal !== 'undefined') {
@@ -793,10 +776,8 @@ if ($sql_jenis) {
                         return false;
                     }
 
-                    console.log('Validasi berhasil, form akan di-submit');
                     return true;
                 } catch (error) {
-                    console.error('Error dalam validasi:', error);
                     // Jika ada error, tetap izinkan submit (fallback)
                     return true;
                 }
@@ -976,7 +957,6 @@ if ($sql_jenis) {
                     })
                     .catch(error => {
                         clearTimeout(timeoutId);
-                        console.error('Error loading produk:', error);
 
                         let errorMessage = 'Gagal memuat produk. ';
                         if (error.name === 'AbortError') {
@@ -1009,7 +989,6 @@ if ($sql_jenis) {
 
                     // Validasi data
                     if (!kode || harga <= 0) {
-                        console.error('Data produk tidak valid:', {kode, harga});
                         if (typeof Swal !== 'undefined') {
                             Swal.fire({
                                 icon: 'error',

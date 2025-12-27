@@ -9,7 +9,6 @@ if (!$check_column || $check_column->num_rows == 0) {
     // Kolom produk belum ada, tambahkan
     $add_column_query = "ALTER TABLE `transaksi` ADD COLUMN `produk` VARCHAR(255) NULL AFTER `nama`";
     $koneksi->query($add_column_query);
-    error_log("Kolom produk berhasil ditambahkan ke tabel transaksi");
 }
 
 // Session sudah di-start di config.php
@@ -158,7 +157,6 @@ if (empty($id) || $id <= 0) {
 // Ambil data transaksi - HARUS SEBELUM include header.php
 $sql = $koneksi->query("SELECT * FROM transaksi WHERE id_transaksi='$id'");
 if (!$sql) {
-    error_log("Error fetching transaksi: " . mysqli_error($koneksi));
     header('Location: ' . base_url('transaksi/transaksi.php'));
     exit();
 }
@@ -265,7 +263,6 @@ try {
         }
     }
 } catch (Exception $e) {
-    error_log("Error in getAllKategori: " . $e->getMessage());
     $all_kategori = [];
 }
 
@@ -769,7 +766,6 @@ if ($sql_jenis) {
                     }
                 })
                 .catch(error => {
-                    console.error('Error loading produk:', error);
                     produkAccordion.innerHTML = '<div class="alert alert-danger text-center"><i class="fa fa-exclamation-triangle"></i> Gagal memuat produk. Silakan refresh halaman.</div>';
                 });
             }

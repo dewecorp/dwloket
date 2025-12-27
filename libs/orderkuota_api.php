@@ -63,7 +63,6 @@ class OrderKuotaAPI {
         // Logging hanya jika ORDERKUOTA_ENABLE_LOG aktif
         if (empty($this->api_token) && (empty($this->api_key) || empty($this->api_secret))) {
             if (defined('ORDERKUOTA_ENABLE_LOG') && ORDERKUOTA_ENABLE_LOG) {
-                error_log('OrderKuotaAPI: API Token atau (API Key dan Secret) belum diisi. Silakan isi di config/orderkuota_config.php');
             }
         }
     }

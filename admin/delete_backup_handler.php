@@ -11,7 +11,6 @@ while (ob_get_level()) {
 
 // Pastikan tidak ada output sebelumnya
 if (headers_sent($file, $line)) {
-    error_log("Headers already sent in $file on line $line before delete handler");
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Headers already sent']);
     exit;

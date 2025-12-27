@@ -21,7 +21,6 @@ class BackupRestore {
         // Buat directory backup jika belum ada
         if (!is_dir($backup_dir)) {
             if (!@mkdir($backup_dir, 0755, true)) {
-                error_log('Failed to create backup directory: ' . $backup_dir);
                 $this->backup_dir = $backup_dir;
             } else {
                 // Setelah dibuat, dapatkan realpath jika ada
@@ -48,13 +47,11 @@ class BackupRestore {
 
                 // Cek lagi
                 if (!is_writable($this->backup_dir)) {
-                    error_log('Warning: Backup directory may not be writable: ' . $this->backup_dir);
                 }
             }
         }
 
         // Log untuk debugging
-        error_log('BackupRestore initialized. Backup directory: ' . $this->backup_dir);
     }
 
     /**
@@ -113,7 +110,6 @@ class BackupRestore {
         $memory_limit_bytes = $this->parseMemoryLimit($current_memory_limit);
         if ($memory_limit_bytes < 256 * 1024 * 1024) { // Jika kurang dari 256MB
             @ini_set('memory_limit', '512M');
-            error_log('Memory limit increased from ' . $current_memory_limit . ' to 512M');
         }
 
         // Set max execution time lebih lama
@@ -126,7 +122,6 @@ class BackupRestore {
             // Pastikan folder backup ada
             if (!is_dir($backup_dir)) {
                 if (!@mkdir($backup_dir, 0755, true)) {
-                    error_log('Failed to create backup directory: ' . $backup_dir);
                     return [
                         'success' => false,
                         'message' => 'Gagal membuat folder backups. Pastikan permission folder benar. Path: ' . $backup_dir
@@ -146,9 +141,6 @@ class BackupRestore {
                 clearstatcache(true, $backup_dir);
 
                 if (!is_writable($backup_dir)) {
-                    error_log('Backup directory not writable: ' . $backup_dir);
-                    error_log('Directory exists: ' . (is_dir($backup_dir) ? 'Yes' : 'No'));
-                    error_log('Directory permissions: ' . substr(sprintf('%o', fileperms($backup_dir)), -4));
                     return [
                         'success' => false,
                         'message' => 'Folder backups tidak dapat ditulis. Pastikan permission folder benar. Path: ' . $backup_dir
@@ -169,10 +161,6 @@ class BackupRestore {
             // Gunakan DIRECTORY_SEPARATOR untuk konsistensi cross-platform
             $filepath = $backup_dir . DIRECTORY_SEPARATOR . $filename;
 
-            error_log('Creating backup file: ' . $filepath);
-            error_log('Backup directory: ' . $backup_dir);
-            error_log('Directory exists: ' . (is_dir($backup_dir) ? 'Yes' : 'No'));
-            error_log('Directory writable: ' . (is_writable($backup_dir) ? 'Yes' : 'No'));
 
             // TEST WRITE: Coba tulis file test kecil dulu untuk memastikan folder benar-benar writable
             $test_file = $backup_dir . DIRECTORY_SEPARATOR . 'test_write_' . time() . '.txt';
@@ -180,7 +168,6 @@ class BackupRestore {
             $test_write = @file_put_contents($test_file, $test_content);
 
             if ($test_write === false) {
-                error_log('TEST WRITE FAILED: Cannot write test file to: ' . $test_file);
                 return [
                     'success' => false,
                     'message' => 'Folder backups tidak dapat ditulis. Silakan cek permission folder. Path: ' . $backup_dir
@@ -191,7 +178,6 @@ class BackupRestore {
             clearstatcache(true, $test_file);
             sleep(1);
             if (!file_exists($test_file) || filesize($test_file) == 0) {
-                error_log('TEST FILE NOT SAVED: Test file tidak tersimpan');
                 return [
                     'success' => false,
                     'message' => 'File test tidak tersimpan. Silakan cek permission folder. Path: ' . $backup_dir
@@ -201,7 +187,6 @@ class BackupRestore {
             // Hapus test file
             @unlink($test_file);
             clearstatcache(true, $test_file);
-            error_log('TEST WRITE SUCCESS: Folder dapat ditulis');
 
             // Hapus file backup lama jika sudah ada
             if (file_exists($filepath)) {
@@ -212,7 +197,6 @@ class BackupRestore {
 
             // Kumpulkan semua konten backup ke string
             // Menggunakan file_put_contents sebagai metode utama (lebih reliable untuk Windows)
-            error_log('Building backup content in memory...');
             $backup_content = '';
 
             // Write header
@@ -304,24 +288,19 @@ class BackupRestore {
             $backup_content .= "COMMIT;\n";
 
             $content_size = strlen($backup_content);
-            error_log('Backup content built. Total size: ' . $content_size . ' bytes (' . round($content_size / 1024 / 1024, 2) . ' MB)');
 
             // Tulis semua konten sekaligus dengan file_put_contents
             // Ini adalah metode yang lebih reliable untuk Windows
-            error_log('Writing backup file with file_put_contents...');
             $write_result = @file_put_contents($filepath, $backup_content, LOCK_EX);
 
             if ($write_result === false) {
                 $last_error = error_get_last();
-                error_log('CRITICAL: Cannot write file with file_put_contents');
-                error_log('Last PHP error: ' . ($last_error ? $last_error['message'] : 'None'));
                 return [
                     'success' => false,
                     'message' => 'Gagal menulis file backup. Path: ' . $filepath . '. Error: ' . ($last_error ? $last_error['message'] : 'Unknown error')
                 ];
             }
 
-            error_log('File written with file_put_contents. Bytes written: ' . $write_result . ' (expected: ' . $content_size . ')');
 
             // Verifikasi langsung dengan membaca file kembali
             // Ini memastikan file benar-benar tersimpan
@@ -335,13 +314,10 @@ class BackupRestore {
                 clearstatcache(true, $backup_dir);
 
                 if (!file_exists($filepath)) {
-                    error_log('Verification attempt #' . ($verify_attempt + 1) . ': File does not exist');
                     // Jika file tidak ada setelah beberapa attempt, coba tulis ulang
                     if ($verify_attempt >= 5) {
-                        error_log('File missing after 5 attempts, rewriting...');
                         $rewrite_result = @file_put_contents($filepath, $backup_content, LOCK_EX);
                         if ($rewrite_result !== false) {
-                            error_log('File rewritten. Bytes: ' . $rewrite_result);
                         }
                     }
                     continue;
@@ -349,13 +325,10 @@ class BackupRestore {
 
                 $file_size = @filesize($filepath);
                 if ($file_size === false || $file_size == 0) {
-                    error_log('Verification attempt #' . ($verify_attempt + 1) . ': File size invalid (' . ($file_size ?: 'N/A') . ')');
                     // Jika file kosong setelah beberapa attempt, coba tulis ulang
                     if ($verify_attempt >= 5) {
-                        error_log('File empty after 5 attempts, rewriting...');
                         $rewrite_result = @file_put_contents($filepath, $backup_content, LOCK_EX);
                         if ($rewrite_result !== false) {
-                            error_log('File rewritten. Bytes: ' . $rewrite_result);
                         }
                     }
                     continue;
@@ -364,13 +337,10 @@ class BackupRestore {
                 // Verifikasi konten file valid (baca header dan sedikit konten)
                 $file_header = @file_get_contents($filepath, false, null, 0, 50);
                 if ($file_header === false || strpos($file_header, '-- Database Backup') !== 0) {
-                    error_log('Verification attempt #' . ($verify_attempt + 1) . ': File header invalid');
                     // Jika header invalid setelah beberapa attempt, coba tulis ulang
                     if ($verify_attempt >= 5) {
-                        error_log('File header invalid after 5 attempts, rewriting...');
                         $rewrite_result = @file_put_contents($filepath, $backup_content, LOCK_EX);
                         if ($rewrite_result !== false) {
-                            error_log('File rewritten. Bytes: ' . $rewrite_result);
                         }
                     }
                     continue;
@@ -378,13 +348,10 @@ class BackupRestore {
 
                 // Verifikasi ukuran file sesuai dengan konten yang ditulis
                 if (abs($file_size - $content_size) > 100) { // Allow 100 bytes difference
-                    error_log('Verification attempt #' . ($verify_attempt + 1) . ': File size mismatch. Expected: ' . $content_size . ', Got: ' . $file_size);
                     // Jika size mismatch setelah beberapa attempt, coba tulis ulang
                     if ($verify_attempt >= 5) {
-                        error_log('File size mismatch after 5 attempts, rewriting...');
                         $rewrite_result = @file_put_contents($filepath, $backup_content, LOCK_EX);
                         if ($rewrite_result !== false) {
-                            error_log('File rewritten. Bytes: ' . $rewrite_result);
                         }
                     }
                     continue;
@@ -393,16 +360,11 @@ class BackupRestore {
                 // Semua verifikasi passed
                 $file_verified = true;
                 $file_size_on_disk = $file_size;
-                error_log('File verified successfully on attempt #' . ($verify_attempt + 1) . '. Size: ' . $file_size . ' bytes');
                 break;
             }
 
             if (!$file_verified) {
-                error_log('CRITICAL: File verification failed after 20 attempts');
-                error_log('  - File exists: ' . (file_exists($filepath) ? 'Yes' : 'No'));
                 if (file_exists($filepath)) {
-                    error_log('  - File size: ' . filesize($filepath));
-                    error_log('  - File readable: ' . (is_readable($filepath) ? 'Yes' : 'No'));
                     // Jangan hapus file, biarkan untuk debugging
                 }
                 return [
@@ -411,7 +373,6 @@ class BackupRestore {
                 ];
             }
 
-            error_log('File size verified. Expected: ' . $content_size . ', On disk: ' . $file_size_on_disk);
 
             // Verifikasi tambahan: pastikan file dapat dibaca oleh getBackups()
             // Tunggu lagi untuk memastikan file system sync
@@ -444,8 +405,6 @@ class BackupRestore {
                 }
             }
 
-            error_log('Backup created successfully: ' . $filepath);
-            error_log('File size verified. Expected: ' . $content_size . ', On disk: ' . $file_size_on_disk . ' bytes');
 
             // Final check sebelum return - Dikurangi delay untuk mempercepat proses
             sleep(1); // 1 detik untuk memastikan file benar-benar tersimpan di Windows
@@ -455,17 +414,14 @@ class BackupRestore {
             // Baca file sekali lagi untuk memastikan benar-benar tersimpan
             $final_read = @file_get_contents($filepath);
             if ($final_read === false || strlen($final_read) == 0) {
-                error_log('CRITICAL: Cannot read file after final wait, rewriting...');
                 // Coba tulis ulang sekali lagi
                 $final_write = @file_put_contents($filepath, $backup_content, LOCK_EX);
                 if ($final_write === false) {
-                    error_log('CRITICAL: Cannot rewrite file');
                     return [
                         'success' => false,
                         'message' => 'File backup tidak berhasil disimpan. Silakan cek permission folder backups.'
                     ];
                 }
-                error_log('File rewritten in final check. Bytes: ' . $final_write);
                 sleep(1); // Dikurangi dari 2 detik menjadi 1 detik
                 clearstatcache(true, $filepath);
                 // Baca lagi setelah rewrite
@@ -474,7 +430,6 @@ class BackupRestore {
 
             // Verifikasi final - pastikan file bisa dibaca, ukurannya benar, dan kontennya valid
             if (!file_exists($filepath)) {
-                error_log('CRITICAL: File backup tidak ada sebelum return success');
                 return [
                     'success' => false,
                     'message' => 'File backup tidak berhasil disimpan. Silakan cek permission folder backups.'
@@ -483,7 +438,6 @@ class BackupRestore {
 
             $final_size = @filesize($filepath);
             if ($final_size === false || $final_size == 0) {
-                error_log('CRITICAL: File backup kosong sebelum return success. Size: ' . ($final_size ?: 'N/A'));
                 return [
                     'success' => false,
                     'message' => 'File backup kosong. Silakan coba lagi.'
@@ -491,7 +445,6 @@ class BackupRestore {
             }
 
             if ($final_read === false || strlen($final_read) == 0) {
-                error_log('CRITICAL: Cannot read file content before return success');
                 return [
                     'success' => false,
                     'message' => 'File backup tidak dapat dibaca. Silakan coba lagi.'
@@ -499,7 +452,6 @@ class BackupRestore {
             }
 
             if (strpos($final_read, '-- Database Backup') !== 0) {
-                error_log('CRITICAL: File content invalid before return success. First 100 chars: ' . substr($final_read, 0, 100));
                 return [
                     'success' => false,
                     'message' => 'File backup tidak valid. Silakan coba lagi.'
@@ -508,17 +460,14 @@ class BackupRestore {
 
             // Verifikasi ukuran file sesuai dengan konten yang ditulis
             if (abs(strlen($final_read) - $content_size) > 100) {
-                error_log('WARNING: File size mismatch. Expected: ' . $content_size . ', Read: ' . strlen($final_read));
                 // Tulis ulang jika size mismatch terlalu besar
                 $final_write = @file_put_contents($filepath, $backup_content, LOCK_EX);
                 if ($final_write !== false) {
-                    error_log('File rewritten due to size mismatch. Bytes: ' . $final_write);
                     sleep(1);
                     clearstatcache(true, $filepath);
                 }
             }
 
-            error_log('Final verification passed. File exists, readable, and has valid content. Size: ' . filesize($filepath) . ' bytes');
 
             // Gunakan file_size_on_disk untuk return
             $final_file_size = $file_size_on_disk;
@@ -539,11 +488,8 @@ class BackupRestore {
             // Cleanup jika error
             if (isset($filepath) && $filepath && file_exists($filepath)) {
                 @unlink($filepath);
-                error_log('Cleaned up partial backup file: ' . $filepath);
             }
 
-            error_log('Backup Exception: ' . $e->getMessage());
-            error_log('Exception trace: ' . $e->getTraceAsString());
             return [
                 'success' => false,
                 'message' => 'Error saat membuat backup: ' . $e->getMessage() . ' (Line: ' . $e->getLine() . ')'
@@ -552,11 +498,8 @@ class BackupRestore {
             // Cleanup jika fatal error
             if (isset($filepath) && $filepath && file_exists($filepath)) {
                 @unlink($filepath);
-                error_log('Cleaned up partial backup file after fatal error: ' . $filepath);
             }
 
-            error_log('Backup Fatal Error: ' . $e->getMessage());
-            error_log('Error trace: ' . $e->getTraceAsString());
             return [
                 'success' => false,
                 'message' => 'Fatal Error saat membuat backup: ' . $e->getMessage() . ' (Line: ' . $e->getLine() . ')'
@@ -725,8 +668,6 @@ class BackupRestore {
         // Gunakan method helper untuk mendapatkan path yang konsisten
         $backup_dir = $this->getBackupDir();
 
-        error_log('getBackups() - Getting backups from directory: ' . $backup_dir);
-        error_log('getBackups() - Backup directory (this->backup_dir): ' . $this->backup_dir);
 
         if (is_dir($backup_dir)) {
             // Clear stat cache untuk memastikan data terbaru
@@ -748,12 +689,10 @@ class BackupRestore {
                 closedir($dir_handle);
             }
 
-            error_log('getBackups() - Files found by scandir: ' . count($files));
 
             // Jika scandir tidak menemukan file, coba glob sebagai fallback dengan retry
             if (empty($files)) {
                 $pattern = $backup_dir . DIRECTORY_SEPARATOR . '*.sql';
-                error_log('getBackups() - Trying glob with pattern: ' . $pattern);
 
                 // Retry glob beberapa kali untuk Windows file system sync
                 for ($glob_retry = 0; $glob_retry < 5; $glob_retry++) {
@@ -761,7 +700,6 @@ class BackupRestore {
                     $glob_files = @glob($pattern);
                     if (is_array($glob_files) && !empty($glob_files)) {
                         $files = $glob_files;
-                        error_log('getBackups() - Files found by glob (attempt #' . ($glob_retry + 1) . '): ' . count($files));
                         break;
                     }
                     if ($glob_retry < 4) {
@@ -770,7 +708,6 @@ class BackupRestore {
                 }
 
                 if (empty($files)) {
-                    error_log('getBackups() - No files found by glob after 5 attempts');
                 }
             }
 
@@ -782,29 +719,21 @@ class BackupRestore {
                 clearstatcache(true, $file);
 
                 // Log setiap file yang diproses
-                error_log('getBackups() - Processing file: ' . $file);
-                error_log('  - is_file: ' . (is_file($file) ? 'Yes' : 'No'));
-                error_log('  - is_readable: ' . (is_readable($file) ? 'Yes' : 'No'));
 
                 // Skip jika bukan file atau tidak readable
                 if (!is_file($file) || !is_readable($file)) {
-                    error_log('  - Skipped: not a file or not readable');
                     continue;
                 }
 
                 $file_size = @filesize($file);
                 $file_mtime = @filemtime($file);
 
-                error_log('  - file_size: ' . ($file_size ?: 'false'));
-                error_log('  - file_mtime: ' . ($file_mtime ?: 'false'));
 
                 // Skip jika file size atau mtime tidak valid
                 if ($file_size === false || $file_mtime === false || $file_size == 0) {
-                    error_log('  - Skipped: invalid size or mtime');
                     continue;
                 }
 
-                error_log('  - Added to backups list');
 
                 $backups[] = [
                     'filename' => basename($file),
@@ -821,9 +750,7 @@ class BackupRestore {
                 return $b['modified_at'] - $a['modified_at'];
             });
 
-            error_log('getBackups() found ' . count($backups) . ' backup files');
         } else {
-            error_log('getBackups() - Directory does not exist: ' . $backup_dir);
         }
 
         return $backups;

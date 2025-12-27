@@ -1,11 +1,38 @@
 <?php
 require_once "config/config.php";
-$id = @$_SESSION['id_user'];
-$sql = $koneksi->query("SELECT * FROM tb_user WHERE id_user ='$id'");
-$tampil = $sql->fetch_assoc();
-if (isset($_SESSION['level']) == "") {
+
+// Perbaikan: Cek session dengan benar untuk mengatasi masalah redirect setelah idle lama
+// Masalah sebelumnya: isset($_SESSION['level']) == "" selalu true ketika session expired
+// Solusi: Gunakan !isset() atau empty() untuk cek yang benar
+if (!isset($_SESSION['level']) || empty($_SESSION['level'])) {
 	header("location:auth/login.php");
+	exit();
+}
+
+// Jika session valid, ambil data user
+// Perbaikan keamanan: Gunakan prepared statement untuk mencegah SQL Injection
+$id = isset($_SESSION['id_user']) ? (int)$_SESSION['id_user'] : 0;
+$tampil = null;
+
+if ($id > 0) {
+	$stmt = $koneksi->prepare("SELECT * FROM tb_user WHERE id_user = ?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$tampil = $result->fetch_assoc();
+	$stmt->close();
+
+	// Jika user tidak ditemukan atau data tidak valid, redirect ke login
+	if (!$tampil || empty($tampil['id_user'])) {
+		session_destroy();
+		header("location:auth/login.php");
+		exit();
+	}
 } else {
+	// Jika id tidak valid, redirect ke login
+	header("location:auth/login.php");
+	exit();
+}
 ?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -134,14 +161,14 @@ if (isset($_SESSION['level']) == "") {
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
-                                <img src="<?=base_url()?>/files/assets/images/<?=$tampil['foto']; ?>" alt="user"
+                                <img src="<?=base_url()?>/files/assets/images/<?=htmlspecialchars($tampil['foto'] ?? 'default.png', ENT_QUOTES, 'UTF-8'); ?>" alt="user"
                                     class="rounded-circle" width="50" height="50">
                                 <span class="ml-2 d-none d-lg-inline-block"><span>Hai,</span> <span
-                                        class="text-dark"><?=$tampil['nama']; ?></span> <i data-feather="chevron-down"
+                                        class="text-dark"><?=htmlspecialchars($tampil['nama'] ?? 'User', ENT_QUOTES, 'UTF-8'); ?></span> <i data-feather="chevron-down"
                                         class="svg-icon"></i></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
-                                <a class="dropdown-item" href="../user/profil_user.php?id=<?=$tampil['id_user'];?>"><i
+                                <a class="dropdown-item" href="../user/profil_user.php?id=<?=htmlspecialchars($tampil['id_user'] ?? 0, ENT_QUOTES, 'UTF-8');?>"><i
                                         data-feather="user" class="svg-icon mr-2 ml-1"></i>
                                     My Profile</a>
                                 <div class="dropdown-divider"></div>
@@ -247,6 +274,3 @@ if (isset($_SESSION['level']) == "") {
             <!-- End Sidebar scroll-->
         </aside>
         <div class="page-wrapper">
-            <?php
-		}
-		?>

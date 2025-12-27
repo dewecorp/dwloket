@@ -18,7 +18,6 @@ function log_activity($action, $module, $description, $user_id = null) {
 
     // Pastikan koneksi database ada
     if (!isset($koneksi) || !$koneksi) {
-        error_log('log_activity: Database connection not available');
         return false;
     }
 
@@ -80,14 +79,12 @@ function log_activity($action, $module, $description, $user_id = null) {
         $result = $koneksi->query($sql);
 
         if (!$result) {
-            error_log('log_activity failed: ' . $koneksi->error);
             return false;
         }
 
         return true;
 
     } catch (Exception $e) {
-        error_log('log_activity exception: ' . $e->getMessage());
         return false;
     }
 }
@@ -118,7 +115,6 @@ function cleanup_old_activities() {
         return 0;
 
     } catch (Exception $e) {
-        error_log('cleanup_old_activities exception: ' . $e->getMessage());
         return 0;
     }
 }
@@ -157,7 +153,6 @@ function get_recent_activities($limit = 10) {
         return $activities;
 
     } catch (Exception $e) {
-        error_log('get_recent_activities exception: ' . $e->getMessage());
         return [];
     }
 }
@@ -199,7 +194,6 @@ function get_activity_stats($module = null) {
         return $stats;
 
     } catch (Exception $e) {
-        error_log('get_activity_stats exception: ' . $e->getMessage());
         return [];
     }
 }
