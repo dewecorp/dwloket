@@ -4,6 +4,11 @@ $page_title = 'Dashboard';
 include_once('../header.php');
 require_once '../libs/log_activity.php';
 require_once '../libs/saldo_helper.php';
+require_once '../libs/transaksi_cleanup.php';
+
+// Jalankan auto cleanup transaksi lama (maksimal 1 kali per hari)
+// Cleanup akan berjalan secara otomatis saat dashboard diakses
+@auto_cleanup_old_transactions($koneksi);
 
 $id = @$_GET['id'];
 $data_pelanggan = $koneksi->query("SELECT * FROM pelanggan");
