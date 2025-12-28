@@ -209,30 +209,30 @@ $month_stats = $month_query->fetch_assoc();
     <div class="container-fluid">
         <!-- Statistik -->
         <div class="row mb-4">
-            <!-- Widget Saldo - Extra Compact version -->
             <?php
             $total_saldo = get_total_saldo($koneksi);
             $saldo_color = $total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745');
             $saldo_status = $total_saldo < 0 ? 'Saldo Negatif!' : ($total_saldo < 100000 ? 'Saldo Rendah' : 'Saldo Aktif');
             ?>
             <div class="col-md-3">
-                <div class="stat-card-modern" style="border-left: 2px solid <?=$saldo_color?>; padding: 0.75rem !important;">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, <?=$saldo_color?> 0%, <?=$saldo_color?>dd 100%); width: 40px; height: 40px; min-width: 40px;">
-                        <i class="fa fa-wallet" style="color: white !important; font-size: 18px !important;"></i>
+                <div class="stat-card-modern">
+                    <div class="stat-icon" style="background: <?=$saldo_color?> !important;">
+                        <i class="fa fa-wallet" style="color: white !important; font-size: 26px !important;"></i>
                     </div>
-                    <div class="stat-value" style="color: <?=$saldo_color?>; font-weight: 600; font-size: 1.2rem; line-height: 1.2; margin-top: 0.3rem;">
+                    <div class="stat-value" style="color: <?=$saldo_color?>; font-weight: 700; font-size: 1.875rem;">
                         Rp <?=number_format($total_saldo, 0, ',', '.')?>
                     </div>
-                    <div class="stat-label" style="font-size: 0.75rem; margin-top: 0.2rem;">Saldo Tersedia</div>
-                    <small class="<?=$total_saldo < 0 ? 'text-danger' : ($total_saldo < 100000 ? 'text-warning' : 'text-success')?>" style="font-weight: 500; font-size: 0.7rem;">
-                        <i class="fa fa-<?=$total_saldo < 0 ? 'exclamation-triangle' : ($total_saldo < 100000 ? 'exclamation-circle' : 'check-circle')?>"></i> <?=$saldo_status?>
+                    <div class="stat-label" style="color: #6c757d;">Saldo Akhir</div>
+                    <small class="<?=$total_saldo < 0 ? 'text-danger' : ($total_saldo < 100000 ? 'text-warning' : 'text-success')?>" style="font-weight: 600; color: <?=$saldo_color?> !important;">
+                        <i class="fa fa-<?=$total_saldo < 0 ? 'exclamation-triangle' : ($total_saldo < 100000 ? 'exclamation-circle' : 'check-circle')?>"></i>
+                        <?=$saldo_status?>
                     </small>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="stat-card-modern">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                        <i class="fa fa-list" style="color: white !important; font-size: 28px !important;"></i>
+                    <div class="stat-icon" style="background: #667eea !important;">
+                        <i class="fa fa-shopping-cart" style="color: white !important; font-size: 26px !important;"></i>
                     </div>
                     <div class="stat-value"><?=$total_stats['total'] ?? 0?></div>
                     <div class="stat-label">Total Transaksi</div>
@@ -240,8 +240,8 @@ $month_stats = $month_query->fetch_assoc();
             </div>
             <div class="col-md-3">
                 <div class="stat-card-modern">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #1cc88a 0%, #17a673 100%);">
-                        <i class="fa fa-dollar-sign" style="color: white !important; font-size: 28px !important;"></i>
+                    <div class="stat-icon" style="background: #1cc88a !important;">
+                        <i class="fa fa-dollar-sign" style="color: white !important; font-size: 26px !important;"></i>
                     </div>
                     <div class="stat-value">Rp <?=number_format($total_stats['nominal'] ?? 0, 0, ',', '.')?></div>
                     <div class="stat-label">Total Nominal</div>
@@ -249,8 +249,8 @@ $month_stats = $month_query->fetch_assoc();
             </div>
             <div class="col-md-3">
                 <div class="stat-card-modern">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #36b9cc 0%, #2c9faf 100%);">
-                        <i class="fa fa-calendar-check" style="color: white !important; font-size: 28px !important;"></i>
+                    <div class="stat-icon" style="background: #36b9cc !important;">
+                        <i class="fa fa-calendar-check" style="color: white !important; font-size: 26px !important;"></i>
                     </div>
                     <div class="stat-value"><?=$today_stats['total'] ?? 0?></div>
                     <div class="stat-label">Transaksi Hari Ini</div>
@@ -259,15 +259,34 @@ $month_stats = $month_query->fetch_assoc();
                     </small>
                 </div>
             </div>
+        </div>
+        <div class="row mb-4">
             <div class="col-md-3">
                 <div class="stat-card-modern">
-                    <div class="stat-icon" style="background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);">
-                        <i class="fa fa-calendar-alt" style="color: white !important; font-size: 28px !important;"></i>
+                    <div class="stat-icon" style="background: #f6c23e !important;">
+                        <i class="fa fa-calendar-alt" style="color: white !important; font-size: 26px !important;"></i>
                     </div>
                     <div class="stat-value"><?=$month_stats['total'] ?? 0?></div>
                     <div class="stat-label">Transaksi Bulan Ini</div>
                     <small class="text-success" style="font-weight: 600;">
                         <i class="fa fa-dollar-sign"></i> Rp <?=number_format($month_stats['nominal'] ?? 0, 0, ',', '.')?>
+                    </small>
+                </div>
+            </div>
+            <?php
+            // Statistik filtered
+            $filtered_total = $filtered_stats['total'] ?? 0;
+            $filtered_nominal = $filtered_stats['nominal'] ?? 0;
+            ?>
+            <div class="col-md-3">
+                <div class="stat-card-modern">
+                    <div class="stat-icon" style="background: #e74a3b !important;">
+                        <i class="fa fa-filter" style="color: white !important; font-size: 26px !important;"></i>
+                    </div>
+                    <div class="stat-value"><?=$filtered_total?></div>
+                    <div class="stat-label">Hasil Filter</div>
+                    <small class="text-info" style="font-weight: 600;">
+                        <i class="fa fa-dollar-sign"></i> Rp <?=number_format($filtered_nominal, 0, ',', '.')?>
                     </small>
                 </div>
             </div>

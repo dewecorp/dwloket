@@ -69,7 +69,8 @@ include_once('../header.php');
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $sql = $koneksi->query("SELECT * FROM tb_saldo ORDER BY tgl DESC");
+                                        // Hanya tampilkan saldo positif (saldo negatif tidak lagi dibuat, hanya untuk membersihkan data lama)
+                                        $sql = $koneksi->query("SELECT * FROM tb_saldo WHERE CAST(saldo AS DECIMAL(15,2)) > 0 ORDER BY tgl DESC");
                                         while($data = $sql->fetch_assoc()) {
                                         $tgl = $data['tgl'];
 
