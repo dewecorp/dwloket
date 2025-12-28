@@ -1,7 +1,7 @@
 <?php
 $page_title = 'Dashboard';
+// config/config.php sudah di-include di header.php, tidak perlu di-include lagi
 include_once('../header.php');
-include_once('../config/config.php');
 require_once '../libs/log_activity.php';
 require_once '../libs/saldo_helper.php';
 

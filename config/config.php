@@ -1,10 +1,10 @@
 <?php
 date_default_timezone_set('Asia/Jakarta');
 
-// Konfigurasi session timeout - perpanjang waktu idle menjadi 2 jam (7200 detik)
+// Konfigurasi session timeout - perpanjang waktu idle menjadi 24 jam (86400 detik)
 // Default PHP session timeout adalah 24 menit, ini diperpanjang untuk mengurangi masalah setelah idle
-ini_set('session.gc_maxlifetime', 7200); // 2 jam dalam detik
-ini_set('session.cookie_lifetime', 7200); // Cookie session juga 2 jam
+ini_set('session.gc_maxlifetime', 86400); // 24 jam dalam detik
+ini_set('session.cookie_lifetime', 86400); // Cookie session juga 24 jam
 
 // Pengaturan keamanan session untuk mencegah session hijacking dan fixation
 ini_set('session.cookie_httponly', 1); // Mencegah akses cookie melalui JavaScript
@@ -15,6 +15,45 @@ ini_set('session.cookie_samesite', 'Strict'); // CSRF protection
 // Pastikan session_start hanya dipanggil sekali
 if (session_status() === PHP_SESSION_NONE) {
 	session_start();
+}
+
+// Perpanjang session setiap kali ada aktivitas (refresh cookie dan session data)
+// Ini memastikan session tidak expired selama user masih aktif
+// PENTING: Refresh session SEBELUM pengecekan di header.php
+if (isset($_SESSION['level']) && !empty($_SESSION['level'])) {
+	// Update session data untuk memperpanjang waktu expired
+	$_SESSION['last_activity'] = time();
+
+	// Update cookie session untuk memperpanjang waktu expired
+	// Gunakan parameter yang sama dengan session_get_cookie_params() untuk konsistensi
+	$cookie_params = session_get_cookie_params();
+	$session_name = session_name();
+	$session_id = session_id();
+
+	if ($session_name && $session_id) {
+		// Refresh cookie dengan waktu yang lebih lama - PENTING untuk mencegah expired
+		setcookie(
+			$session_name,
+			$session_id,
+			time() + 86400, // 24 jam
+			$cookie_params['path'] ?: '/',
+			$cookie_params['domain'] ?: '',
+			$cookie_params['secure'],
+			$cookie_params['httponly']
+		);
+
+		// Touch session file untuk memperpanjang waktu expired di server
+		// Ini mencegah garbage collection menghapus session terlalu cepat
+		$session_path = session_save_path();
+		if (empty($session_path)) {
+			$session_path = sys_get_temp_dir();
+		}
+		$session_file = rtrim($session_path, '/\\') . '/sess_' . $session_id;
+		if (file_exists($session_file)) {
+			// Touch file untuk memperpanjang waktu expired
+			@touch($session_file);
+		}
+	}
 }
 
 include_once "koneksi.php";

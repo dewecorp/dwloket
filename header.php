@@ -4,8 +4,12 @@ require_once "config/config.php";
 // Perbaikan: Cek session dengan benar untuk mengatasi masalah redirect setelah idle lama
 // Masalah sebelumnya: isset($_SESSION['level']) == "" selalu true ketika session expired
 // Solusi: Gunakan !isset() atau empty() untuk cek yang benar
+// Perbaikan redirect: Gunakan absolute URL untuk menghindari masalah saat pindah halaman dari subfolder
+
+// Cek session - hanya redirect jika benar-benar tidak ada session
+// Session refresh sudah ditangani di config.php
 if (!isset($_SESSION['level']) || empty($_SESSION['level'])) {
-	header("location:auth/login.php");
+	header("Location: " . base_url('auth/login.php'));
 	exit();
 }
 
@@ -25,12 +29,12 @@ if ($id > 0) {
 	// Jika user tidak ditemukan atau data tidak valid, redirect ke login
 	if (!$tampil || empty($tampil['id_user'])) {
 		session_destroy();
-		header("location:auth/login.php");
+		header("Location: " . base_url('auth/login.php'));
 		exit();
 	}
 } else {
 	// Jika id tidak valid, redirect ke login
-	header("location:auth/login.php");
+	header("Location: " . base_url('auth/login.php'));
 	exit();
 }
 ?>

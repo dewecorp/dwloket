@@ -338,6 +338,7 @@ if (isset($_POST['login'])) {
 		$_SESSION['username'] = $data['username'];
 		$_SESSION['nama'] = $data['nama'];
 		$_SESSION['login_time'] = time(); // Simpan waktu login untuk tracking
+		$_SESSION['last_activity'] = time(); // Simpan waktu aktivitas terakhir
 
 		// Log aktivitas
 		require_once '../libs/log_activity.php';
