@@ -14,7 +14,17 @@ function get_saldo_tertua($koneksi) {
     }
 
     // Ambil saldo tertua yang positif, diurutkan berdasarkan tanggal dan id_saldo (FIFO)
-    $query = "SELECT * FROM tb_saldo WHERE CAST(saldo AS DECIMAL(15,2)) > 0 ORDER BY tgl ASC, id_saldo ASC LIMIT 1";
+    // PENTING: Kolom tgl adalah VARCHAR, jadi perlu konversi ke DATE untuk sorting yang benar
+    // Gunakan STR_TO_DATE untuk memastikan sorting berdasarkan tanggal, bukan string
+    // Format tanggal di database adalah YYYY-MM-DD, jadi konversi ke DATE untuk sorting yang benar
+    // Jika format tanggal tidak valid, gunakan tanggal minimum (1970-01-01) dan id_saldo sebagai fallback
+    // FIFO: First In First Out - saldo dengan tanggal paling lama (ASC) dan ID paling kecil dihapus terlebih dahulu
+    $query = "SELECT * FROM tb_saldo
+              WHERE CAST(saldo AS DECIMAL(15,2)) > 0
+              ORDER BY
+                COALESCE(STR_TO_DATE(tgl, '%Y-%m-%d'), '1970-01-01') ASC,
+                id_saldo ASC
+              LIMIT 1";
     $result = $koneksi->query($query);
 
     if ($result && $result->num_rows > 0) {
