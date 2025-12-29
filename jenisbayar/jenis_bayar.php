@@ -1,4 +1,62 @@
 <?php
+// Aktifkan output buffering untuk menghindari output sebelum header
+ob_start();
+
+// Handle Tambah Jenis Bayar HARUS di paling atas sebelum output apapun
+// Ini untuk menghindari blank page saat redirect
+if (isset($_POST['simpan']) && isset($_POST['jenis'])) {
+    // Include config dulu untuk koneksi database
+    require_once('../config/config.php');
+
+    // Cek jika ini request AJAX (dari form modal)
+    $is_ajax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+    $jenis = mysqli_real_escape_string($koneksi, trim($_POST['jenis']));
+
+    if (empty($jenis)) {
+        $message = 'Jenis pembayaran tidak boleh kosong!';
+        $success = false;
+    } else {
+        // Cek apakah jenis bayar sudah ada
+        $check_query = "SELECT id_bayar FROM tb_jenisbayar WHERE jenis_bayar = '$jenis'";
+        $check_result = $koneksi->query($check_query);
+
+        if ($check_result && $check_result->num_rows > 0) {
+            $message = "Jenis pembayaran '$jenis' sudah ada!";
+            $success = false;
+        } else {
+            $insert_query = "INSERT INTO tb_jenisbayar (jenis_bayar) VALUES ('$jenis')";
+
+            if ($koneksi->query($insert_query)) {
+                $message = htmlspecialchars($jenis) . ' berhasil ditambahkan';
+                $success = true;
+            } else {
+                $message = 'Error: ' . $koneksi->error;
+                $success = false;
+            }
+        }
+    }
+
+    // Clear output buffer sebelum mengirim response
+    ob_end_clean();
+
+    // Jika AJAX request, return JSON
+    if ($is_ajax) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'success' => $success,
+            'message' => $message
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    // Jika bukan AJAX (fallback), gunakan session dan redirect
+    $_SESSION['jenis_bayar_message'] = $message;
+    $_SESSION['jenis_bayar_success'] = $success;
+    header('Location: ' . base_url('jenisbayar/jenis_bayar.php'));
+    exit;
+}
+
 $page_title = 'Jenis Pembayaran';
 include_once('../header.php');
 include_once('../config/config.php');
@@ -112,6 +170,8 @@ $update_success = false;
 $update_message_html = false;
 $tambah_message = '';
 $tambah_success = false;
+$jenis_bayar_message = '';
+$jenis_bayar_success = false;
 
 // Tampilkan pesan import jika ada (dan clear session SETELAH diambil agar tidak muncul lagi setelah reload)
 // Ambil jika ada session meskipun kosong (bisa jadi ada count)
@@ -168,6 +228,14 @@ if (isset($_SESSION['tambah_message'])) {
     $tambah_success = $_SESSION['tambah_success'];
     unset($_SESSION['tambah_message']);
     unset($_SESSION['tambah_success']);
+}
+
+// Tampilkan pesan tambah jenis bayar jika ada
+if (isset($_SESSION['jenis_bayar_message'])) {
+    $jenis_bayar_message = $_SESSION['jenis_bayar_message'];
+    $jenis_bayar_success = $_SESSION['jenis_bayar_success'];
+    unset($_SESSION['jenis_bayar_message']);
+    unset($_SESSION['jenis_bayar_success']);
 }
 
 // Fungsi untuk membaca Excel dengan multiple sheets (nama sheet = kategori)
@@ -2560,7 +2628,7 @@ if ($table_exists) {
                                             <td><?=$no++?></td>
                                             <td><strong><?=htmlspecialchars($produk['kode'])?></strong></td>
                                             <td><?=htmlspecialchars($produk['produk'])?></td>
-                                            <td><span class="badge badge-secondary"><?=htmlspecialchars($produk['kategori'])?></span></td>
+                                            <td><span class="badge badge-info"><?=htmlspecialchars($produk['kategori'])?></span></td>
                                             <td><strong class="text-success">Rp <?=number_format(intval($produk['harga']), 0, ',', '.')?></strong></td>
                                             <td>
                                                 <?php if ($produk['status'] == 1): ?>
@@ -3105,7 +3173,7 @@ if ($table_exists) {
                         <?php foreach ($produk_by_kategori as $kat => $produk_list_kat): ?>
                         <div class="kategori-section-modal">
                             <h5 class="mb-3">
-                                <span class="badge badge-secondary kategori-badge-modal">
+                                <span class="badge badge-info kategori-badge-modal">
                                     <i class="fa fa-folder"></i> <?=htmlspecialchars($kat)?>
                                     <span class="badge badge-light ml-2"><?=count($produk_list_kat)?></span>
                                 </span>
@@ -3264,7 +3332,7 @@ if ($table_exists) {
                                         </tr>
                                         <tr>
                                             <th>Kategori</th>
-                                            <td><span class="badge badge-secondary">${prod.kategori}</span></td>
+                                            <td><span class="badge badge-info">${prod.kategori}</span></td>
                                         </tr>
                                         <tr>
                                             <th>Harga</th>
@@ -3946,6 +4014,29 @@ if ($table_exists) {
             });
             <?php endif; ?>
 
+            <?php if (!empty($jenis_bayar_message)): ?>
+            Swal.fire({
+                position: 'top-center',
+                icon: '<?=$jenis_bayar_success ? 'success' : 'error'?>',
+                title: '<?=$jenis_bayar_success ? 'Berhasil!' : 'Gagal!'?>',
+                text: '<?=htmlspecialchars($jenis_bayar_message, ENT_QUOTES)?>',
+                showConfirmButton: true,
+                confirmButtonColor: '<?=$jenis_bayar_success ? '#28a745' : '#dc3545'?>',
+                timer: 3000,
+                timerProgressBar: true
+            }).then(function() {
+                // Tutup modal tambah jenis bayar jika sukses
+                <?php if ($jenis_bayar_success): ?>
+                const modalTambah = document.getElementById('modaltambah');
+                if (modalTambah) {
+                    const form = modalTambah.querySelector('form');
+                    if (form) form.reset();
+                    $(modalTambah).modal('hide');
+                }
+                <?php endif; ?>
+            });
+            <?php endif; ?>
+
             // Searchable Select untuk Filter Produk
             (function() {
                 const wrapper = document.querySelector('.searchable-select-wrapper');
@@ -4043,6 +4134,8 @@ if ($table_exists) {
         </script>
 
         <?php
+        // Include modal tambah jenis bayar
+        include_once('modal_tambah.php');
         include_once('../footer.php');
         ?>
     </body>

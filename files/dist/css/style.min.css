@@ -6330,9 +6330,7 @@ html {
     -webkit-tap-highlight-color: transparent
 }
 
-body {
-    font-family: Rubik, sans-serif;
-    font-size: 1rem;
+body { font-family: Rubik, sans-serif; font-size: 0.875rem; color: #000000;
     font-weight: 400;
     line-height: 1.5;
     background-color: #f9fbfd
@@ -6466,7 +6464,7 @@ table {
 caption {
     padding-top: 1rem;
     padding-bottom: 1rem;
-    color: #9eabc0;
+    color: #000000;
     caption-side: bottom
 }
 
@@ -6634,27 +6632,27 @@ hr {
 
 .h1,
 h1 {
-    font-size: 2.25rem
+    font-size: 1.625rem
 }
 
 .h2,
 h2 {
-    font-size: 1.875rem
+    font-size: 1.625rem
 }
 
 .h3,
 h3 {
-    font-size: 1.3125rem
+    font-size: 1rem
 }
 
 .h4,
 h4 {
-    font-size: 1.125rem
+    font-size: 1rem
 }
 
 .h5,
 h5 {
-    font-size: 1rem
+    font-size: 0.75rem
 }
 
 .h6,
@@ -6663,7 +6661,7 @@ h6 {
 }
 
 .lead {
-    font-size: 1.25rem
+    font-size: 1.1rem
 }
 
 .display-1 {
@@ -6728,13 +6726,13 @@ mark {
 }
 
 .blockquote {
-    font-size: 1.25rem
+    font-size: 1.1rem
 }
 
 .blockquote-footer {
     display: block;
     font-size: 80%;
-    color: #6c757d
+    color: #000000
 }
 
 .blockquote-footer::before {
@@ -6759,7 +6757,7 @@ mark {
 
 .figure-caption {
     font-size: 90%;
-    color: #6c757d
+    color: #000000
 }
 
 code,
@@ -7853,7 +7851,7 @@ pre code {
 .table {
     width: 100%;
     margin-bottom: 1rem;
-    color: #7c8798
+    color: #000000
 }
 
 .table td,
@@ -7900,7 +7898,7 @@ pre code {
 }
 
 .table-hover tbody tr:hover {
-    color: #7c8798;
+    color: #000000;
     background-color: #e8eaec
 }
 
@@ -8234,7 +8232,7 @@ pre code {
     width: 100%;
     height: calc(1.5em + .75rem + 2px);
     padding: .375rem .75rem;
-    font-size: 1rem;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: #4F5467;
     background-color: #fff;
@@ -8296,7 +8294,7 @@ select.form-control:focus::-ms-value {
 .col-form-label-lg {
     padding-top: calc(.5rem + 1px);
     padding-bottom: calc(.5rem + 1px);
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: 1.5
 }
 
@@ -8314,7 +8312,7 @@ select.form-control:focus::-ms-value {
     padding-bottom: .375rem;
     margin-bottom: 0;
     line-height: 1.5;
-    color: #7c8798;
+    color: #000000;
     background-color: transparent;
     border: solid transparent;
     border-width: 1px 0
@@ -8337,7 +8335,7 @@ select.form-control:focus::-ms-value {
 .form-control-lg {
     height: calc(1.5em + 1rem + 2px);
     padding: .5rem 1rem;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: 1.5;
     border-radius: 2px
 }
@@ -8383,7 +8381,7 @@ textarea.form-control {
 }
 
 .form-check-input:disabled~.form-check-label {
-    color: #9eabc0
+    color: #000000
 }
 
 .form-check-label {
@@ -8734,14 +8732,14 @@ input[type=submit].btn-block {
 
 .btn {
     display: inline-block;
-    color: #7c8798;
+    color: #000000;
     text-align: center;
     vertical-align: middle;
     user-select: none;
     background-color: transparent;
     border: 1px solid transparent;
     padding: .375rem .75rem;
-    font-size: 1rem;
+    font-size: 0.75rem;
     line-height: 1.5;
     border-radius: 2px;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out
@@ -8760,7 +8758,7 @@ input[type=submit].btn-block {
 }
 
 .btn:hover {
-    color: #7c8798
+    color: #000000
 }
 
 .btn.focus,
@@ -8823,8 +8821,8 @@ fieldset:disabled a.btn {
 
 .btn-secondary {
     color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d
+    background-color: #000000;
+    border-color: #000000
 }
 
 .btn-secondary:hover {
@@ -8836,8 +8834,8 @@ fieldset:disabled a.btn {
 .btn-secondary.disabled,
 .btn-secondary:disabled {
     color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d
+    background-color: #000000;
+    border-color: #000000
 }
 
 .btn-secondary:not(:disabled):not(.disabled).active,
@@ -9205,19 +9203,19 @@ fieldset:disabled a.btn {
 }
 
 .btn-outline-secondary {
-    color: #6c757d;
-    border-color: #6c757d
+    color: #000000;
+    border-color: #000000
 }
 
 .btn-outline-secondary:hover {
     color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d
+    background-color: #000000;
+    border-color: #000000
 }
 
 .btn-outline-secondary.disabled,
 .btn-outline-secondary:disabled {
-    color: #6c757d;
+    color: #000000;
     background-color: transparent
 }
 
@@ -9225,8 +9223,8 @@ fieldset:disabled a.btn {
 .btn-outline-secondary:not(:disabled):not(.disabled):active,
 .show>.btn-outline-secondary.dropdown-toggle {
     color: #fff;
-    background-color: #6c757d;
-    border-color: #6c757d
+    background-color: #000000;
+    border-color: #000000
 }
 
 .btn-outline-success.focus,
@@ -9541,14 +9539,14 @@ fieldset:disabled a.btn {
 
 .btn-link.disabled,
 .btn-link:disabled {
-    color: #6c757d;
+    color: #000000;
     pointer-events: none
 }
 
 .btn-group-lg>.btn,
 .btn-lg {
     padding: .5rem 1rem;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: 1.5;
     border-radius: 2px
 }
@@ -9620,8 +9618,8 @@ fieldset:disabled a.btn {
     min-width: 10rem;
     padding: .5rem 0;
     margin: .125rem 0 0;
-    font-size: 1rem;
-    color: #7c8798;
+    font-size: 0.75rem;
+    color: #000000;
     text-align: left;
     background-color: #fff;
     background-clip: padding-box;
@@ -9790,7 +9788,7 @@ fieldset:disabled a.btn {
     width: 100%;
     padding: .65rem 1rem;
     clear: both;
-    color: #6c757d;
+    color: #000000;
     text-align: inherit;
     background-color: transparent;
     border: 0
@@ -9830,7 +9828,7 @@ fieldset:disabled a.btn {
 
 .dropdown-item.disabled,
 .dropdown-item:disabled {
-    color: #6c757d;
+    color: #000000;
     pointer-events: none;
     background-color: transparent
 }
@@ -9843,13 +9841,13 @@ fieldset:disabled a.btn {
     display: block;
     padding: .5rem 1rem;
     font-size: .875rem;
-    color: #6c757d
+    color: #000000
 }
 
 .dropdown-item-text {
     display: block;
     padding: .65rem 1rem;
-    color: #6c757d
+    color: #000000
 }
 
 .btn-group,
@@ -10036,7 +10034,7 @@ fieldset:disabled a.btn {
     display: flex;
     align-items: center;
     padding: .375rem .75rem;
-    font-size: 1rem;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: #4F5467;
     text-align: center;
@@ -10067,7 +10065,7 @@ fieldset:disabled a.btn {
 .input-group-lg>.input-group-prepend>.btn,
 .input-group-lg>.input-group-prepend>.input-group-text {
     padding: .5rem 1rem;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: 1.5;
     border-radius: 2px
 }
@@ -10149,7 +10147,7 @@ fieldset:disabled a.btn {
 }
 
 .custom-control-input:disabled~.custom-control-label {
-    color: #6c757d
+    color: #000000
 }
 
 .custom-control-input:disabled~.custom-control-label::before {
@@ -10254,7 +10252,7 @@ fieldset:disabled a.btn {
     width: 100%;
     height: calc(1.5em + .75rem + 2px);
     padding: .375rem 1.75rem .375rem .75rem;
-    font-size: 1rem;
+    font-size: 0.75rem;
     line-height: 1.5;
     color: #b8c3d5;
     vertical-align: middle;
@@ -10291,7 +10289,7 @@ fieldset:disabled a.btn {
 }
 
 .custom-select:disabled {
-    color: #6c757d
+    color: #000000
 }
 
 .custom-select::-ms-expand {
@@ -10311,7 +10309,7 @@ fieldset:disabled a.btn {
     padding-top: .5rem;
     padding-bottom: .5rem;
     padding-left: 1rem;
-    font-size: 1.25rem
+    font-size: 1.1rem
 }
 
 .custom-file,
@@ -10555,7 +10553,7 @@ fieldset:disabled a.btn {
 }
 
 .nav-link.disabled {
-    color: #6c757d;
+    color: #000000;
     pointer-events: none;
     cursor: default
 }
@@ -10580,7 +10578,7 @@ fieldset:disabled a.btn {
 }
 
 .nav-tabs .nav-link.disabled {
-    color: #6c757d;
+    color: #000000;
     background-color: transparent;
     border-color: transparent
 }
@@ -10647,7 +10645,7 @@ fieldset:disabled a.btn {
     padding-top: .3125rem;
     padding-bottom: .3125rem;
     margin-right: 1rem;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: inherit
 }
 
@@ -10682,7 +10680,7 @@ fieldset:disabled a.btn {
 
 .navbar-toggler {
     padding: .25rem .75rem;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: 1;
     background-color: transparent;
     border: 1px solid transparent;
@@ -11260,12 +11258,12 @@ fieldset:disabled a.btn {
 .breadcrumb-item+.breadcrumb-item::before {
     display: inline-block;
     padding-right: .5rem;
-    color: #6c757d;
+    color: #000000;
     content: "/"
 }
 
 .breadcrumb-item.active {
-    color: #6c757d
+    color: #000000
 }
 
 .pagination {
@@ -11320,7 +11318,7 @@ fieldset:disabled a.btn {
 }
 
 .page-item.disabled .page-link {
-    color: #6c757d;
+    color: #000000;
     pointer-events: none;
     cursor: auto;
     background-color: #fff;
@@ -11329,7 +11327,7 @@ fieldset:disabled a.btn {
 
 .pagination-lg .page-link {
     padding: .75rem 1.5rem;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: 1.5
 }
 
@@ -11408,7 +11406,7 @@ a.badge-primary:focus {
 
 .badge-secondary {
     color: #fff;
-    background-color: #6c757d
+    background-color: #000000
 }
 
 a.badge-secondary:focus,
@@ -11849,7 +11847,7 @@ a.badge-purple:focus {
 }
 
 .list-group-item-action:active {
-    color: #7c8798;
+    color: #000000;
     background-color: #e9ecef
 }
 
@@ -11875,7 +11873,7 @@ a.badge-purple:focus {
 
 .list-group-item.disabled,
 .list-group-item:disabled {
-    color: #6c757d;
+    color: #000000;
     pointer-events: none;
     background-color: #fff
 }
@@ -12304,7 +12302,7 @@ a.close.disabled {
     display: flex;
     align-items: center;
     padding: .25rem .75rem;
-    color: #6c757d;
+    color: #000000;
     border-bottom: 1px solid rgba(0, 0, 0, .05)
 }
 
@@ -12791,7 +12789,7 @@ a.close.disabled {
 .popover-header {
     padding: .5rem .75rem;
     margin-bottom: 0;
-    font-size: 1rem;
+    font-size: 0.75rem;
     background-color: #f7f7f7;
     border-bottom: 1px solid #ebebeb;
     border-top-left-radius: calc(2px - 1px);
@@ -12804,7 +12802,7 @@ a.close.disabled {
 
 .popover-body {
     padding: .5rem .75rem;
-    color: #7c8798
+    color: #000000
 }
 
 .carousel.pointer-event {
@@ -13083,7 +13081,7 @@ button.bg-primary:hover {
 }
 
 .bg-secondary {
-    background-color: #6c757d !important
+    background-color: #000000 !important
 }
 
 a.bg-secondary:focus,
@@ -13245,7 +13243,7 @@ button.bg-purple:hover {
 }
 
 .border-secondary {
-    border-color: #6c757d !important
+    border-color: #000000 !important
 }
 
 .border-success {
@@ -17106,7 +17104,7 @@ a.text-primary:hover {
 }
 
 .text-secondary {
-    color: #6c757d !important
+    color: #000000 !important
 }
 
 a.text-secondary:focus,
@@ -17196,11 +17194,11 @@ a.text-purple:hover {
 }
 
 .text-body {
-    color: #7c8798 !important
+    color: #000000 !important
 }
 
 .text-muted {
-    color: #9eabc0 !important
+    color: #000000 !important
 }
 
 .text-black-50 {
@@ -17679,7 +17677,7 @@ a.text-purple:hover {
 
 .topbar .top-navbar .navbar-nav>.nav-item>.nav-link {
     padding: 0 15px;
-    font-size: 1rem;
+    font-size: 0.75rem;
     line-height: 80px
 }
 
@@ -18101,7 +18099,7 @@ strong {
 #main-wrapper[data-layout=vertical] .topbar .top-navbar .navbar-header[data-logobg=skin6] .topbartoggler,
 #main-wrapper[data-layout=horizontal] .topbar .top-navbar .navbar-header[data-logobg=skin6] .nav-toggler,
 #main-wrapper[data-layout=horizontal] .topbar .top-navbar .navbar-header[data-logobg=skin6] .topbartoggler {
-    color: #7c8798
+    color: #000000
 }
 
 #main-wrapper[data-layout=vertical] .topbar .navbar-collapse[data-navbarbg=skin6],
@@ -18130,7 +18128,7 @@ strong {
 #main-wrapper[data-layout=vertical] .left-sidebar[data-sidebarbg=skin6] .sidebar-nav ul .sidebar-item .sidebar-link i,
 #main-wrapper[data-layout=horizontal] .left-sidebar[data-sidebarbg=skin6] .sidebar-nav ul .sidebar-item .sidebar-link .feather-icon,
 #main-wrapper[data-layout=horizontal] .left-sidebar[data-sidebarbg=skin6] .sidebar-nav ul .sidebar-item .sidebar-link i {
-    color: #9eabc0
+    color: #000000
 }
 
 #main-wrapper[data-layout=vertical] .left-sidebar[data-sidebarbg=skin6] .sidebar-nav ul .sidebar-item .first-level .sidebar-item.active>.sidebar-link.active,
@@ -18211,7 +18209,7 @@ strong {
 
 a.link,
 body {
-    color: #7c8798
+    color: #000000
 }
 
 .btn-circle,
@@ -18329,7 +18327,7 @@ ul.list-style-none li {
 }
 
 ul.list-style-none li a {
-    color: #7c8798;
+    color: #000000;
     padding: 8px 0;
     display: block;
     text-decoration: none
@@ -18386,7 +18384,7 @@ ul.list-style-none li a:hover {
 .card .card-subtitle {
     font-weight: 300;
     margin-bottom: 10px;
-    color: #9eabc0
+    color: #000000
 }
 
 .card .card-title {
@@ -19192,7 +19190,7 @@ ul.list-style-none li a:hover {
 }
 
 .fc-toolbar h2 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     line-height: 1.875rem;
     text-transform: uppercase
 }
@@ -19246,7 +19244,7 @@ ul.list-style-none li a:hover {
 
 .fc-text-arrow {
     font-family: inherit;
-    font-size: 1rem
+    font-size: 0.75rem
 }
 
 .fc-state-hover {
@@ -19386,3 +19384,15 @@ ul.list-style-none li a:hover {
     font-weight: 400;
     font-style: normal
 }
+
+
+
+
+
+
+
+
+
+
+
+

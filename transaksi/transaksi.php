@@ -109,6 +109,38 @@ $month_stats = $month_query->fetch_assoc();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transaksi</title>
     <style>
+        /* Perkecil font dropdown filter di transaksi dengan tinggi yang cukup */
+        .filter-box-modern select.filter-dropdown,
+        .filter-box-modern .filter-dropdown {
+            font-size: 0.8rem !important;
+            min-height: 42px !important;
+            height: 42px !important;
+            line-height: 1.5 !important;
+            padding: 8px 12px !important;
+        }
+
+        .filter-box-modern select.filter-dropdown option,
+        .filter-box-modern .filter-dropdown option {
+            font-size: 0.8rem !important;
+            padding: 8px 12px !important;
+            line-height: 1.5 !important;
+            min-height: 32px !important;
+        }
+
+        /* Pastikan input date juga memiliki tinggi yang cukup */
+        .filter-box-modern input[type="date"] {
+            min-height: 42px !important;
+            height: 42px !important;
+            line-height: 1.5 !important;
+            padding: 8px 12px !important;
+        }
+
+        /* Pastikan tombol reset memiliki font putih */
+        .filter-box-modern .btn-secondary,
+        .filter-box-modern .btn-secondary *,
+        .filter-box-modern .btn-secondary i {
+            color: #ffffff !important;
+        }
         .border-left-primary {
             border-left: 0.25rem solid #4e73df !important;
         }
@@ -297,7 +329,7 @@ $month_stats = $month_query->fetch_assoc();
             <form method="GET" class="row" id="filterForm">
                     <div class="col-md-2">
                         <label>Status</label>
-                        <select name="status" class="form-control">
+                        <select name="status" class="form-control filter-dropdown">
                             <option value="">Semua Status</option>
                             <option value="Lunas" <?=$filter_status == 'Lunas' ? 'selected' : ''?>>Lunas</option>
                             <option value="Belum" <?=$filter_status == 'Belum' ? 'selected' : ''?>>Belum Bayar</option>
@@ -305,7 +337,7 @@ $month_stats = $month_query->fetch_assoc();
                     </div>
                     <div class="col-md-2">
                         <label>Produk</label>
-                        <select name="produk" class="form-control">
+                        <select name="produk" class="form-control filter-dropdown">
                             <option value="">Semua Produk</option>
                             <?php foreach ($produk_list as $produk): ?>
                             <option value="<?=htmlspecialchars($produk, ENT_QUOTES)?>" <?=$filter_produk == $produk ? 'selected' : ''?>>
@@ -316,11 +348,11 @@ $month_stats = $month_query->fetch_assoc();
                     </div>
                     <div class="col-md-2">
                         <label>Dari Tanggal</label>
-                        <input type="date" name="date_from" class="form-control" value="<?=$filter_date_from?>">
+                        <input type="date" name="date_from" class="form-control filter-dropdown" value="<?=$filter_date_from?>">
                     </div>
                     <div class="col-md-2">
                         <label>Sampai Tanggal</label>
-                        <input type="date" name="date_to" class="form-control" value="<?=$filter_date_to?>">
+                        <input type="date" name="date_to" class="form-control filter-dropdown" value="<?=$filter_date_to?>">
                     </div>
                     <div class="col-md-2">
                         <label>Cari</label>
@@ -336,7 +368,7 @@ $month_stats = $month_query->fetch_assoc();
                     <div class="col-md-2">
                         <label style="visibility: hidden; margin-bottom: 0.5rem; display: block;">&nbsp;</label>
                         <div class="d-flex" style="gap: 0.5rem;">
-                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-secondary" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">
+                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center; color: #fff !important;">
                                 <i class="fa fa-refresh"></i> Reset
                             </a>
                             <a href="<?=base_url('transaksi/tambah.php')?>" class="btn btn-primary" style="flex: 1; height: 38px; display: inline-flex; align-items: center; justify-content: center;">

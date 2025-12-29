@@ -58,11 +58,208 @@ if ($id > 0) {
     <link href="<?=base_url()?>/files/assets/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css"
         rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="<?=base_url()?>/files/dist/css/style.min.css" rel="stylesheet">
-    <link href="<?=base_url()?>/files/dist/css/modern-style.css" rel="stylesheet">
+    <link href="<?=base_url()?>/files/dist/css/style.min.css?v=<?=time()?>" rel="stylesheet">
+    <link href="<?=base_url()?>/files/dist/css/modern-style.css?v=<?=time()?>" rel="stylesheet">
     <script src="<?=base_url()?>/files/assets/libs/jquery/dist/jquery.min.js"></script>
     <link href="<?=base_url()?>/files/dist/css/sweetalert2.min.css" rel="stylesheet">
     <style>
+        /* Global font size reduction - Override semua CSS */
+        html {
+            font-size: 14px !important;
+        }
+
+        body {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+
+        /* Ubah semua warna font menjadi hitam untuk teks utama */
+        p, span, div, label,
+        td, th, li,
+        .card-body, .card-body p,
+        .modal-body, .modal-body p,
+        .page-wrapper, .page-wrapper p,
+        .table td, .table th,
+        .form-control, .form-select,
+        input:not([type="button"]):not([type="submit"]):not([type="reset"]),
+        select, textarea {
+            color: #000000 !important;
+        }
+
+        /* Heading juga hitam */
+        h1, h2, h3, h4, h5, h6,
+        .h1, .h2, .h3, .h4, .h5, .h6 {
+            color: #000000 !important;
+        }
+
+        /* Kecuali elemen khusus yang harus tetap warnanya */
+        .text-white, .text-white *,
+        .btn, .btn *, button, button *,
+        .badge, .badge *,
+        .alert, .alert *,
+        .alert-success, .alert-success *,
+        .alert-danger, .alert-danger *,
+        .alert-warning, .alert-warning *,
+        .alert-info, .alert-info *,
+        a, a:visited,
+        .nav-link, .sidebar-link,
+        .modal-header, .modal-header *,
+        .card-header, .card-header *,
+        .navbar-brand, .navbar-brand *,
+        .text-primary, .text-primary *,
+        .text-success, .text-success *,
+        .text-danger, .text-danger *,
+        .text-warning, .text-warning *,
+        .text-info, .text-info *,
+        .status-success-modern, .status-danger-modern,
+        .status-warning-modern, .status-info-modern {
+            color: inherit !important;
+        }
+
+        /* Heading sizes dan warna */
+        h1, .h1 {
+            font-size: 1.875rem !important;
+            color: #000000 !important;
+        }
+        h2, .h2 {
+            font-size: 1.625rem !important;
+            color: #000000 !important;
+        }
+        h3, .h3 {
+            font-size: 1.125rem !important;
+            color: #000000 !important;
+        }
+        h4, .h4 {
+            font-size: 1rem !important;
+            color: #000000 !important;
+        }
+        h5, .h5 {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+        h6, .h6 {
+            font-size: 0.75rem !important;
+            color: #000000 !important;
+        }
+
+        /* Tabel - ukuran dan warna */
+        .table, .table td, .table th,
+        table, table td, table th,
+        thead th, tbody td {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+
+        /* Tombol - Pastikan tombol hitam memiliki teks putih */
+        .btn, button, .button,
+        input[type="button"],
+        input[type="submit"] {
+            font-size: 0.875rem !important;
+        }
+
+        /* Tombol secondary (hitam) harus memiliki teks putih */
+        .btn-secondary, .btn-secondary *,
+        .btn-secondary i, .btn-secondary span,
+        .btn-secondary a, a.btn-secondary,
+        .btn-dark, .btn-dark *,
+        .btn-dark i, .btn-dark span,
+        button.btn-secondary, button.btn-secondary *,
+        button.btn-dark, button.btn-dark *,
+        a.btn-secondary, a.btn-secondary *,
+        a.btn-secondary i, a.btn-secondary span {
+            color: #ffffff !important;
+        }
+
+        /* Pastikan semua link button secondary memiliki teks putih */
+        a.btn-secondary:visited,
+        a.btn-secondary:link,
+        a.btn-secondary:hover,
+        a.btn-secondary:active {
+            color: #ffffff !important;
+        }
+
+        /* Badge kategori - pastikan badge info memiliki warna yang jelas */
+        .badge-info {
+            background-color: #17a2b8 !important;
+            color: #ffffff !important;
+        }
+
+        /* Badge secondary untuk kategori diubah ke info */
+        .badge-secondary.kategori-badge-modal,
+        td .badge-secondary,
+        .table td .badge-secondary {
+            background-color: #17a2b8 !important;
+            color: #ffffff !important;
+        }
+
+        /* Form - ukuran dan warna */
+        .form-control, .form-select,
+        input:not([type="button"]):not([type="submit"]):not([type="reset"]),
+        select, textarea,
+        .input-group-text {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+
+        .form-label, label {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+
+        /* Navigasi */
+        .nav-link, .sidebar-link,
+        .navbar-nav .nav-link,
+        .sidebar-nav .sidebar-link,
+        .navbar-nav li a {
+            font-size: 0.875rem !important;
+        }
+
+        /* Card & Modal */
+        .card-title { font-size: 1.1rem !important; }
+        .card-body, .card-body * { font-size: 0.875rem !important; }
+        .modal-body, .modal-body * { font-size: 0.875rem !important; }
+        .modal-title { font-size: 0.95rem !important; }
+
+        /* Badge & Alert */
+        .badge, .alert { font-size: 0.875rem !important; }
+
+        /* Text umum - ukuran dan warna */
+        p {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+        span:not(.fa):not(.fas):not(.far):not(.fab):not(.fal) {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+        div:not(.fa):not(.fas):not(.far):not(.fab) {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+
+        small, .small { font-size: 0.75rem !important; }
+
+        /* Page wrapper dan konten utama */
+        .page-wrapper {
+            font-size: 0.875rem !important;
+        }
+
+        /* Override untuk semua elemen dalam page */
+        .page-wrapper p,
+        .page-wrapper span:not(.fa),
+        .page-wrapper div:not(.fa),
+        .page-wrapper td,
+        .page-wrapper th {
+            font-size: 0.875rem !important;
+            color: #000000 !important;
+        }
+
+        /* Card body dan modal body */
+        .card-body p, .card-body span, .card-body td, .card-body th,
+        .modal-body p, .modal-body span, .modal-body td, .modal-body th {
+            color: #000000 !important;
+        }
+
         /* Responsive header styles - prevent logo and date overlap */
         .navbar-brand .dark-logo {
             max-width: 100%;
