@@ -1,5 +1,6 @@
 <?php
-require_once "config/config.php";
+// Gunakan __DIR__ untuk memastikan path config selalu benar dimanapun header.php di-include
+require_once __DIR__ . "/config/config.php";
 
 // Perbaikan: Cek session dengan benar untuk mengatasi masalah redirect setelah idle lama
 // Masalah sebelumnya: isset($_SESSION['level']) == "" selalu true ketika session expired

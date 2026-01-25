@@ -1,70 +1,49 @@
 <?php
 date_default_timezone_set('Asia/Jakarta');
 
-// Konfigurasi session timeout - perpanjang waktu idle menjadi 24 jam (86400 detik)
-// Default PHP session timeout adalah 24 menit, ini diperpanjang untuk mengurangi masalah setelah idle
-ini_set('session.gc_maxlifetime', 86400); // 24 jam dalam detik
-ini_set('session.cookie_lifetime', 86400); // Cookie session juga 24 jam
+// Konfigurasi session timeout (24 jam)
+ini_set('session.gc_maxlifetime', 86400);
+ini_set('session.cookie_lifetime', 86400);
 
-// Pengaturan keamanan session untuk mencegah session hijacking dan fixation
-ini_set('session.cookie_httponly', 1); // Mencegah akses cookie melalui JavaScript
-ini_set('session.cookie_secure', 0); // Set ke 1 jika menggunakan HTTPS
-ini_set('session.use_strict_mode', 1); // Mencegah session fixation
-ini_set('session.cookie_samesite', 'Strict'); // CSRF protection
+// Gunakan path cookie default '/' agar bisa dibaca di semua folder
+// Hapus pengaturan strict untuk debugging
+// session_set_cookie_params...
 
 // Pastikan session_start hanya dipanggil sekali
 if (session_status() === PHP_SESSION_NONE) {
 	session_start();
 }
 
-// Perpanjang session setiap kali ada aktivitas (refresh cookie dan session data)
-// Ini memastikan session tidak expired selama user masih aktif
-// PENTING: Refresh session SEBELUM pengecekan di header.php
-if (isset($_SESSION['level']) && !empty($_SESSION['level'])) {
-	// Update session data untuk memperpanjang waktu expired
-	$_SESSION['last_activity'] = time();
-
-	// Update cookie session untuk memperpanjang waktu expired
-	// Gunakan parameter yang sama dengan session_get_cookie_params() untuk konsistensi
-	$cookie_params = session_get_cookie_params();
-	$session_name = session_name();
-	$session_id = session_id();
-
-	if ($session_name && $session_id) {
-		// Refresh cookie dengan waktu yang lebih lama - PENTING untuk mencegah expired
-		setcookie(
-			$session_name,
-			$session_id,
-			time() + 86400, // 24 jam
-			$cookie_params['path'] ?: '/',
-			$cookie_params['domain'] ?: '',
-			$cookie_params['secure'],
-			$cookie_params['httponly']
-		);
-
-		// Touch session file untuk memperpanjang waktu expired di server
-		// Ini mencegah garbage collection menghapus session terlalu cepat
-		$session_path = session_save_path();
-		if (empty($session_path)) {
-			$session_path = sys_get_temp_dir();
-		}
-		$session_file = rtrim($session_path, '/\\') . '/sess_' . $session_id;
-		if (file_exists($session_file)) {
-			// Touch file untuk memperpanjang waktu expired
-			@touch($session_file);
-		}
-	}
-}
-
 include_once "koneksi.php";
 
 function base_url($url = null) {
-$base_url = "http://localhost/dwloket_ok";
-if($url != null) {
-return $base_url."/".$url;
-} else {
-return $base_url;
-}
+    // Deteksi protocol (http/https)
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https://" : "http://";
+
+    // Deteksi host (localhost, 127.0.0.1, atau domain lain)
+    $host = $_SERVER['HTTP_HOST'];
+
+    // Deteksi folder project (asumsi folder dwloket_ok ada di root web server)
+    // Jika script dijalankan dari h:\laragon\www\dwloket_ok\index.php
+    // $_SERVER['SCRIPT_NAME'] biasanya /dwloket_ok/index.php
+    $script_name = $_SERVER['SCRIPT_NAME'];
+    $script_dir = dirname($script_name);
+
+    // Bersihkan path dari subfolder (misal /auth, /home)
+    // Kita asumsikan config.php ada di /config, jadi root adalah parent dari config
+    // Tapi fungsi ini dipanggil dari mana saja.
+    // Cara paling aman untuk struktur saat ini (h:\laragon\www\dwloket_ok):
+    // Hardcode path relatif web server jika di localhost/dwloket_ok
+
+    $base_path = "/dwloket_ok"; // Sesuaikan jika nama folder di htdocs berbeda
+
+    $root_url = $protocol . $host . $base_path;
+
+    if($url != null) {
+        return $root_url."/".$url;
+    } else {
+        return $root_url;
+    }
 }
 
 function tgl_indo($tgl) {
@@ -149,4 +128,3 @@ function penyebut($nilai) {
 				}
 		return $hasil;
 	}
-?>

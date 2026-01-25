@@ -2,9 +2,9 @@
 ob_start();
 include "../config/config.php";
 
-// Perbaikan: Gunakan $_SESSION['level'] yang sesuai dengan session yang diset saat login
+// Perbaikan: Gunakan header location untuk redirect yang lebih cepat dan mencegah flicker
 if (isset($_SESSION['level']) && !empty($_SESSION['level'])) {
-	echo "<script>window.location='".base_url()."';</script>";
+	header("Location: " . base_url('home'));
 	exit();
 } else {
 ?>
@@ -328,10 +328,10 @@ if (isset($_POST['login'])) {
 	$stmt->close();
 
 	if ($login >= 1) {
-		// Regenerate session ID setelah login untuk mencegah session hijacking
-		if (session_status() === PHP_SESSION_ACTIVE) {
-			session_regenerate_id(true);
-		}
+		// Regenerate session ID dimatikan sementara untuk debugging
+		// if (session_status() === PHP_SESSION_ACTIVE) {
+		// 	session_regenerate_id(true);
+		// }
 
 		$_SESSION['level'] = $data['level'];
 		$_SESSION['id_user'] = $data['id_user'];
