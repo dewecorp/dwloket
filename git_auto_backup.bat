@@ -30,7 +30,8 @@ git remote add origin https://github.com/dewecorp/dwloket 2>NUL
 git remote set-url origin https://github.com/dewecorp/dwloket
 
 echo [4/5] Upload ke GitHub (Push)...
-git push -u origin main
+33→git fetch origin
+34→git push -u origin HEAD:main || git push --force-with-lease origin HEAD:main
 
 echo [5/5] Membuat file backup ZIP (dwloket_full_backup.zip)...
 :: Menggunakan PowerShell untuk zip, mengecualikan folder .git dan file zip itu sendiri
