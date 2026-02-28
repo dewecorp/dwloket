@@ -1,4 +1,6 @@
 @echo off
+setlocal enabledelayedexpansion
+chcp 65001 >NUL
 echo ==========================================
 echo DW LOKET AUTO BACKUP & GIT PUSH
 echo ==========================================
@@ -30,8 +32,22 @@ git remote add origin https://github.com/dewecorp/dwloket 2>NUL
 git remote set-url origin https://github.com/dewecorp/dwloket
 
 echo [4/5] Upload ke GitHub (Push)...
-33→git fetch origin
-34→git push -u origin HEAD:main || git push --force-with-lease origin HEAD:main
+:: Pastikan referensi remote terbaru
+git fetch --all --prune
+for /f "tokens=*" %%b in ('git rev-parse --abbrev-ref HEAD') do set CUR_BRANCH=%%b
+echo Branch aktif: !CUR_BRANCH!
+
+:: Coba push normal dulu
+git push -u origin HEAD:main
+if errorlevel 1 (
+  echo Push ditolak (kemungkinan non-fast-forward). Mencoba force-with-lease yang aman...
+  git push --force-with-lease origin HEAD:main
+  if errorlevel 1 (
+    echo Gagal push meskipun force-with-lease. Coba tarik perubahan remote lalu push lagi...
+    git pull --rebase origin main
+    git push -u origin HEAD:main
+  )
+)
 
 echo [5/5] Membuat file backup ZIP (dwloket_full_backup.zip)...
 :: Menggunakan PowerShell untuk zip, mengecualikan folder .git dan file zip itu sendiri
