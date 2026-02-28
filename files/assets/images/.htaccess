@@ -1,0 +1,5 @@
+# Disable PHP execution in this directory
+<FilesMatch "\.(php|php5|phtml)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

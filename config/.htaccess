@@ -1,0 +1,10 @@
+# Protect config files from direct access
+<FilesMatch "^(orderkuota_config|config|koneksi)\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+
+
+
+

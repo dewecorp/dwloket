@@ -1,0 +1,12 @@
+<?php
+/**
+ * Konfigurasi Database
+ * Silakan ubah sesuai dengan konfigurasi server Anda.
+ * Untuk keamanan, jangan gunakan user 'root' tanpa password di production.
+ */
+
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db   = "dwloket";
+?>

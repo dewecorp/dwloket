@@ -1,0 +1,12 @@
+vendor/
+files/vendor/
+*.zip
+*.rar
+*.sql
+backups/
+dwloket_full_backup.zip
+dwloket.sql
+files/src/package.zip
+.env
+.idea
+.vscode
