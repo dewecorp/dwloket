@@ -2,10 +2,21 @@
 setlocal enabledelayedexpansion
 chcp 65001 >NUL
 
+if /i "%~1" neq "--child" (
+    echo "%cmdcmdline%" | findstr /i /c:" /c " >nul
+    if not errorlevel 1 (
+        start "DW LOKET AUTO BACKUP & GIT PUSH" cmd /v:on /k ""%~f0" --child"
+        exit /b
+    )
+)
+
 pushd "%~dp0"
 echo ==========================================
 echo DW LOKET AUTO BACKUP & GIT PUSH
 echo ==========================================
+echo Script: %~f0
+echo Folder: %cd%
+echo.
 
 echo [1/5] Menambahkan file ke git...
 git add .
@@ -57,6 +68,7 @@ if errorlevel 1 (
 
 echo [5/5] Membuat file backup ZIP (dwloket_full_backup.zip)...
 set "ZIP_NAME=dwloket_full_backup.zip"
+echo Membuat ZIP, mohon tunggu...
 powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; $dest=Join-Path (Get-Location) '%ZIP_NAME%'; if(Test-Path $dest){Remove-Item $dest -Force}; $items=Get-ChildItem -Force | Where-Object { $_.Name -ne '.git' -and $_.Name -ne '%ZIP_NAME%' -and $_.Name -notlike '*.zip' }; if(-not $items){ throw 'Tidak ada file untuk di-zip (folder kosong?)' }; Compress-Archive -LiteralPath $items.FullName -DestinationPath $dest -Force; if(-not (Test-Path $dest)){ throw 'Gagal membuat ZIP' }"
 if errorlevel 1 (
     echo.
