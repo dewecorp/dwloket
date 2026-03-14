@@ -15,6 +15,7 @@ if (@$_POST['simpan']) {
     $stmt = $koneksi->prepare("INSERT INTO transaksi (tgl, idpel, nama, id_bayar, harga, status ) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("ssssds", $tgl, $idpel, $nama, $jenis, $harga, $status);
     $result = $stmt->execute();
+    $id_transaksi = $koneksi->insert_id;
     $stmt->close();
 
     if ($result) {
@@ -40,7 +41,7 @@ if (@$_POST['simpan']) {
                 timerProgressBar: true,
                 showConfirmButton: false
             }).then(() => {
-                window.location.href = "<?=base_url('transaksi')?>";
+                window.location.href = "<?=base_url('transaksi/detail_transaksi.php?id=' . (int)$id_transaksi)?>";
             });
         </script>
         </body>

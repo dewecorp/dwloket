@@ -74,6 +74,18 @@ if ($id > 0) {
             color: #000000 !important;
         }
 
+        .swal2-popup,
+        .swal2-title,
+        .swal2-html-container,
+        .swal2-content,
+        .swal2-confirm,
+        .swal2-cancel,
+        .swal2-deny,
+        .swal2-input,
+        .swal2-textarea {
+            font-family: inherit !important;
+        }
+
         /* Ubah semua warna font menjadi hitam untuk teks utama */
         p, span, div, label,
         td, th, li,

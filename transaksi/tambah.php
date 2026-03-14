@@ -36,7 +36,7 @@ if (isset($_POST['simpan'])) {
     if (empty($error_msg)) {
         // Persiapkan data untuk Prepared Statement
         $harga = floatval($harga);
-        
+
         // Ambil id_bayar default (karena kolom masih required di database)
         // Menggunakan id_bayar pertama sebagai default
         $default_query = $koneksi->query("SELECT id_bayar FROM tb_jenisbayar ORDER BY id_bayar ASC LIMIT 1");
@@ -95,8 +95,8 @@ if (isset($_POST['simpan'])) {
             }
             $_SESSION['success_type'] = $_SESSION['success_type'] ?? 'tambah';
 
-            // Redirect langsung ke halaman transaksi
-            header('Location: ' . base_url('transaksi/transaksi.php'));
+            // Redirect langsung ke detail transaksi (untuk cetak struk)
+            header('Location: ' . base_url('transaksi/detail_transaksi.php?id=' . (int)$id_transaksi));
             exit();
         } else {
             $db_error = mysqli_error($koneksi);
@@ -1039,9 +1039,7 @@ if ($sql_jenis) {
                             icon: 'success',
                             title: 'Produk Dipilih',
                             html: '<div style="text-align: left; padding: 15px 0;"><div style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">' + kode + '</div><div style="font-size: 22px; color: #28a745; font-weight: 800;">Rp ' + hargaFormatted + '</div></div>',
-                            showConfirmButton: true,
-                            confirmButtonText: 'OK',
-                            confirmButtonColor: '#28a745',
+                            showConfirmButton: false,
                             timer: 2000,
                             timerProgressBar: true,
                             allowOutsideClick: true,
@@ -1059,7 +1057,5 @@ if ($sql_jenis) {
 include"modal_item.php";
 include_once('../footer.php');
 ?>
-
-
 
 
