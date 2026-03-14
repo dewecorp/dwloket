@@ -1,14 +1,6 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal
 chcp 65001 >NUL
-
-if /i "%~1" neq "--child" (
-    echo "%cmdcmdline%" | findstr /i /c:" /c " >nul
-    if not errorlevel 1 (
-        start "DW LOKET AUTO BACKUP & GIT PUSH" cmd /v:on /k ""%~f0" --child"
-        exit /b
-    )
-)
 
 pushd "%~dp0"
 echo ==========================================
@@ -52,7 +44,7 @@ echo [4/5] Upload ke GitHub (Push)...
 :: Pastikan referensi remote terbaru
 git fetch --all --prune
 for /f "tokens=*" %%b in ('git rev-parse --abbrev-ref HEAD') do set CUR_BRANCH=%%b
-echo Branch aktif: !CUR_BRANCH!
+echo Branch aktif: %CUR_BRANCH%
 
 :: Coba push normal dulu
 git push -u origin HEAD:main
