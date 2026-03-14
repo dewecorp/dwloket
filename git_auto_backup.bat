@@ -2,11 +2,6 @@
 setlocal enabledelayedexpansion
 chcp 65001 >NUL
 
-if /i "%~1" neq "--child" (
-    start "DW LOKET AUTO BACKUP & GIT PUSH" cmd /k ""%~f0" --child"
-    exit /b
-)
-
 pushd "%~dp0"
 echo ==========================================
 echo DW LOKET AUTO BACKUP & GIT PUSH
@@ -73,6 +68,9 @@ if not exist "%ZIP_NAME%" (
     echo GAGAL membuat backup ZIP. File tidak ditemukan.
     goto END_FAIL
 )
+
+for %%F in ("%ZIP_NAME%") do set "ZIP_FULL=%%~fF"
+echo Backup ZIP berhasil dibuat: %ZIP_FULL%
 
 echo.
 echo ==========================================
