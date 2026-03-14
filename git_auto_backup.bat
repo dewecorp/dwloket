@@ -1,6 +1,12 @@
 @echo off
 setlocal enabledelayedexpansion
 chcp 65001 >NUL
+
+if /i "%~1" neq "--child" (
+    start "DW LOKET AUTO BACKUP & GIT PUSH" cmd /k ""%~f0" --child"
+    exit /b
+)
+
 pushd "%~dp0"
 echo ==========================================
 echo DW LOKET AUTO BACKUP & GIT PUSH
@@ -60,22 +66,30 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='
 if errorlevel 1 (
     echo.
     echo GAGAL membuat backup ZIP. File tidak jadi dibuat.
-    pause
-    exit /b 1
+    goto END_FAIL
 )
 if not exist "%ZIP_NAME%" (
     echo.
     echo GAGAL membuat backup ZIP. File tidak ditemukan.
-    pause
-    exit /b 1
+    goto END_FAIL
 )
 
 echo.
 echo ==========================================
 echo PROSES SELESAI!
 echo ==========================================
-:CONFIRM_CLOSE
-choice /c YN /n /m "Tutup jendela sekarang? (Y/N): "
-if errorlevel 2 goto CONFIRM_CLOSE
+pause
+goto END_OK
+
+:END_FAIL
+echo.
+echo ==========================================
+echo PROSES GAGAL!
+echo ==========================================
+pause
+popd
+exit /b 1
+
+:END_OK
 popd
 exit /b 0
