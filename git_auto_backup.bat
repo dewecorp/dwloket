@@ -60,15 +60,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='
 if errorlevel 1 (
     echo.
     echo GAGAL membuat backup ZIP. File tidak jadi dibuat.
-    echo Tekan tombol apa saja untuk menutup...
-    pause >nul
+    pause
     exit /b 1
 )
 if not exist "%ZIP_NAME%" (
     echo.
     echo GAGAL membuat backup ZIP. File tidak ditemukan.
-    echo Tekan tombol apa saja untuk menutup...
-    pause >nul
+    pause
     exit /b 1
 )
 
@@ -76,5 +74,8 @@ echo.
 echo ==========================================
 echo PROSES SELESAI!
 echo ==========================================
-echo Tekan tombol apa saja untuk menutup...
-pause >nul
+:CONFIRM_CLOSE
+choice /c YN /n /m "Tutup jendela sekarang? (Y/N): "
+if errorlevel 2 goto CONFIRM_CLOSE
+popd
+exit /b 0
