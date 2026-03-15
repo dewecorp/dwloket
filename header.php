@@ -63,6 +63,7 @@ if ($id > 0) {
     <link href="<?=base_url()?>/files/dist/css/modern-style.css?v=<?=time()?>" rel="stylesheet">
     <script src="<?=base_url()?>/files/assets/libs/jquery/dist/jquery.min.js"></script>
     <link href="<?=base_url()?>/files/dist/css/sweetalert2.min.css" rel="stylesheet">
+    <script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
     <style>
         /* Global font size reduction - Override semua CSS */
         html {
@@ -318,6 +319,90 @@ if ($id > 0) {
                 height: auto;
             }
         }
+
+        /* Navbar gradasi biru tua */
+        #main-wrapper .topbar,
+        #main-wrapper .topbar .top-navbar,
+        #main-wrapper .topbar .navbar-header,
+        #main-wrapper .topbar .navbar-collapse {
+            background: #764ba2 !important;
+        }
+
+        #main-wrapper .topbar .navbar-header {
+            box-shadow: none !important;
+        }
+
+        #main-wrapper .topbar .navbar-collapse {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+        }
+
+        #main-wrapper .topbar,
+        #main-wrapper .topbar .navbar-collapse .navbar-nav.float-left,
+        #main-wrapper .topbar .navbar-collapse .navbar-nav.float-left * {
+            color: rgba(255, 255, 255, 0.92) !important;
+        }
+
+        #main-wrapper .topbar .nav-link,
+        #main-wrapper .topbar .nav-link *,
+        #main-wrapper .topbar .nav-toggler,
+        #main-wrapper .topbar .topbartoggler,
+        #main-wrapper .topbar .text-dark {
+            color: rgba(255, 255, 255, 0.92) !important;
+        }
+
+        #main-wrapper .topbar .navbar-collapse .text-muted,
+        #main-wrapper .topbar .navbar-collapse .text-muted * {
+            color: rgba(255, 255, 255, 0.75) !important;
+        }
+
+        /* Logo shadow putih agar kontras di navbar berwarna gelap */
+        #main-wrapper .topbar .navbar-brand img.dark-logo {
+            filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.85))
+                    drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
+        }
+
+        #main-wrapper .topbar .svg-icon,
+        #main-wrapper .topbar .svg-icon * {
+            stroke: rgba(255, 255, 255, 0.92) !important;
+        }
+
+        #main-wrapper .topbar .dropdown-menu,
+        #main-wrapper .topbar .dropdown-menu * {
+            color: #000000 !important;
+        }
+
+        /* Sidebar gradasi biru tua */
+        #main-wrapper .left-sidebar,
+        #main-wrapper .left-sidebar .scroll-sidebar,
+        #main-wrapper .left-sidebar .sidebar-nav {
+            background: #764ba2 !important;
+        }
+
+        #main-wrapper .left-sidebar .sidebar-nav .nav-small-cap,
+        #main-wrapper .left-sidebar .sidebar-nav .nav-small-cap * {
+            color: rgba(255, 255, 255, 0.75) !important;
+        }
+
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-link,
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-link * {
+            color: rgba(255, 255, 255, 0.92) !important;
+        }
+
+        #main-wrapper .left-sidebar .sidebar-nav .feather-icon,
+        #main-wrapper .left-sidebar .sidebar-nav .feather-icon * {
+            stroke: rgba(255, 255, 255, 0.92) !important;
+        }
+
+        #main-wrapper .left-sidebar .sidebar-nav .list-divider {
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-item > .sidebar-link:hover,
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.selected > .sidebar-link,
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.active > .sidebar-link {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border-radius: 10px;
+        }
     </style>
 
 </head>
@@ -439,18 +524,6 @@ if ($id > 0) {
                                     class="hide-menu">Transaksi</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('orderkuota/index.php')?>"
-                                aria-expanded="false"><i data-feather="smartphone" class="feather-icon"></i><span
-                                    class="hide-menu">OrderKuota</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('orderkuota/deposit.php')?>"
-                                aria-expanded="false"><i data-feather="credit-card" class="feather-icon"></i><span
-                                    class="hide-menu">Deposit OrderKuota</span>
-                            </a>
-                        </li>
                         <li class="list-divider"></li>
                         <li class="nav-small-cap">
                             <span class="hide-menu">Extra</span>
@@ -460,12 +533,6 @@ if ($id > 0) {
                             <a class="sidebar-link sidebar-link" href="<?=base_url('admin/backup.php')?>"
                                 aria-expanded="false"><i data-feather="database" class="feather-icon"></i><span
                                     class="hide-menu">Backup & Restore</span>
-                            </a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('admin/orderkuota_config.php')?>"
-                                aria-expanded="false"><i data-feather="settings" class="feather-icon"></i><span
-                                    class="hide-menu">OrderKuota Config</span>
                             </a>
                         </li>
                         <?php endif; ?>

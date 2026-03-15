@@ -270,52 +270,93 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
         .bg-info {
             background-color: #36b9cc !important;
         }
+        .card.border-left-primary,
+        .card.border-left-success,
+        .card.border-left-info,
+        .card.border-left-warning,
+        .card.border-left-danger {
+            border-top: 0;
+            border-right: 0;
+            border-bottom: 0;
+            border-radius: 10px;
+        }
         </style>
     </head>
     <body>
         <div class="container-fluid">
             <!-- Statistik -->
             <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="stat-card-modern">
-                        <div class="stat-icon" style="background: #667eea !important;">
-                            <i class="fa fa-users" style="color: white !important; font-size: 26px !important;"></i>
+                <?php
+                $saldo_border_class = $total_saldo < 0 ? 'danger' : ($total_saldo < 100000 ? 'warning' : 'success');
+                $saldo_text_class = $saldo_border_class == 'danger' ? 'text-danger' : ($saldo_border_class == 'warning' ? 'text-warning' : 'text-success');
+                $saldo_status_text = $total_saldo < 0 ? 'Saldo Negatif!' : ($total_saldo < 100000 ? 'Saldo Rendah' : 'Saldo Aktif');
+                ?>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Pelanggan</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jumlah_pelanggan?></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-users fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-value"><?=$jumlah_pelanggan?></div>
-                        <div class="stat-label">Total Pelanggan</div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="stat-card-modern">
-                        <div class="stat-icon" style="background: #1cc88a !important;">
-                            <i class="fa fa-dollar-sign" style="color: white !important; font-size: 26px !important;"></i>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Jenis Pembayaran</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jumlah_jenisbayar?></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-credit-card fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-value"><?=$jumlah_jenisbayar?></div>
-                        <div class="stat-label">Jenis Pembayaran</div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="stat-card-modern">
-                        <div class="stat-icon" style="background: #36b9cc !important;">
-                            <i class="fa fa-shopping-cart" style="color: white !important; font-size: 26px !important;"></i>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Transaksi</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jumlah_transaksi?></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-shopping-cart fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-value"><?=$jumlah_transaksi?></div>
-                        <div class="stat-label">Total Transaksi</div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="stat-card-modern">
-                        <div class="stat-icon" style="background: <?=$total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745')?> !important;">
-                            <i class="fa fa-wallet" style="color: white !important; font-size: 26px !important;"></i>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card border-left-<?=$saldo_border_class?> shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold <?=$saldo_text_class?> text-uppercase mb-1">Saldo Akhir</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Rp <?=number_format($total_saldo, 0, ',', '.')?></div>
+                                    <div class="small <?=$saldo_text_class?>" style="font-weight: 600;">
+                                        <i class="fa fa-<?=$total_saldo < 0 ? 'exclamation-triangle' : ($total_saldo < 100000 ? 'exclamation-circle' : 'check-circle')?>"></i>
+                                        <?=$saldo_status_text?>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fa fa-wallet fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-value" style="color: <?=$total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745')?>; font-weight: 700; font-size: 1.875rem;">
-                            Rp <?=number_format($total_saldo, 0, ',', '.')?>
-                        </div>
-                        <div class="stat-label" style="color: #6c757d;">Saldo Akhir</div>
-                        <small class="<?=$total_saldo < 0 ? 'text-danger' : ($total_saldo < 100000 ? 'text-warning' : 'text-success')?>" style="font-weight: 600; color: <?=$total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745')?> !important;">
-                            <i class="fa fa-<?=$total_saldo < 0 ? 'exclamation-triangle' : ($total_saldo < 100000 ? 'exclamation-circle' : 'check-circle')?>"></i>
-                            <?=$total_saldo < 0 ? 'Saldo Negatif!' : ($total_saldo < 100000 ? 'Saldo Rendah' : 'Saldo Aktif')?>
-                        </small>
                     </div>
                 </div>
             </div>

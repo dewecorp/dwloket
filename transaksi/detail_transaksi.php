@@ -267,20 +267,6 @@ $tgl = $data['tgl'];
                             <a href="<?=base_url('transaksi/edit.php?id=' . $data['id_transaksi'])?>" class="btn btn-warning">
                                 <i class="fa fa-edit"></i> Edit Transaksi
                             </a>
-                            <?php if (strpos($data['ket'], 'OrderKuota') !== false):
-                                // Extract ref_id if exists
-                                preg_match('/Ref: ([A-Z0-9_]+)/', $data['ket'], $ref_matches);
-                                $ref_id = $ref_matches[1] ?? '';
-                            ?>
-                            <a href="<?=base_url('orderkuota/detail.php?id=' . $data['id_transaksi'])?>" class="btn btn-info">
-                                <i class="fa fa-external-link"></i> Detail OrderKuota
-                            </a>
-                            <?php if ($ref_id): ?>
-                            <a href="<?=base_url('orderkuota/print_receipt.php?ref_id=' . urlencode($ref_id))?>" target="_blank" class="btn btn-success">
-                                <i class="fa fa-print"></i> Print Struk OrderKuota
-                            </a>
-                            <?php endif; ?>
-                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

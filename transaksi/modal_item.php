@@ -48,19 +48,17 @@
 </div>
 
 <script>
-    $(".select").click(function() {
-        document.getElementById("id_pelanggan").value = $(this).attr('data-id');
-        document.getElementById("nama").value = $(this).attr('data-nama');
-        document.getElementById("idpel").value = $(this).attr('data-idpel');
-        // var id_pelanggan = $(this).data('id_pelanggan');
-        // var nama = $(this).data('nama');
-        // var no_idpel = $(this).data('idpel');
-        // $('#id_pelanggan').val(id_pelanggan);
-        // $('#nama').val(nama);
-        // $('#idpel').val(no_idpel);
-        // $('#modal-item').modal('hide').on('hidden.bs.modal', functionThatEndsUpDestroyingTheDOM);
-        $('#modalItem').modal('hide');
-
-    })
-
+    $(document).ready(function() {
+        $(document).on('click', '.select', function() {
+            var id = $(this).attr('data-id');
+            var nama = $(this).attr('data-nama');
+            var idpel = $(this).attr('data-idpel');
+            
+            $('#id_pelanggan').val(id);
+            $('#nama').val(nama);
+            $('#idpel').val(idpel);
+            
+            $('#modalItem').modal('hide');
+        });
+    });
 </script>

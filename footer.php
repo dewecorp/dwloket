@@ -65,8 +65,6 @@
 </script>
 <script src="<?=base_url()?>/files/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?=base_url()?>/files/dist/js/pages/datatable/datatable-basic.init.js"></script>
-<!-- <script src="<?=base_url()?>/files/dist/js/sweetalert2@11.js"></script> -->
-<script src="<?=base_url()?>/files/dist/js/sweetalert2.all.min.js"></script>
 
 <!-- SweetAlert Helper Functions -->
 <script>

@@ -362,91 +362,8 @@ function readExcelWithSheets($file_path) {
     return ['success' => false, 'message' => 'PhpSpreadsheet library tidak tersedia. Silakan install dengan: composer require phpoffice/phpspreadsheet'];
 }
 
-// Handle Import Excel dari folder orderkuota
-if (isset($_POST['import_from_orderkuota']) && isset($_SESSION['level']) && $_SESSION['level'] == 'admin') {
-    @set_time_limit(600); // 10 menit
-    @ini_set('memory_limit', '512M');
-
-    $orderkuota_folder = __DIR__ . '/../orderkuota/';
-    $excel_files = [];
-
-    // Cari semua file Excel di folder orderkuota
-    if (is_dir($orderkuota_folder)) {
-        $files = scandir($orderkuota_folder);
-        foreach ($files as $file) {
-            if (preg_match('/\.(xls|xlsx)$/i', $file)) {
-                $file_path = $orderkuota_folder . $file;
-                // Validasi file ada dan bisa dibaca
-                if (file_exists($file_path) && is_readable($file_path) && filesize($file_path) > 0) {
-                    $excel_files[] = $file_path;
-                } else {
-                }
-            }
-        }
-
-        // Sort files: prioritaskan "Daftar Harga_ok.xls" atau file dengan nama "ok" di awal
-        usort($excel_files, function($a, $b) {
-            $a_name = basename($a);
-            $b_name = basename($b);
-            $a_has_ok = (stripos($a_name, 'ok') !== false || stripos($a_name, 'harga_ok') !== false);
-            $b_has_ok = (stripos($b_name, 'ok') !== false || stripos($b_name, 'harga_ok') !== false);
-
-            if ($a_has_ok && !$b_has_ok) return -1;
-            if (!$a_has_ok && $b_has_ok) return 1;
-            return strcasecmp($a_name, $b_name);
-        });
-    }
-
-    if (empty($excel_files)) {
-        $_SESSION['import_message'] = "Tidak ada file Excel ditemukan di folder orderkuota atau file tidak valid.";
-        $_SESSION['import_success'] = false;
-        $_SESSION['import_success_count'] = 0;
-        $_SESSION['import_skip_count'] = 0;
-        $_SESSION['import_error_count'] = 0;
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
-    }
-
-    $total_success = 0;
-    $total_skip = 0;
-    $total_error = 0;
-    $processed_files = [];
-    $errors = [];
-
-    // Cache kode yang sudah ada
-    $existing_codes = [];
-    $codes_query = $koneksi->query("SELECT kode FROM tb_produk_orderkuota");
-    if ($codes_query) {
-        while ($code_row = $codes_query->fetch_assoc()) {
-            $existing_codes[$code_row['kode']] = true;
-        }
-    }
-
-    // Proses setiap file Excel
-    foreach ($excel_files as $excel_file) {
-        $filename = basename($excel_file);
-
-        // Validasi file sebelum diproses
-        if (!file_exists($excel_file)) {
-            $errors[] = "File $filename: File tidak ditemukan";
-            $total_error++;
-            continue;
-        }
-
-        if (!is_readable($excel_file)) {
-            $errors[] = "File $filename: File tidak bisa dibaca (permission denied)";
-            $total_error++;
-            continue;
-        }
-
-        if (filesize($excel_file) == 0) {
-            $errors[] = "File $filename: File kosong (0 bytes)";
-            $total_error++;
-            continue;
-        }
-
-        $excel_result = readExcelWithSheets($excel_file);
-
+// Import dari folder orderkuota sudah dihapus bersama modul OrderKuota
+/*
         if (!$excel_result['success']) {
             $errors[] = "File $filename: " . $excel_result['message'];
             $total_error++;
@@ -743,7 +660,7 @@ if (isset($_POST['import_from_orderkuota']) && isset($_SESSION['level']) && $_SE
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }
-
+*/
 // Handle Fix Harga - perbaiki harga yang kelebihan 2 digit di belakang
 if (isset($_POST['fix_harga_all']) && isset($_SESSION['level']) && $_SESSION['level'] == 'admin') {
     $fixed_count = 0;
@@ -2480,24 +2397,13 @@ if ($table_exists) {
                                 Silakan buat tabel terlebih dahulu dengan menjalankan script import atau SQL berikut:
                                 <br><br>
                                 <div class="btn-group">
-                                    <a href="<?=base_url('orderkuota/import_csv.php')?>" class="btn btn-primary btn-sm" target="_blank">
-                                        <i class="fa fa-file-csv"></i> Import dari CSV (Disarankan)
+                                    <a href="<?=base_url('jenisbayar/import_produk_excel.php')?>" class="btn btn-primary btn-sm" target="_blank">
+                                        <i class="fa fa-file-excel"></i> Import dari Excel/CSV
                                     </a>
-                                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown">
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="<?=base_url('jenisbayar/import_produk_excel.php')?>" target="_blank">
-                                            <i class="fa fa-file-excel"></i> Import dari Excel/CSV (Banyak Data)
-                                        </a>
-                                        <a class="dropdown-item" href="<?=base_url('jenisbayar/tambah_produk.php')?>" target="_blank">
-                                            <i class="fa fa-plus"></i> Tambah Produk Manual
-                                        </a>
-                                    </div>
+                                    <a href="<?=base_url('jenisbayar/tambah_produk.php')?>" class="btn btn-secondary btn-sm" target="_blank">
+                                        <i class="fa fa-plus"></i> Tambah Produk Manual
+                                    </a>
                                 </div>
-                                <a href="<?=base_url('orderkuota/create_table_produk.sql')?>" class="btn btn-secondary btn-sm" target="_blank">
-                                    <i class="fa fa-database"></i> Lihat SQL Create Table
-                                </a>
                             </div>
                             <?php else: ?>
                             <!-- Filter Section -->
@@ -3919,7 +3825,7 @@ if ($table_exists) {
                 if (!empty($import_message) && strlen(trim($import_message)) > 0) {
                     $message_clean = trim($import_message);
                     // Hapus bagian yang sudah ditampilkan di atas
-                    $message_clean = str_replace(['Import Excel selesai!', 'Import CSV selesai!', 'Import dari folder orderkuota selesai!'], '', $message_clean);
+                    $message_clean = str_replace(['Import Excel selesai!', 'Import CSV selesai!'], '', $message_clean);
                     $message_clean = preg_replace('/✅ Berhasil diimport:\s*\d+\s+produk/i', '', $message_clean);
                     $message_clean = preg_replace('/⚠️ Dilewati \(skip\):\s*\d+\s+produk/i', '', $message_clean);
                     $message_clean = preg_replace('/❌ Gagal diimport:\s*\d+\s+produk/i', '', $message_clean);

@@ -59,8 +59,7 @@
 <?php
 if (@$_POST['simpan']) {
     $username = $_POST['username'];
-    // Hash password sebelum disimpan
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = $_POST['password'];
     $nama = $_POST['nama'];
     $email = $_POST['email'];
     $level = $_POST['level'];

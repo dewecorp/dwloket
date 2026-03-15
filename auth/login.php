@@ -334,17 +334,11 @@ if (isset($_POST['login'])) {
 
 	$login_success = false;
 	if ($user_found >= 1) {
-		// Verifikasi password (mendukung hash dan plain text legacy)
+		// Verifikasi password (mendukung hash dan plain text)
 		if (password_verify($pass, $data['password'])) {
 			$login_success = true;
 		} elseif ($data['password'] === $pass) {
-			// Jika password masih plain text, login berhasil dan update ke hash
 			$login_success = true;
-			$new_hash = password_hash($pass, PASSWORD_DEFAULT);
-			$stmt_update = $koneksi->prepare("UPDATE tb_user SET password = ? WHERE id_user = ?");
-			$stmt_update->bind_param("si", $new_hash, $data['id_user']);
-			$stmt_update->execute();
-			$stmt_update->close();
 		}
 	}
 
@@ -397,4 +391,3 @@ if (isset($_POST['login'])) {
 }
 } // Menutup blok else yang dibuka di baris 7
 ?>
-

@@ -36,6 +36,73 @@ include_once('../header.php');
                             </h4>
                         </div>
                         <div class="modern-card-body">
+                            <style>
+                                #zero_config th, #zero_config td { vertical-align: middle !important; }
+                                #zero_config td { padding: 12px 14px !important; }
+                                #zero_config th { white-space: nowrap; }
+                                #zero_config .col-no { width: 60px; }
+                                #zero_config .col-foto { width: 90px; }
+                                #zero_config .col-level { width: 90px; }
+                                #zero_config .col-aksi { width: 200px; }
+                                #zero_config .user-photo {
+                                    width: 56px;
+                                    height: 56px;
+                                    border-radius: 10px;
+                                    object-fit: cover;
+                                    display: block;
+                                    background: #f1f3f5;
+                                }
+                                #zero_config .cell-clip {
+                                    max-width: 280px;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                }
+                                #zero_config .password-cell {
+                                    max-width: 220px;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
+                                    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                                    font-size: 0.85rem;
+                                }
+
+                                #modaltambah .modal-body,
+                                [id^="modaledit"] .modal-body {
+                                    padding: 1.5rem;
+                                }
+
+                                #modaltambah .modal-body .form-control,
+                                [id^="modaledit"] .modal-body .form-control {
+                                    min-height: 44px;
+                                    height: 44px;
+                                    padding: 8px 12px;
+                                    line-height: 1.5;
+                                }
+
+                                #modaltambah .modal-body select.form-control,
+                                [id^="modaledit"] .modal-body select.form-control {
+                                    padding-right: 2.25rem;
+                                }
+
+                                #modaltambah .modal-body input[type="file"].form-control,
+                                [id^="modaledit"] .modal-body input[type="file"].form-control {
+                                    height: auto;
+                                    min-height: 44px;
+                                    padding: 7px 12px;
+                                }
+
+                                #modaltambah .modal-body .form-group,
+                                [id^="modaledit"] .modal-body .form-group {
+                                    margin-bottom: 1rem;
+                                }
+
+                                #modaltambah .modal-body label,
+                                [id^="modaledit"] .modal-body label {
+                                    margin-bottom: 0.35rem;
+                                    font-weight: 600;
+                                }
+                            </style>
                             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                                 <div class="mb-2 mb-md-0"></div>
                                 <div class="d-flex align-items-center">
@@ -50,17 +117,17 @@ include_once('../header.php');
                                 </div>
                             </div>
                             <div class="table-responsive">
-                                <table id="zero_config" class="table modern-table no-wrap">
+                                <table id="zero_config" class="table modern-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 5px;">No</th>
+                                            <th class="col-no">No</th>
                                             <th>Username</th>
                                             <th>Password</th>
                                             <th>Nama</th>
                                             <th>Email</th>
-                                            <th>Foto</th>
-                                            <th>Level</th>
-                                            <th style="text-align: center;">Aksi</th>
+                                            <th class="col-foto">Foto</th>
+                                            <th class="col-level">Level</th>
+                                            <th class="col-aksi" style="text-align: center;">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,15 +136,19 @@ include_once('../header.php');
                                         $sql = $koneksi->query("SELECT * FROM tb_user ORDER BY nama ASC");
                                         while($data = $sql->fetch_assoc()) {
                                         $level = ($data['level'] == 'admin')? "Admin" : "User";
+                                        $password_raw = (string)($data['password'] ?? '');
+                                        $is_hashed = (strpos($password_raw, '$2y$') === 0) || (strpos($password_raw, '$2a$') === 0) || (strpos($password_raw, '$2b$') === 0) || (strpos($password_raw, '$argon2') === 0);
+                                        $password_display = $is_hashed ? 'terenkripsi' : $password_raw;
+                                        $foto = !empty($data['foto']) ? $data['foto'] : 'default.png';
                                         ?>
                                         <tr>
                                             <td><?=$no++.'.'?></td>
-                                            <td><?=$data['username'];?></td>
-                                            <td><?=$data['password'];?></td>
-                                            <td><?=$data['nama'];?></td>
-                                            <td><?=$data['email'];?></td>
+                                            <td class="cell-clip"><?=htmlspecialchars($data['username']);?></td>
+                                            <td class="password-cell"><?=htmlspecialchars($password_display);?></td>
+                                            <td class="cell-clip"><?=htmlspecialchars($data['nama']);?></td>
+                                            <td class="cell-clip"><?=htmlspecialchars($data['email']);?></td>
                                             <td>
-                                                <img src="<?=base_url()?>/files/assets/images/<?=$data['foto'];?>" alt="foto" width="100">
+                                                <img src="<?=base_url()?>/files/assets/images/<?=htmlspecialchars($foto);?>" alt="foto" class="user-photo">
                                             </td>
                                             <td><?=$level?></td>
                                             <td align="center">

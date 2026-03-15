@@ -88,45 +88,30 @@ if (isset($_POST['update_multiple'])) {
 
     if ($updated_count > 0) {
         $message = "Berhasil mengupdate $updated_count transaksi" . ($error_count > 0 ? " (gagal: $error_count)" : "");
-        echo '<script src="' . base_url() . '/files/dist/js/sweetalert2.all.min.js"></script>';
         echo '<script>
             document.addEventListener("DOMContentLoaded", function() {
-                setTimeout(function() {
-                    if (typeof Swal !== "undefined") {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Berhasil!",
-                            text: "' . $message . '",
-                            confirmButtonColor: "#28a745",
-                            confirmButtonText: "OK"
-                        }).then((result) => {
-                            window.location.href = "' . base_url('transaksi/transaksi.php') . '";
-                        });
-                    } else {
-                        alert("' . $message . '");
-                        window.location.href = "' . base_url('transaksi/transaksi.php') . '";
-                    }
-                }, 100);
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil!",
+                    text: "' . $message . '",
+                    confirmButtonColor: "#28a745",
+                    confirmButtonText: "OK"
+                }).then((result) => {
+                    window.location.href = "' . base_url('transaksi/transaksi.php') . '";
+                });
             });
         </script>';
     } else {
         $message = "Gagal mengupdate transaksi. " . implode("; ", $errors);
-        echo '<script src="' . base_url() . '/files/dist/js/sweetalert2.all.min.js"></script>';
         echo '<script>
             document.addEventListener("DOMContentLoaded", function() {
-                setTimeout(function() {
-                    if (typeof Swal !== "undefined") {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Gagal!",
-                            text: "' . addslashes($message) . '",
-                            confirmButtonColor: "#dc3545",
-                            confirmButtonText: "OK"
-                        });
-                    } else {
-                        alert("' . addslashes($message) . '");
-                    }
-                }, 100);
+                Swal.fire({
+                    icon: "error",
+                    title: "Gagal!",
+                    text: "' . addslashes($message) . '",
+                    confirmButtonColor: "#dc3545",
+                    confirmButtonText: "OK"
+                });
             });
         </script>';
     }
@@ -135,9 +120,6 @@ if (isset($_POST['update_multiple'])) {
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Edit Multiple Transaksi</title>
     </head>
     <body>

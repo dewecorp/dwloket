@@ -1,68 +1,34 @@
 <?php
-/**
- * Endpoint AJAX untuk mengambil data transaksi multiple untuk edit
- */
-header('Content-Type: application/json');
 include_once('../config/config.php');
+header('Content-Type: application/json');
 
-// Cek apakah request valid
-if (!isset($_GET['ids']) || empty($_GET['ids'])) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'Parameter ids tidak ditemukan'
-    ]);
+$ids = isset($_GET['ids']) ? $_GET['ids'] : '';
+$id_array = !empty($ids) ? array_map('intval', explode(',', $ids)) : [];
+
+if (empty($id_array)) {
+    echo json_encode(['success' => false, 'message' => 'Tidak ada transaksi yang dipilih']);
     exit;
 }
 
-$ids = array_map('intval', explode(',', $_GET['ids']));
-$ids = array_filter($ids, function($id) {
-    return $id > 0;
-});
-
-if (empty($ids)) {
-    echo json_encode([
-        'success' => false,
-        'message' => 'ID transaksi tidak valid'
-    ]);
-    exit;
-}
-
-$ids_str = implode(',', $ids);
-
-// Ambil data transaksi
-$query = "SELECT transaksi.*, tb_jenisbayar.jenis_bayar
-          FROM transaksi
-          LEFT JOIN tb_jenisbayar ON transaksi.id_bayar = tb_jenisbayar.id_bayar
-          WHERE transaksi.id_transaksi IN ($ids_str)
-          ORDER BY transaksi.tgl DESC, transaksi.id_transaksi DESC";
+$ids_str = implode(',', $id_array);
+$query = "SELECT id_transaksi, tgl, idpel, nama, id_bayar, harga, status, ket FROM transaksi WHERE id_transaksi IN ($ids_str) ORDER BY tgl DESC";
 $result = $koneksi->query($query);
-$transaksi_list = [];
 
+$data = [];
 if ($result) {
     while ($row = $result->fetch_assoc()) {
-        // Format tanggal untuk input date
-        $row['tgl'] = date('Y-m-d', strtotime($row['tgl']));
-        $transaksi_list[] = $row;
+        $data[] = $row;
     }
-}
 
-// Ambil data jenis pembayaran untuk dropdown
-$sql_jenis = $koneksi->query("SELECT * FROM tb_jenisbayar ORDER BY jenis_bayar ASC");
-$jenis_bayar_list = [];
-if ($sql_jenis) {
+    // Ambil list jenis bayar
+    $jenis_bayar = [];
+    $sql_jenis = $koneksi->query("SELECT * FROM tb_jenisbayar ORDER BY jenis_bayar ASC");
     while ($row = $sql_jenis->fetch_assoc()) {
-        $jenis_bayar_list[] = $row;
+        $jenis_bayar[] = $row;
     }
+
+    echo json_encode(['success' => true, 'data' => $data, 'jenis_bayar' => $jenis_bayar]);
+} else {
+    echo json_encode(['success' => false, 'message' => $koneksi->error]);
 }
-
-// Format response
-$response = [
-    'success' => true,
-    'transaksi' => $transaksi_list,
-    'jenis_bayar_list' => $jenis_bayar_list
-];
-
-echo json_encode($response);
-exit;
 ?>
-

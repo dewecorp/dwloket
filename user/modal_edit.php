@@ -23,7 +23,12 @@ while($data = $sql->fetch_assoc()){
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
-                                <input type="text" name="password" class="form-control" value="<?=htmlspecialchars($data['password']);?>">
+                                <?php
+                                $password_raw = (string)($data['password'] ?? '');
+                                $is_hashed = (strpos($password_raw, '$2y$') === 0) || (strpos($password_raw, '$2a$') === 0) || (strpos($password_raw, '$2b$') === 0) || (strpos($password_raw, '$argon2') === 0);
+                                $password_value = $is_hashed ? '' : $password_raw;
+                                ?>
+                                <input type="text" name="password" class="form-control" value="<?=htmlspecialchars($password_value);?>" placeholder="<?=$is_hashed ? 'Password tersimpan terenkripsi, isi untuk ganti' : ''?>">
                             </div>
                             <div class="form-group">
                                 <label for="nama">Nama</label>
@@ -68,9 +73,8 @@ while($data = $sql->fetch_assoc()){
 if(isset($_POST['edit']) && $_POST['id'] == $data['id_user']) {
     $id        = $_POST['id'];
     $username  = $_POST['username'];
-    // Jika password diisi, hash password baru. Jika kosong, gunakan password lama.
     if (!empty($_POST['password'])) {
-        $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+        $password = $_POST['password'];
     } else {
         $password = $data['password'];
     }
