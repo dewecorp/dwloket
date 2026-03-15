@@ -280,17 +280,6 @@ if ($id > 0) {
             height: auto;
         }
 
-        /* Ensure navbar content doesn't overlap */
-        .navbar-collapse {
-            flex-wrap: wrap;
-        }
-
-        .navbar-nav.float-left {
-            min-width: 0;
-            flex: 1 1 auto;
-            margin-right: 1rem;
-        }
-
         /* Logo responsive sizing */
         @media (max-width: 991px) {
             .navbar-brand .dark-logo {

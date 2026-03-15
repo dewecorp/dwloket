@@ -2,8 +2,7 @@
 $sql = $koneksi->query("SELECT * FROM tb_user");
 while($data = $sql->fetch_assoc()){
 ?>
-<div id="modaledit<?=$data['id_user'];?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-    aria-hidden="true">
+<div id="modaledit<?=$data['id_user'];?>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -43,15 +42,15 @@ while($data = $sql->fetch_assoc()){
                             <div class="form-group">
                                 <label for="nama">Level</label>
                                 <select class="form-control" name="level" id="level" required>
-                                    <option value="admin" <?php if($data['level'] == 'admin') {echo "selected";}?>>Admin
-                                    </option>
+                                    <option value="admin" <?php if($data['level'] == 'admin') {echo "selected";}?>>Admin</option>
                                     <option value="user" <?php if($data['level'] == 'user') {echo "selected";}?>>User</option>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="foto">Foto</label>
                                 <input type="hidden" name="foto_lama" value="<?=htmlspecialchars($data['foto']);?>">
-                                <div><img src="<?=base_url()?>/files/assets/images/<?=htmlspecialchars($data['foto']);?>" alt="" width="100">
+                                <div>
+                                    <img src="<?=base_url()?>/files/assets/images/<?=htmlspecialchars($data['foto']);?>" alt="" width="100">
                                 </div>
                                 <input type="file" name="foto" class="form-control" accept="image/png, image/jpeg, image/gif">
                                 <span>

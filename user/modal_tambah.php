@@ -13,8 +13,7 @@
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="username">Username</label>
-                                <input type="text" name="username" class="form-control" placeholder="Username" autofocus
-                                required>
+                                <input type="text" name="username" class="form-control" placeholder="Username" autofocus required>
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
