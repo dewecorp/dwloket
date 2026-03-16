@@ -2457,31 +2457,10 @@ if ($table_exists) {
                                     </div>
                                     <div class="col-md-4 mb-2">
                                         <label class="small text-muted">Pencarian</label>
-                                        <div class="input-group input-group-sm">
-                                            <input type="text" name="search" class="form-control" placeholder="Cari produk..." value="<?=htmlspecialchars($search)?>">
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-primary" title="Cari">
-                                                    <i class="fa fa-search"></i>
-                                                </button>
-                                                <?php if (!empty($search) || !empty($filter_kategori) || !empty($filter_produk)): ?>
-                                                <a href="?" class="btn btn-danger btn-sm" title="Reset Semua Filter & Pencarian">
-                                                    <i class="fa fa-times"></i>
-                                                </a>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
+                                        <input type="text" id="searchProduk" name="search" class="form-control form-control-sm" placeholder="Cari produk..." value="<?=htmlspecialchars($search)?>">
                                     </div>
                                 </form>
                             </div>
-
-                            <!-- Reset Button - Selalu tampilkan jika ada filter/pencarian aktif -->
-                            <?php if (!empty($search) || !empty($filter_kategori) || !empty($filter_produk)): ?>
-                            <div class="mb-3">
-                                <a href="?" class="btn btn-warning btn-sm">
-                                    <i class="fa fa-refresh"></i> Reset Semua Filter & Pencarian
-                                </a>
-                            </div>
-                            <?php endif; ?>
 
                             <!-- Action Buttons -->
                             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
@@ -2490,9 +2469,6 @@ if ($table_exists) {
                                     <small class="text-muted ml-2" id="selectedCount">| Terpilih: <strong>0</strong></small>
                                 </div>
                                 <div class="d-flex align-items-center flex-wrap">
-                                    <a href="template_import_produk.php" class="btn btn-info btn-sm mr-2 mb-2" target="_blank">
-                                        <i class="fa fa-download"></i> Download Template
-                                    </a>
                                     <button type="button" class="btn btn-danger btn-sm mr-2 mb-2" id="btnHapusMultiple" disabled onclick="hapusMultiple()">
                                         <i class="fa fa-trash"></i> Hapus Terpilih
                                     </button>
@@ -3020,6 +2996,9 @@ if ($table_exists) {
                         <?php if (!empty($all_produk_detail)):
                             $current_kategori = '';
                             $produk_by_kategori = [];
+                            $kategori_stats = [];
+                            $last_updated_at = '';
+                            $last_created_at = '';
 
                             // Group produk by kategori
                             foreach ($all_produk_detail as $prod) {
@@ -3028,56 +3007,198 @@ if ($table_exists) {
                                     $produk_by_kategori[$kat] = [];
                                 }
                                 $produk_by_kategori[$kat][] = $prod;
+
+                                if (!isset($kategori_stats[$kat])) {
+                                    $kategori_stats[$kat] = ['total' => 0, 'aktif' => 0, 'tidak_aktif' => 0];
+                                }
+                                $kategori_stats[$kat]['total']++;
+                                if ((int)($prod['status'] ?? 1) === 1) $kategori_stats[$kat]['aktif']++;
+                                else $kategori_stats[$kat]['tidak_aktif']++;
+
+                                $u = $prod['updated_at'] ?? '';
+                                if (!empty($u) && $u > $last_updated_at) $last_updated_at = $u;
+                                $c = $prod['created_at'] ?? '';
+                                if (!empty($c) && $c > $last_created_at) $last_created_at = $c;
                             }
                         ?>
                         <style>
+                            #modalDetailProduk .modal-header {
+                                background: #764ba2;
+                                color: #fff;
+                                border-bottom: none;
+                            }
+                            #modalDetailProduk .modal-header .close {
+                                color: rgba(255,255,255,.9);
+                                opacity: 1;
+                                text-shadow: none;
+                            }
+                            #modalDetailProduk .modal-content {
+                                border: none;
+                                border-radius: 14px;
+                                overflow: hidden;
+                                box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.25);
+                            }
+                            #modalDetailProduk .modal-body {
+                                background: #f8f9fc;
+                            }
+                            .produk-modal-toolbar {
+                                position: sticky;
+                                top: 0;
+                                z-index: 5;
+                                background: #f8f9fc;
+                                padding: 12px 0 14px;
+                                border-bottom: 1px solid rgba(0,0,0,0.06);
+                            }
+                            .produk-modal-stat {
+                                background: #ffffff;
+                                border: 1px solid rgba(0,0,0,0.06);
+                                border-radius: 12px;
+                                padding: 12px 14px;
+                                box-shadow: 0 0.15rem 1.25rem 0 rgba(58, 59, 69, 0.08);
+                            }
+                            .produk-modal-stat .label {
+                                font-size: 0.75rem;
+                                text-transform: uppercase;
+                                letter-spacing: .4px;
+                                color: #6c757d;
+                                font-weight: 700;
+                                margin-bottom: 2px;
+                            }
+                            .produk-modal-stat .value {
+                                font-size: 1.25rem;
+                                font-weight: 800;
+                                color: #212529;
+                                line-height: 1.2;
+                            }
+                            .produk-modal-stat .value small {
+                                font-size: 0.85rem;
+                                font-weight: 700;
+                                color: #6c757d;
+                            }
+                            .produk-modal-controls .form-control,
+                            .produk-modal-controls .btn {
+                                border-radius: 10px;
+                            }
+                            .kategori-card-modal {
+                                border: none;
+                                border-radius: 14px;
+                                overflow: hidden;
+                                box-shadow: 0 0.15rem 1.25rem 0 rgba(58, 59, 69, 0.08);
+                                background: #ffffff;
+                            }
+                            .kategori-card-modal .card-header {
+                                background: #ffffff;
+                                border-bottom: 1px solid rgba(0,0,0,0.06);
+                            }
+                            .kategori-title-btn {
+                                width: 100%;
+                                text-align: left;
+                                padding: 0;
+                                font-weight: 800;
+                                color: #212529;
+                            }
+                            .kategori-title-btn:hover,
+                            .kategori-title-btn:focus {
+                                text-decoration: none;
+                            }
+                            .kategori-meta-badges .badge {
+                                font-weight: 700;
+                                border-radius: 999px;
+                                padding: .35rem .6rem;
+                            }
                             .produk-card-modal {
-                                transition: all 0.3s;
                                 cursor: pointer;
-                                min-height: 180px;
-                                border: 1px solid #dee2e6;
-                                word-wrap: break-word;
-                                overflow-wrap: break-word;
+                                border: 1px solid rgba(0,0,0,0.06);
+                                border-left-width: 4px;
+                                border-radius: 14px;
+                                transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+                                min-height: 190px;
+                                overflow: hidden;
+                                background: #ffffff;
                             }
                             .produk-card-modal:hover {
-                                transform: translateY(-5px);
-                                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-                                border-color: #28a745;
+                                transform: translateY(-3px);
+                                box-shadow: 0 0.25rem 1.5rem 0 rgba(58, 59, 69, 0.12);
                             }
                             .produk-card-modal.selected {
-                                border-color: #28a745 !important;
-                                background-color: #f0fff4;
+                                box-shadow: 0 0.25rem 1.5rem 0 rgba(28, 200, 138, 0.25);
+                                border-color: rgba(28, 200, 138, 0.6);
+                                background: #f0fff4;
                             }
+                            .produk-card-modal.is-aktif { border-left-color: #1cc88a; }
+                            .produk-card-modal.is-nonaktif { border-left-color: #f6c23e; }
                             .produk-card-modal .card-body {
-                                padding: 1rem;
+                                padding: 14px 14px 12px;
                             }
-                            .produk-card-modal .card-title {
-                                font-size: 0.95rem;
-                                font-weight: 600;
-                                line-height: 1.4;
-                                min-height: 2.8em;
-                                margin-bottom: 0.5rem;
-                            }
-                            .produk-card-modal .card-text {
-                                font-size: 0.85rem;
-                                line-height: 1.4;
-                                min-height: 2.8em;
-                                margin-bottom: 0.75rem;
-                            }
-                            .price-badge-modal {
-                                font-size: 1.3rem;
-                                font-weight: bold;
-                                color: #28a745;
+                            .produk-card-modal .kode-badge {
+                                background: rgba(54, 185, 204, 0.15);
+                                color: #0b7285;
+                                border: 1px solid rgba(54, 185, 204, 0.25);
+                                font-weight: 800;
+                                letter-spacing: .3px;
+                                border-radius: 999px;
+                                padding: .25rem .6rem;
+                                display: inline-block;
+                                max-width: 100%;
                                 white-space: nowrap;
                                 overflow: hidden;
                                 text-overflow: ellipsis;
                             }
-                            .kategori-section-modal {
-                                margin-bottom: 2rem;
+                            .produk-card-modal .status-badge {
+                                border-radius: 999px;
+                                font-weight: 800;
+                                padding: .25rem .6rem;
                             }
-                            .kategori-badge-modal {
-                                font-size: 0.9rem;
-                                padding: 0.5rem 1rem;
+                            .produk-card-modal .nama-produk {
+                                font-size: 0.95rem;
+                                font-weight: 800;
+                                color: #212529;
+                                line-height: 1.35;
+                                margin: 10px 0 6px;
+                                display: -webkit-box;
+                                -webkit-line-clamp: 2;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                min-height: 2.7em;
+                            }
+                            .produk-card-modal .keterangan-produk {
+                                font-size: 0.82rem;
+                                color: #6c757d;
+                                line-height: 1.35;
+                                display: -webkit-box;
+                                -webkit-line-clamp: 2;
+                                -webkit-box-orient: vertical;
+                                overflow: hidden;
+                                min-height: 2.7em;
+                                margin-bottom: 10px;
+                            }
+                            .produk-card-modal .harga-produk {
+                                font-size: 1.25rem;
+                                font-weight: 900;
+                                color: #1cc88a;
+                                letter-spacing: .2px;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+                            .produk-card-modal .meta-row {
+                                margin-top: 10px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+                                gap: 10px;
+                            }
+                            .produk-card-modal .meta-left {
+                                font-size: 0.8rem;
+                                color: #6c757d;
+                                min-width: 0;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+                            .produk-card-modal .btn-view-detail {
+                                border-radius: 10px;
+                                font-weight: 800;
                             }
                             @media (min-width: 1200px) {
                                 .modal-dialog[style*="95%"] {
@@ -3086,57 +3207,160 @@ if ($table_exists) {
                             }
                         </style>
 
-                        <?php foreach ($produk_by_kategori as $kat => $produk_list_kat): ?>
-                        <div class="kategori-section-modal">
-                            <h5 class="mb-3">
-                                <span class="badge badge-info kategori-badge-modal">
-                                    <i class="fa fa-folder"></i> <?=htmlspecialchars($kat)?>
-                                    <span class="badge badge-light ml-2"><?=count($produk_list_kat)?></span>
-                                </span>
-                            </h5>
+                        <div class="produk-modal-toolbar">
                             <div class="row">
-                                <?php foreach ($produk_list_kat as $prod): ?>
-                                <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
-                                    <div class="card produk-card-modal"
-                                         data-kode="<?=htmlspecialchars($prod['kode'])?>"
-                                         data-harga="<?=$prod['harga']?>"
-                                         data-produk="<?=htmlspecialchars($prod['produk'])?>"
-                                         data-id="<?=$prod['id_produk']?>">
-                                        <div class="card-body">
-                                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                                <span class="badge badge-info"><?=htmlspecialchars($prod['kode'])?></span>
-                                                <?php if ($prod['status'] == 0): ?>
-                                                <span class="badge badge-warning">Tidak Aktif</span>
-                                                <?php else: ?>
-                                                <span class="badge badge-success">Aktif</span>
-                                                <?php endif; ?>
-                                            </div>
-                                            <h6 class="card-title" title="<?=htmlspecialchars($prod['produk'])?>"><?=htmlspecialchars($prod['produk'])?></h6>
-                                            <?php if (!empty($prod['keterangan'])): ?>
-                                            <p class="card-text small text-muted mb-2" title="<?=htmlspecialchars($prod['keterangan'])?>">
-                                                <?=htmlspecialchars($prod['keterangan'])?>
-                                            </p>
-                                            <?php endif; ?>
-                                            <div class="price-badge-modal mb-2" title="Rp <?=number_format(intval($prod['harga']), 0, ',', '.')?>">
-                                                Rp <?=number_format(intval($prod['harga']), 0, ',', '.')?>
-                                            </div>
-                                            <div class="d-flex justify-content-between align-items-center mt-2">
-                                                <small class="text-muted">
-                                                    <i class="fa fa-tag"></i> <?=htmlspecialchars($kat)?>
-                                                </small>
-                                                <button class="btn btn-sm btn-primary btn-view-detail"
-                                                        data-id="<?=$prod['id_produk']?>"
-                                                        onclick="event.stopPropagation(); viewProdukDetail(<?=$prod['id_produk']?>);">
-                                                    <i class="fa fa-eye"></i>
-                                                </button>
-                                            </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="produk-modal-stat">
+                                        <div class="label">Total Produk</div>
+                                        <div class="value"><?=number_format($produk_stats['total'] ?? count($all_produk_detail))?></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="produk-modal-stat">
+                                        <div class="label">Aktif</div>
+                                        <div class="value text-success"><?=number_format($produk_stats['aktif'] ?? 0)?></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="produk-modal-stat">
+                                        <div class="label">Tidak Aktif</div>
+                                        <div class="value text-warning"><?=number_format($produk_stats['tidak_aktif'] ?? 0)?></div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <div class="produk-modal-stat">
+                                        <div class="label">Kategori</div>
+                                        <div class="value"><?=number_format(count($produk_by_kategori))?> <small>jenis</small></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row produk-modal-controls align-items-end mt-1">
+                                <div class="col-md-6 mb-2">
+                                    <label class="small text-muted mb-1">Cari di modal</label>
+                                    <div class="input-group">
+                                        <input type="text" id="modalProdukSearch" class="form-control" placeholder="Cari kode / nama / kategori / keterangan...">
+                                        <div class="input-group-append">
+                                            <button type="button" id="modalProdukClear" class="btn btn-light" title="Bersihkan">
+                                                <i class="fa fa-times"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                <?php endforeach; ?>
+                                <div class="col-md-3 mb-2">
+                                    <label class="small text-muted mb-1">Status</label>
+                                    <select id="modalProdukStatus" class="form-control">
+                                        <option value="all">Semua</option>
+                                        <option value="1">Aktif</option>
+                                        <option value="0">Tidak Aktif</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-2 text-md-right">
+                                    <div class="btn-group">
+                                        <button type="button" id="modalProdukExpandAll" class="btn btn-outline-secondary">
+                                            <i class="fa fa-plus-square"></i> Buka Semua
+                                        </button>
+                                        <button type="button" id="modalProdukCollapseAll" class="btn btn-outline-secondary">
+                                            <i class="fa fa-minus-square"></i> Tutup Semua
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-1">
+                                <small class="text-muted">
+                                    Terlihat: <strong id="modalProdukVisibleCount"><?=number_format(count($all_produk_detail))?></strong> produk
+                                </small>
+                                <small class="text-muted">
+                                    <?php if (!empty($last_updated_at) || !empty($last_created_at)): ?>
+                                        Terakhir update: <strong><?=htmlspecialchars(!empty($last_updated_at) ? $last_updated_at : $last_created_at)?></strong>
+                                    <?php endif; ?>
+                                </small>
                             </div>
                         </div>
-                        <?php endforeach; ?>
+
+                        <div id="produkDetailGroups" class="accordion mt-3">
+                            <?php foreach ($produk_by_kategori as $kat => $produk_list_kat): ?>
+                            <?php $kat_id = 'kat_' . substr(md5($kat), 0, 10); ?>
+                            <div class="card kategori-card-modal mb-3" data-kategori="<?=htmlspecialchars($kat)?>">
+                                <div class="card-header py-3">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <button class="btn btn-link kategori-title-btn" data-toggle="collapse" data-target="#<?=$kat_id?>" aria-expanded="true">
+                                            <i class="fa fa-folder-open text-info mr-2"></i><?=htmlspecialchars($kat)?>
+                                        </button>
+                                        <div class="kategori-meta-badges">
+                                            <span class="badge badge-light mr-1" title="Total produk kategori ini">
+                                                <span id="kat_total_<?=$kat_id?>"><?=number_format($kategori_stats[$kat]['total'] ?? count($produk_list_kat))?></span>
+                                            </span>
+                                            <span class="badge badge-success mr-1" title="Produk aktif">
+                                                <?=number_format($kategori_stats[$kat]['aktif'] ?? 0)?>
+                                            </span>
+                                            <span class="badge badge-warning" title="Produk tidak aktif">
+                                                <?=number_format($kategori_stats[$kat]['tidak_aktif'] ?? 0)?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="<?=$kat_id?>" class="collapse show" data-parent="#produkDetailGroups">
+                                    <div class="card-body pt-3">
+                                        <div class="row">
+                                            <?php foreach ($produk_list_kat as $prod): ?>
+                                            <?php
+                                                $is_active = (int)($prod['status'] ?? 1) === 1;
+                                                $card_class = $is_active ? 'is-aktif' : 'is-nonaktif';
+                                                $search_blob = trim(($prod['kode'] ?? '') . ' ' . ($prod['produk'] ?? '') . ' ' . ($prod['keterangan'] ?? '') . ' ' . ($prod['kategori'] ?? ''));
+                                            ?>
+                                            <div class="col-md-6 col-lg-4 col-xl-3 mb-3">
+                                                <div class="card produk-card-modal <?=$card_class?>"
+                                                     data-kode="<?=htmlspecialchars($prod['kode'])?>"
+                                                     data-harga="<?=$prod['harga']?>"
+                                                     data-produk="<?=htmlspecialchars($prod['produk'])?>"
+                                                     data-id="<?=$prod['id_produk']?>"
+                                                     data-status="<?=htmlspecialchars((string)($prod['status'] ?? 1))?>"
+                                                     data-search="<?=htmlspecialchars($search_blob)?>">
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <span class="kode-badge" title="<?=htmlspecialchars($prod['kode'])?>"><?=htmlspecialchars($prod['kode'])?></span>
+                                                            <?php if (!$is_active): ?>
+                                                                <span class="badge badge-warning status-badge">Tidak Aktif</span>
+                                                            <?php else: ?>
+                                                                <span class="badge badge-success status-badge">Aktif</span>
+                                                            <?php endif; ?>
+                                                        </div>
+
+                                                        <div class="nama-produk" title="<?=htmlspecialchars($prod['produk'])?>"><?=htmlspecialchars($prod['produk'])?></div>
+
+                                                        <?php if (!empty($prod['keterangan'])): ?>
+                                                            <div class="keterangan-produk" title="<?=htmlspecialchars($prod['keterangan'])?>"><?=htmlspecialchars($prod['keterangan'])?></div>
+                                                        <?php else: ?>
+                                                            <div class="keterangan-produk" style="opacity: .65;">&nbsp;</div>
+                                                        <?php endif; ?>
+
+                                                        <div class="harga-produk" title="Rp <?=number_format((int)$prod['harga'], 0, ',', '.')?>">Rp <?=number_format((int)$prod['harga'], 0, ',', '.')?></div>
+
+                                                        <div class="meta-row">
+                                                            <div class="meta-left" title="<?=htmlspecialchars($kat)?>">
+                                                                <i class="fa fa-tag"></i> <?=htmlspecialchars($kat)?>
+                                                                <?php if (!empty($prod['id_bayar'])): ?>
+                                                                    <span class="ml-2" title="ID Jenis Bayar"><i class="fa fa-link"></i> <?=$prod['id_bayar']?></span>
+                                                                <?php endif; ?>
+                                                            </div>
+                                                            <button class="btn btn-sm btn-primary btn-view-detail"
+                                                                    data-id="<?=$prod['id_produk']?>"
+                                                                    onclick="event.stopPropagation(); viewProdukDetail(<?=$prod['id_produk']?>);">
+                                                                <i class="fa fa-eye"></i> Detail
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
                         <?php else: ?>
                         <div class="alert alert-info text-center">
                             <i class="fa fa-info-circle"></i> Belum ada produk yang ditambahkan.
@@ -3215,6 +3439,59 @@ if ($table_exists) {
                 }, 2000);
 
                 return false;
+            });
+
+            function updateProdukModalFilter() {
+                const q = ($('#modalProdukSearch').val() || '').toLowerCase().trim();
+                const status = $('#modalProdukStatus').val() || 'all';
+                let visibleTotal = 0;
+
+                $('#modalDetailProduk .kategori-card-modal').each(function() {
+                    const $kategoriCard = $(this);
+                    let visibleInKategori = 0;
+
+                    $kategoriCard.find('.produk-card-modal').each(function() {
+                        const $card = $(this);
+                        const blob = ($card.attr('data-search') || '').toLowerCase();
+                        const cardStatus = $card.attr('data-status');
+
+                        const matchText = q === '' || blob.indexOf(q) !== -1;
+                        const matchStatus = status === 'all' || String(cardStatus) === String(status);
+                        const show = matchText && matchStatus;
+
+                        $card.closest('.col-md-6, .col-lg-4, .col-xl-3').toggle(show);
+                        if (show) {
+                            visibleInKategori++;
+                            visibleTotal++;
+                        }
+                    });
+
+                    $('#kat_total_' + $kategoriCard.find('.collapse').attr('id')).text(visibleInKategori.toLocaleString('id-ID'));
+                    $kategoriCard.toggle(visibleInKategori > 0);
+                });
+
+                $('#modalProdukVisibleCount').text(visibleTotal.toLocaleString('id-ID'));
+            }
+
+            $(document).on('input', '#modalProdukSearch', function() {
+                updateProdukModalFilter();
+            });
+            $(document).on('change', '#modalProdukStatus', function() {
+                updateProdukModalFilter();
+            });
+            $(document).on('click', '#modalProdukClear', function() {
+                $('#modalProdukSearch').val('');
+                updateProdukModalFilter();
+            });
+            $(document).on('click', '#modalProdukExpandAll', function() {
+                $('#modalDetailProduk .kategori-card-modal .collapse').collapse('show');
+            });
+            $(document).on('click', '#modalProdukCollapseAll', function() {
+                $('#modalDetailProduk .kategori-card-modal .collapse').collapse('hide');
+            });
+
+            $('#modalDetailProduk').on('shown.bs.modal', function() {
+                updateProdukModalFilter();
             });
         });
 
@@ -4046,6 +4323,29 @@ if ($table_exists) {
                         if (firstVisible) {
                             firstVisible.click();
                         }
+                    }
+                });
+            })();
+
+            (function() {
+                const searchInput = document.getElementById('searchProduk');
+                if (!searchInput) return;
+                const form = searchInput.closest('form');
+                if (!form) return;
+
+                let t = null;
+                searchInput.addEventListener('input', function() {
+                    if (t) clearTimeout(t);
+                    t = setTimeout(function() {
+                        form.submit();
+                    }, 450);
+                });
+
+                searchInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (t) clearTimeout(t);
+                        form.submit();
                     }
                 });
             })();
