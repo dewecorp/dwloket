@@ -490,7 +490,7 @@ if ($id > 0) {
                             <span class="hide-menu">MENU UTAMA</span>
                         </li>
                         <li class="sidebar-item">
-                            <a class="sidebar-link" href="<?=base_url('pelanggan/pelanggan.php')?>"
+                            <a class="sidebar-link sidebar-link" href="<?=base_url('pelanggan/pelanggan')?>"
                                 aria-expanded="false"><i data-feather="users" class="feather-icon"></i><span
                                     class="hide-menu">Pelanggan</span>
                             </a>

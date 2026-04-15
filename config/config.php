@@ -50,18 +50,21 @@ function base_url($url = null) {
     // Cara paling aman untuk struktur saat ini (h:\laragon\www\dwloket_ok):
     // Hardcode path relatif web server jika di localhost/dwloket_ok
 
-    $base_path = "/dwloket_ok"; // Sesuaikan jika nama folder di htdocs berbeda
-
-    // Perbaikan: Deteksi otomatis jika menggunakan Virtual Host (misal: dwloket_ok.test)
-    // Jika host mengandung 'dwloket_ok.test', berarti root web server adalah folder project ini sendiri
-    if (strpos($_SERVER['HTTP_HOST'], 'dwloket_ok.test') !== false) {
+    // Path URL di depan domain: kosong jika DOCUMENT_ROOT = folder project (virtual host Laragon),
+    // atau /nama_folder jika project di bawah www (mis. localhost/dwloket_ok/...).
+    $docroot = str_replace('\\', '/', rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/'));
+    $project_root = str_replace('\\', '/', dirname(__DIR__));
+    if ($docroot !== '' && strcasecmp($docroot, $project_root) === 0) {
         $base_path = "";
+    } else {
+        $base_path = "/dwloket_ok"; // Sesuaikan jika nama folder di htdocs berbeda
     }
 
     $root_url = $protocol . $host . $base_path;
 
-    if($url != null) {
-        return $root_url."/".$url;
+    if ($url != null) {
+        $url = ltrim((string) $url, '/');
+        return $root_url . "/" . $url;
     } else {
         return $root_url;
     }
