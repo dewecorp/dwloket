@@ -501,22 +501,6 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 </div>
             </div>
 
-            <!-- Welcome Card -->
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="modern-card">
-                        <div class="modern-card-body" style="padding: 4rem 3rem;">
-                            <div class="text-center">
-                                <div class="logo-icon mb-4">
-                                  <!--   <img src="<?=base_url()?>/files/assets/images/dwloket_logo.png" alt="logo" width="250px" height="70px"> -->
-                                </div>
-                                <h1 class="display-4 mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; line-height: 1.2;"><b>DW LOKET JEPARA</b></h1>
-                                <p class="lead mb-0" style="color: #5a5c69; font-size: 1.15rem; line-height: 1.9; max-width: 950px; margin: 0 auto; font-weight: 500;"><b>Loket Resmi Pembayaran PLN, Token PLN Pra Bayar, Pulsa Pra Bayar, Pulsa Pasca Bayar, Kuota Data, BPJS Kesehatan, PDAM, E-Money, Multifinance, Voucher Game, Dan Lain-lain.</b></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <?php
         include_once('../footer.php');
