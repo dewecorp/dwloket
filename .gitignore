@@ -1,5 +1,6 @@
 vendor/
 files/vendor/
+*.bat
 *.zip
 *.rar
 *.sql
