@@ -359,9 +359,19 @@ if ($id > 0) {
             stroke: rgba(255, 255, 255, 0.92) !important;
         }
 
+        #main-wrapper .topbar .nav-item.dropdown > .nav-link .svg-icon,
+        #main-wrapper .topbar .nav-item.dropdown > .nav-link .svg-icon * {
+            stroke: #555 !important;
+        }
+
         #main-wrapper .topbar .dropdown-menu,
         #main-wrapper .topbar .dropdown-menu * {
             color: #000000 !important;
+        }
+
+        #main-wrapper .topbar .dropdown-menu .svg-icon,
+        #main-wrapper .topbar .dropdown-menu .svg-icon * {
+            stroke: #555 !important;
         }
 
         /* Sidebar gradasi biru tua */
