@@ -57,7 +57,7 @@ if (isset($_POST['update_multiple'])) {
         $idpel = mysqli_real_escape_string($koneksi, $data['idpel'] ?? '');
         $nama = mysqli_real_escape_string($koneksi, $data['nama'] ?? '');
         $id_bayar = intval($data['id_bayar'] ?? 0);
-        $harga = floatval($data['harga'] ?? 0);
+        $harga = floatval(str_replace('.', '', $data['harga'] ?? 0));
         $status = mysqli_real_escape_string($koneksi, $data['status'] ?? '');
         $ket = mysqli_real_escape_string($koneksi, $data['ket'] ?? '');
 
@@ -212,9 +212,9 @@ if (isset($_POST['update_multiple'])) {
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp</span>
                                                         </div>
-                                                        <input type="number" name="transaksi[<?=$trans['id_transaksi']?>][harga]"
-                                                               value="<?=intval($trans['harga'])?>"
-                                                               class="form-control" step="1" min="0" required>
+                                                        <input type="text" name="transaksi[<?=$trans['id_transaksi']?>][harga]"
+                                                               value="<?=number_format(intval($trans['harga']), 0, ',', '.')?>"
+                                                               class="form-control input-rupiah" required>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -254,6 +254,30 @@ if (isset($_POST['update_multiple'])) {
                 </div>
             </div>
         </div>
+    <script>
+    function formatRupiah(angka) {
+        var number = angka.replace(/[^0-9]/g, '');
+        if (number === '') return '';
+        return parseInt(number).toLocaleString('id-ID');
+    }
+    function cleanRupiah(angka) {
+        return angka.replace(/\./g, '');
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.input-rupiah').forEach(function(input) {
+            input.addEventListener('input', function() {
+                var raw = this.value.replace(/[^0-9]/g, '');
+                if (raw === '') { this.value = ''; return; }
+                this.value = parseInt(raw).toLocaleString('id-ID');
+            });
+        });
+        document.querySelector('form').addEventListener('submit', function() {
+            document.querySelectorAll('.input-rupiah').forEach(function(input) {
+                input.value = cleanRupiah(input.value);
+            });
+        });
+    });
+    </script>
     </body>
 </html>
 <?php

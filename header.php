@@ -2,6 +2,10 @@
 // Gunakan __DIR__ untuk memastikan path config selalu benar dimanapun header.php di-include
 require_once __DIR__ . "/config/config.php";
 
+// Tentukan halaman aktif untuk sidebar
+$current_script = $_SERVER['SCRIPT_NAME'] ?? '';
+$current_dir = basename(dirname($current_script));
+
 // Perbaikan: Cek session dengan benar untuk mengatasi masalah redirect setelah idle lama
 // Masalah sebelumnya: isset($_SESSION['level']) == "" selalu true ketika session expired
 // Solusi: Gunakan !isset() atau empty() untuk cek yang benar
@@ -389,8 +393,28 @@ if ($id > 0) {
         #main-wrapper .left-sidebar .sidebar-nav .sidebar-item > .sidebar-link:hover,
         #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.selected > .sidebar-link,
         #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.active > .sidebar-link {
-            background: rgba(255, 255, 255, 0.12) !important;
+            background: rgba(255, 255, 255, 0.15) !important;
             border-radius: 10px;
+        }
+
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.selected > .sidebar-link,
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.active > .sidebar-link {
+            position: relative;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.18) !important;
+        }
+
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.selected > .sidebar-link::before,
+        #main-wrapper .left-sidebar .sidebar-nav .sidebar-item.active > .sidebar-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: #fff;
+            border-radius: 0 4px 4px 0;
         }
     </style>
 
@@ -479,8 +503,8 @@ if ($id > 0) {
                 <!-- Sidebar navigation-->
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('home')?>" aria-expanded="false"><i
+                        <li class="sidebar-item<?=$current_dir === 'home' ? ' active' : ''?>">
+                            <a class="sidebar-link sidebar-link<?=$current_dir === 'home' ? ' active' : ''?>" href="<?=base_url('home')?>" aria-expanded="false"><i
                                     data-feather="home" class="feather-icon"></i><span
                                     class="hide-menu">Dashboard</span>
                             </a>
@@ -489,26 +513,26 @@ if ($id > 0) {
                         <li class="nav-small-cap">
                             <span class="hide-menu">MENU UTAMA</span>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('pelanggan/pelanggan')?>"
+                        <li class="sidebar-item<?=$current_dir === 'pelanggan' ? ' active' : ''?>">
+                            <a class="sidebar-link sidebar-link<?=$current_dir === 'pelanggan' ? ' active' : ''?>" href="<?=base_url('pelanggan/pelanggan')?>"
                                 aria-expanded="false"><i data-feather="users" class="feather-icon"></i><span
                                     class="hide-menu">Pelanggan</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('jenisbayar/jenis_bayar.php')?>"
+                        <li class="sidebar-item<?=$current_dir === 'jenisbayar' ? ' active' : ''?>">
+                            <a class="sidebar-link sidebar-link<?=$current_dir === 'jenisbayar' ? ' active' : ''?>" href="<?=base_url('jenisbayar/jenis_bayar.php')?>"
                                 aria-expanded="false"><i data-feather="dollar-sign" class="feather-icon"></i><span
                                     class="hide-menu">Jenis Pembayaran</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('saldo/saldo.php')?>"
+                        <li class="sidebar-item<?=$current_dir === 'saldo' ? ' active' : ''?>">
+                            <a class="sidebar-link sidebar-link<?=$current_dir === 'saldo' ? ' active' : ''?>" href="<?=base_url('saldo/saldo.php')?>"
                                 aria-expanded="false"><i data-feather="credit-card" class="feather-icon"></i><span
                                     class="hide-menu">Saldo</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('transaksi/transaksi.php')?>"
+                        <li class="sidebar-item<?=$current_dir === 'transaksi' ? ' active' : ''?>">
+                            <a class="sidebar-link sidebar-link<?=$current_dir === 'transaksi' ? ' active' : ''?>" href="<?=base_url('transaksi/transaksi.php')?>"
                                 aria-expanded="false"><i data-feather="shopping-cart" class="feather-icon"></i><span
                                     class="hide-menu">Transaksi</span>
                             </a>
@@ -518,15 +542,15 @@ if ($id > 0) {
                             <span class="hide-menu">Extra</span>
                         </li>
                         <?php if (isset($_SESSION['level']) && $_SESSION['level'] == 'admin'): ?>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('admin/backup.php')?>"
+                        <li class="sidebar-item<?=$current_dir === 'admin' ? ' active' : ''?>">
+                            <a class="sidebar-link sidebar-link<?=$current_dir === 'admin' ? ' active' : ''?>" href="<?=base_url('admin/backup.php')?>"
                                 aria-expanded="false"><i data-feather="database" class="feather-icon"></i><span
                                     class="hide-menu">Backup & Restore</span>
                             </a>
                         </li>
                         <?php endif; ?>
-                        <li class="sidebar-item">
-                            <a class="sidebar-link sidebar-link" href="<?=base_url('user/user.php')?>"
+                        <li class="sidebar-item<?=$current_dir === 'user' ? ' active' : ''?>">
+                            <a class="sidebar-link sidebar-link<?=$current_dir === 'user' ? ' active' : ''?>" href="<?=base_url('user/user.php')?>"
                                 aria-expanded="false"><i data-feather="user" class="feather-icon"></i><span
                                     class="hide-menu">User</span>
                             </a>

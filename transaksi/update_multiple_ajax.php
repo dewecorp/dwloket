@@ -20,7 +20,7 @@ try {
             $idpel = mysqli_real_escape_string($koneksi, $data['idpel'] ?? '');
             $nama = mysqli_real_escape_string($koneksi, $data['nama'] ?? '');
             $id_bayar = intval($data['id_bayar'] ?? 0);
-            $harga = floatval($data['harga'] ?? 0);
+            $harga = floatval(str_replace('.', '', $data['harga'] ?? 0));
             $status = mysqli_real_escape_string($koneksi, $data['status'] ?? '');
             $ket = mysqli_real_escape_string($koneksi, $data['ket'] ?? '');
 

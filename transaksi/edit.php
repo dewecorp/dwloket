@@ -22,6 +22,7 @@ if (isset($_POST['edit'])) {
     $nama   = isset($_POST['nama']) ? trim($_POST['nama']) : '';
     $produk = isset($_POST['produk']) ? trim($_POST['produk']) : '';
     $harga  = isset($_POST['harga']) ? trim($_POST['harga']) : '';
+    $harga  = str_replace('.', '', $harga);
     $status = isset($_POST['status']) ? trim($_POST['status']) : '';
     $ket    = isset($_POST['ket']) ? trim($_POST['ket']) : '';
 
@@ -540,7 +541,7 @@ if ($sql_jenis) {
                                                         <div class="input-group-prepend">
                                                             <span class="input-group-text">Rp</span>
                                                         </div>
-                                                        <input type="number" name="harga" id="harga" class="form-control" value="<?=$data['harga'];?>" required>
+                                                        <input type="text" name="harga" id="harga" class="form-control input-rupiah" value="<?=number_format($data['harga'], 0, ',', '.')?>" required>
                                                     </div>
                                                     <small class="form-text text-muted">Pilih produk dari kategori di atas untuk mengisi harga otomatis</small>
                                                 </div>
@@ -610,6 +611,14 @@ if ($sql_jenis) {
         </div>
 
         <script>
+        function formatRupiah(angka) {
+            var number = angka.replace(/[^0-9]/g, '');
+            if (number === '') return '';
+            return parseInt(number).toLocaleString('id-ID');
+        }
+        function cleanRupiah(angka) {
+            return angka.replace(/\./g, '');
+        }
         document.addEventListener('DOMContentLoaded', function() {
             // Element references
             const kategoriCards = document.querySelectorAll('.kategori-card');
@@ -771,7 +780,7 @@ if ($sql_jenis) {
                         selectedProdukKode = kode;
 
                         // Isi field harga
-                        if (hargaInput) hargaInput.value = harga;
+                        if (hargaInput) hargaInput.value = parseInt(harga).toLocaleString('id-ID');
 
                         // Isi field produk dengan kode produk
                         if (produkInput) {
@@ -862,6 +871,22 @@ if ($sql_jenis) {
                     window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
                 }
             }, 300);
+
+            // Input formatting for rupiah
+            document.querySelectorAll('.input-rupiah').forEach(function(input) {
+                input.addEventListener('input', function() {
+                    var raw = this.value.replace(/[^0-9]/g, '');
+                    if (raw === '') { this.value = ''; return; }
+                    this.value = parseInt(raw).toLocaleString('id-ID');
+                });
+            });
+
+            // Clean rupiah on form submit
+            document.getElementById('formEditTransaksi').addEventListener('submit', function() {
+                document.querySelectorAll('.input-rupiah').forEach(function(input) {
+                    input.value = cleanRupiah(input.value);
+                });
+            });
         });
 
         // Suppress chart-related errors on non-dashboard pages

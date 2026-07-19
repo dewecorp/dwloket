@@ -14,6 +14,7 @@ if (isset($_POST['simpan'])) {
     $nama   = isset($_POST['nama']) ? trim($_POST['nama']) : '';
     $produk = isset($_POST['produk']) ? trim($_POST['produk']) : '';
     $harga  = isset($_POST['harga']) ? trim($_POST['harga']) : '';
+    $harga  = str_replace('.', '', $harga);
     $status = isset($_POST['status']) ? trim($_POST['status']) : '';
     $ket    = isset($_POST['ket']) ? trim($_POST['ket']) : '';
 
@@ -394,7 +395,7 @@ include_once('../header.php');
                                 </div>
                                 <div class="form-group mb-3">
                                     <label>Harga (Rp)</label>
-                                    <input type="number" name="harga" id="harga" class="form-control" required>
+                                    <input type="text" name="harga" id="harga" class="form-control input-rupiah" required>
                                 </div>
                                 <div class="form-group mb-3">
                                     <label>Status</label>
@@ -629,6 +630,15 @@ include_once('../header.php');
 </div>
 
 <script>
+function formatRupiah(angka) {
+    var number = angka.replace(/[^0-9]/g, '');
+    if (number === '') return '';
+    return parseInt(number).toLocaleString('id-ID');
+}
+function cleanRupiah(angka) {
+    return angka.replace(/\./g, '');
+}
+
 jQuery(function($) {
     console.log("Transaksi page ready");
 
@@ -636,6 +646,10 @@ jQuery(function($) {
     $(document).on('click', '#btnSangatUnikSimpan', function() {
         var form = $('#formUpdateMultiple');
         var btn = $(this);
+
+        form.find('.input-rupiah').each(function() {
+            $(this).val(cleanRupiah($(this).val()));
+        });
 
         btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Menyimpan...');
 
@@ -702,7 +716,7 @@ jQuery(function($) {
     $(document).on('click', '.produk-grid-item', function() {
         $('.produk-grid-item').removeClass('selected');
         $(this).addClass('selected');
-        $('#harga').val($(this).data('harga'));
+        $('#harga').val(formatRupiah(String($(this).data('harga'))));
         $('#produk').val($(this).data('produk'));
         $('#ket').val($(this).data('kode') + ' - ' + $(this).data('produk'));
     });
@@ -770,7 +784,7 @@ jQuery(function($) {
                                         ${data.jenis_bayar.map(jb => `<option value="${jb.id_bayar}" ${t.id_bayar == jb.id_bayar ? 'selected' : ''}>${jb.jenis_bayar}</option>`).join('')}
                                     </select>
                                 </td>
-                                <td><input type="number" name="transaksi[${t.id_transaksi}][harga]" value="${parseInt(t.harga)}" class="form-control form-control-sm" required></td>
+                                <td><input type="text" name="transaksi[${t.id_transaksi}][harga]" value="${parseInt(t.harga).toLocaleString('id-ID')}" class="form-control form-control-sm input-rupiah" required></td>
                                 <td>
                                     <select name="transaksi[${t.id_transaksi}][status]" class="form-control form-control-sm">
                                         <option value="Lunas" ${t.status === 'Lunas' ? 'selected' : ''}>Lunas</option>
@@ -815,6 +829,18 @@ jQuery(function($) {
                 if (result.isConfirmed) $('#formMultiple').attr('action', 'hapus_transaksi_multiple.php').submit();
             });
         }
+    });
+
+    $(document).on('input', '.input-rupiah', function() {
+        var raw = $(this).val().replace(/[^0-9]/g, '');
+        if (raw === '') { $(this).val(''); return; }
+        $(this).val(parseInt(raw).toLocaleString('id-ID'));
+    });
+
+    $(document).on('submit', '#formTambahTransaksi, #formUpdateMultiple', function() {
+        $(this).find('.input-rupiah').each(function() {
+            $(this).val(cleanRupiah($(this).val()));
+        });
     });
 
     setTimeout(() => {

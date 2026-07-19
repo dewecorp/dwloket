@@ -9,10 +9,11 @@ File: js
 // ============================================================== 
 $(function() {
     "use strict";
-     var url = window.location + "";
+    if ($('ul#sidebarnav li.sidebar-item.active').length === 0) {
+        var url = window.location + "";
         var path = url.replace(window.location.protocol + "//" + window.location.host + "/", "");
         var element = $('ul#sidebarnav a').filter(function() {
-            return this.href === url || this.href === path;// || url.href.indexOf(this.href) === 0;
+            return this.href === url || url.indexOf(this.href) === 0;
         });
         element.parentsUntil(".sidebar-nav").each(function (index)
         {
@@ -34,7 +35,8 @@ $(function() {
             
         });
 
-    element.addClass("active"); 
+        element.addClass("active");
+    }
     $('#sidebarnav a').on('click', function (e) {
         
             if (!$(this).hasClass("active")) {
