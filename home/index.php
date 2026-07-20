@@ -22,13 +22,17 @@ $jumlah_jenisbayar = $data_jenisbayar->num_rows;
 $total_saldo = get_total_saldo($koneksi);
 
 // Data untuk grafik transaksi per bulan (12 bulan terakhir / 1 tahun)
+$bulan_ina = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+$bulan_ina_pendek = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 $chart_labels = [];
 $chart_data = [];
 $chart_pendapatan = [];
 
 for ($i = 11; $i >= 0; $i--) {
     $month = date('Y-m', strtotime("-$i months"));
-    $month_label = date('M Y', strtotime("-$i months"));
+    $month_num = (int)date('n', strtotime("-$i months"));
+    $month_year = date('Y', strtotime("-$i months"));
+    $month_label = $bulan_ina_pendek[$month_num] . ' ' . $month_year;
     $chart_labels[] = $month_label;
 
     // Hitung jumlah transaksi per bulan
@@ -384,7 +388,7 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                         <div class="modern-card-body">
                             <div class="text-center mb-3">
                                 <h2 class="text-success font-weight-bold mb-0">Rp <?=number_format($total_pendapatan_bulan_ini, 0, ",", ".")?></h2>
-                                <small class="text-muted">Total pendapatan bulan <?=date('F Y')?></small>
+                                <small class="text-muted">Total pendapatan bulan <?=$bulan_ina[(int)date('n')] . ' ' . date('Y')?></small>
                             </div>
                             <div id="chart-pendapatan" style="height: 280px; overflow: hidden;"></div>
                         </div>

@@ -76,7 +76,7 @@ if ($id > 0) {
 
         body {
             font-size: 0.875rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
 
         .swal2-popup,
@@ -101,13 +101,13 @@ if ($id > 0) {
         .form-control, .form-select,
         input:not([type="button"]):not([type="submit"]):not([type="reset"]),
         select, textarea {
-            color: #000000 !important;
+            color: #212529 !important;
         }
 
         /* Heading juga hitam */
         h1, h2, h3, h4, h5, h6,
         .h1, .h2, .h3, .h4, .h5, .h6 {
-            color: #000000 !important;
+            color: #212529 !important;
         }
 
         /* Kecuali elemen khusus yang harus tetap warnanya */
@@ -134,30 +134,35 @@ if ($id > 0) {
             color: inherit !important;
         }
 
+        /* Badge rounded */
+        .badge {
+            border-radius: 999px !important;
+        }
+
         /* Heading sizes dan warna */
         h1, .h1 {
             font-size: 1.875rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
         h2, .h2 {
             font-size: 1.625rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
         h3, .h3 {
             font-size: 1.125rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
         h4, .h4 {
             font-size: 1rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
         h5, .h5 {
             font-size: 0.875rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
         h6, .h6 {
             font-size: 0.75rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
 
         /* Tabel - ukuran dan warna */
@@ -165,7 +170,7 @@ if ($id > 0) {
         table, table td, table th,
         thead th, tbody td {
             font-size: 0.875rem !important;
-            color: #000000 !important;
+            color: #212529 !important;
         }
 
         /* Tombol - Pastikan tombol hitam memiliki teks putih */
