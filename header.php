@@ -139,6 +139,13 @@ if ($id > 0) {
             border-radius: 999px !important;
         }
 
+        /* Input rounded */
+        .form-control,
+        div.dataTables_wrapper div.dataTables_filter input,
+        div.dataTables_wrapper div.dataTables_length select {
+            border-radius: 10px !important;
+        }
+
         /* Heading sizes dan warna */
         h1, .h1 {
             font-size: 1.875rem !important;
