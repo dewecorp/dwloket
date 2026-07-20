@@ -11456,13 +11456,13 @@ a.badge-info:focus {
 }
 
 .badge-warning {
-    color: #212529;
+    color: #ffffff;
     background-color: #fdc16a
 }
 
 a.badge-warning:focus,
 a.badge-warning:hover {
-    color: #212529;
+    color: #ffffff;
     background-color: #fcac38
 }
 
@@ -11490,7 +11490,7 @@ a.badge-danger:focus {
 }
 
 .badge-light {
-    color: #212529;
+    color: #ffffff;
     background-color: #e8eaec
 }
 

@@ -112,8 +112,6 @@ if ($id > 0) {
 
         /* Kecuali elemen khusus yang harus tetap warnanya */
         .text-white, .text-white *,
-        .btn, .btn *, button, button *,
-        .badge, .badge *,
         .alert, .alert *,
         .alert-success, .alert-success *,
         .alert-danger, .alert-danger *,
@@ -134,9 +132,9 @@ if ($id > 0) {
             color: inherit !important;
         }
 
-        /* Badge rounded */
-        .badge {
-            border-radius: 999px !important;
+        /* Tooltip putih */
+        .tooltip, .tooltip-inner {
+            color: #ffffff !important;
         }
 
         /* Input rounded */
@@ -180,11 +178,34 @@ if ($id > 0) {
             color: #212529 !important;
         }
 
-        /* Tombol - Pastikan tombol hitam memiliki teks putih */
+        /* Tombol - Pastikan tombol memiliki teks putih */
         .btn, button, .button,
         input[type="button"],
         input[type="submit"] {
             font-size: 0.875rem !important;
+            color: #ffffff !important;
+        }
+
+        /* Outline button tetap pakai warna asli */
+        .btn-outline-primary,
+        .btn-outline-secondary,
+        .btn-outline-success,
+        .btn-outline-danger,
+        .btn-outline-warning,
+        .btn-outline-info,
+        .btn-outline-dark,
+        .btn-outline-light {
+            color: inherit !important;
+        }
+        .btn-outline-primary:hover,
+        .btn-outline-secondary:hover,
+        .btn-outline-success:hover,
+        .btn-outline-danger:hover,
+        .btn-outline-warning:hover,
+        .btn-outline-info:hover,
+        .btn-outline-dark:hover,
+        .btn-outline-light:hover {
+            color: #ffffff !important;
         }
 
         /* Tombol secondary (hitam) harus memiliki teks putih */
@@ -258,11 +279,11 @@ if ($id > 0) {
             font-size: 0.875rem !important;
             color: #000000 !important;
         }
-        span:not(.fa):not(.fas):not(.far):not(.fab):not(.fal) {
+        span:not(.fa):not(.fas):not(.far):not(.fab):not(.fal):not(.badge) {
             font-size: 0.875rem !important;
             color: #000000 !important;
         }
-        div:not(.fa):not(.fas):not(.far):not(.fab) {
+        div:not(.fa):not(.fas):not(.far):not(.fab):not(.tooltip):not(.tooltip-inner):not(.badge) {
             font-size: 0.875rem !important;
             color: #000000 !important;
         }
@@ -276,8 +297,8 @@ if ($id > 0) {
 
         /* Override untuk semua elemen dalam page */
         .page-wrapper p,
-        .page-wrapper span:not(.fa),
-        .page-wrapper div:not(.fa),
+        .page-wrapper span:not(.fa):not(.badge),
+        .page-wrapper div:not(.fa):not(.badge),
         .page-wrapper td,
         .page-wrapper th {
             font-size: 0.875rem !important;
@@ -285,9 +306,22 @@ if ($id > 0) {
         }
 
         /* Card body dan modal body */
-        .card-body p, .card-body span, .card-body td, .card-body th,
-        .modal-body p, .modal-body span, .modal-body td, .modal-body th {
+        .card-body p, .card-body span:not(.badge), .card-body td, .card-body th,
+        .modal-body p, .modal-body span:not(.badge), .modal-body td, .modal-body th {
             color: #000000 !important;
+        }
+
+        /* Badge putih - setelah override span/div */
+        .badge,
+        .badge-primary,
+        .badge-secondary,
+        .badge-success,
+        .badge-danger,
+        .badge-warning,
+        .badge-info,
+        .badge-light,
+        .badge-dark {
+            color: #ffffff !important;
         }
 
         /* Responsive header styles - prevent logo and date overlap */

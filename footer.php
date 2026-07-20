@@ -63,6 +63,11 @@
     }
 })();
 </script>
+<script>
+$(document).ready(function() {
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
 <script src="<?=base_url()?>/files/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?=base_url()?>/files/dist/js/pages/datatable/datatable-basic.init.js"></script>
 
