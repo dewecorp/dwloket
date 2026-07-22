@@ -289,7 +289,7 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
     <body>
         <div class="container-fluid">
             <!-- Statistik -->
-            <div class="row mb-4">
+            <div class="row mb-2">
                 <?php
                 $saldo_border_class = $total_saldo < 0 ? 'danger' : ($total_saldo < 100000 ? 'warning' : 'success');
                 $saldo_text_class = $saldo_border_class == 'danger' ? 'text-danger' : ($saldo_border_class == 'warning' ? 'text-warning' : 'text-success');
@@ -365,7 +365,7 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 </div>
             </div>
             <!-- Grafik Transaksi dan Pendapatan -->
-            <div class="row mb-4">
+            <div class="row mb-2">
                 <div class="col-lg-8">
                     <div class="modern-card">
                         <div class="modern-card-header">
