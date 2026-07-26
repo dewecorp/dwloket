@@ -188,7 +188,7 @@ include_once('../header.php');
         box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
     }
     .stat-card-bs:not(#x) .card-body {
-        padding: 0.9rem 5rem 0.9rem 1rem !important;
+        padding: 0.9rem 4rem 0.9rem 1rem !important;
     }
     .stat-card-bs:not(#x) .stat-card-bs__label {
         font-size: 0.7rem;
@@ -220,7 +220,7 @@ include_once('../header.php');
     }
     .stat-card-bs:not(#x) .stat-card-bs__icon i,
     .stat-card-bs:not(#x) .stat-card-bs__icon i:before {
-        font-size: 5rem !important;
+        font-size: 4rem !important;
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
     }
     .stat-card-bs:not(#x) .stat-card-bs__label,
