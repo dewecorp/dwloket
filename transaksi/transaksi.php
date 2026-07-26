@@ -174,52 +174,60 @@ include_once('../header.php');
         padding: 8px 12px !important;
     }
 
-    .stat-card-bs {
-        border: 0;
-        border-left: 4px solid #e9ecef;
-        border-radius: 10px;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    .stat-card-bs:not(#x) {
+        border: none !important;
+        border-radius: 12px !important;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        transition: transform .2s, box-shadow .2s;
         height: 100%;
     }
-    .stat-card-bs .card-body {
-        padding: 1.1rem 1.25rem;
+    .stat-card-bs:not(#x):hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
     }
-    .stat-card-bs__label {
-        font-size: 0.75rem;
+    .stat-card-bs:not(#x) .card-body {
+        padding: 0.9rem 1rem !important;
+    }
+    .stat-card-bs:not(#x) .stat-card-bs__label {
+        font-size: 0.7rem;
         font-weight: 700;
-        letter-spacing: 0.5px;
         text-transform: uppercase;
-        margin-bottom: 0.25rem;
+        letter-spacing: 0.5px;
+        opacity: 0.9;
+        margin-bottom: 0.2rem;
     }
-    .stat-card-bs__value {
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #212529;
+    .stat-card-bs:not(#x) .stat-card-bs__value {
+        font-size: 1.4rem;
+        font-weight: 800;
         line-height: 1.2;
         margin: 0;
     }
-    .stat-card-bs__sub {
+    .stat-card-bs:not(#x) .stat-card-bs__sub {
         display: block;
-        margin-top: 0.35rem;
-        font-size: 0.8rem;
-        color: #6c757d;
+        margin-top: 0.2rem;
+        font-size: 0.75rem;
         font-weight: 600;
+        opacity: 0.9;
     }
-    .stat-card-bs__icon {
-        font-size: 2rem;
-        color: #000;
-        opacity: 0.35;
-        line-height: 1;
+    .stat-card-bs:not(#x) .stat-card-bs__icon {
+        font-size: 2.6rem;
+        opacity: 0.95;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         margin-left: 1rem;
     }
-    .stat-card-bs--primary { border-left-color: #4e73df; }
-    .stat-card-bs--success { border-left-color: #1cc88a; }
-    .stat-card-bs--info { border-left-color: #36b9cc; }
-    .stat-card-bs--warning { border-left-color: #f6c23e; }
-    .stat-card-bs--primary .stat-card-bs__label { color: #4e73df; }
-    .stat-card-bs--success .stat-card-bs__label { color: #1cc88a; }
-    .stat-card-bs--info .stat-card-bs__label { color: #36b9cc; }
-    .stat-card-bs--warning .stat-card-bs__label { color: #f6c23e; }
+    .stat-card-bs:not(#x) .stat-card-bs__label,
+    .stat-card-bs:not(#x) .stat-card-bs__value,
+    .stat-card-bs:not(#x) .stat-card-bs__sub,
+    .stat-card-bs:not(#x) .stat-card-bs__icon {
+        color: #fff !important;
+    }
+
+    .stat-card-bs--primary:not(#x) { background: linear-gradient(135deg, #4e73df 0%, #224abe 100%); }
+    .stat-card-bs--success:not(#x) { background: linear-gradient(135deg, #00b894 0%, #00856a 100%); }
+    .stat-card-bs--info:not(#x) { background: linear-gradient(135deg, #6c5ce7 0%, #4834d4 100%); }
+    .stat-card-bs--warning:not(#x) { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
 
     /* Kategori & Produk Grid Styles */
     .kategori-card, .produk-grid-item {
@@ -289,7 +297,7 @@ include_once('../header.php');
                         </span>
                     </div>
                     <div class="stat-card-bs__icon">
-                        <i class="fa fa-wallet"></i>
+                        <i class="fa fa-money-bill-alt"></i>
                     </div>
                 </div>
             </div>
