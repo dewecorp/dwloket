@@ -177,7 +177,7 @@ include_once('../header.php');
     .stat-card-bs:not(#x) {
         border: none !important;
         border-radius: 12px !important;
-        position: relative;
+        position: relative !important;
         overflow: hidden;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
         transition: transform .2s, box-shadow .2s;
@@ -188,7 +188,7 @@ include_once('../header.php');
         box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
     }
     .stat-card-bs:not(#x) .card-body {
-        padding: 0.9rem 1rem !important;
+        padding: 0.9rem 5rem 0.9rem 1rem !important;
     }
     .stat-card-bs:not(#x) .stat-card-bs__label {
         font-size: 0.7rem;
@@ -212,10 +212,16 @@ include_once('../header.php');
         opacity: 0.9;
     }
     .stat-card-bs:not(#x) .stat-card-bs__icon {
-        font-size: 2.6rem;
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
         opacity: 0.95;
+    }
+    .stat-card-bs:not(#x) .stat-card-bs__icon i,
+    .stat-card-bs:not(#x) .stat-card-bs__icon i:before {
+        font-size: 5rem !important;
         filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-        margin-left: 1rem;
     }
     .stat-card-bs:not(#x) .stat-card-bs__label,
     .stat-card-bs:not(#x) .stat-card-bs__value,
@@ -279,7 +285,7 @@ include_once('../header.php');
 
 <div class="container-fluid">
     <!-- Statistik Widgets -->
-    <div class="row mb-4">
+    <div class="row mb-2">
         <?php
         $total_saldo = get_total_saldo($koneksi);
         $saldo_color = $total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745');
