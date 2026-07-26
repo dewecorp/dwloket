@@ -284,6 +284,94 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
             border-bottom: 0;
             border-radius: 10px;
         }
+
+        .stat-card {
+            transition: transform .2s, box-shadow .2s;
+            border: none !important;
+            border-radius: 12px !important;
+            position: relative;
+            overflow: hidden;
+        }
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+        }
+        .stat-card.border-left-primary::before { background: #4e73df; }
+        .stat-card.border-left-success::before { background: #1cc88a; }
+        .stat-card.border-left-info::before { background: #36b9cc; }
+        .stat-card.border-left-warning::before { background: #f6c23e; }
+        .stat-card.border-left-danger::before { background: #e74a3b; }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+        .stat-card .card-body {
+            padding: 0.9rem 1rem !important;
+            display: flex;
+            align-items: center;
+        }
+        .stat-card .stat-icon:not(#x) {
+            font-size: 3.5rem !important;
+            opacity: 0.95;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            color: #fff !important;
+        }
+        .stat-card .stat-label:not(#x) {
+            font-size: 0.7rem !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.9;
+            margin-bottom: 0.2rem;
+            color: #fff !important;
+        }
+        .stat-card .stat-value:not(#x) {
+            font-size: 1.4rem !important;
+            font-weight: 800;
+            margin-bottom: 0;
+            color: #fff !important;
+        }
+        .stat-card .stat-status:not(#x) {
+            font-size: 0.75rem !important;
+            font-weight: 600;
+            opacity: 0.9;
+            color: #fff !important;
+        }
+
+        .stat-card.border-left-primary {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        }
+        .stat-card.border-left-success {
+            background: linear-gradient(135deg, #00b894 0%, #00856a 100%);
+        }
+        .stat-card.border-left-info {
+            background: linear-gradient(135deg, #6c5ce7 0%, #4834d4 100%);
+        }
+        .stat-card.border-left-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #d35400 100%);
+        }
+        .stat-card.border-left-danger {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .stat-card.border-left-primary,
+        .stat-card.border-left-success,
+        .stat-card.border-left-info,
+        .stat-card.border-left-warning,
+        .stat-card.border-left-danger {
+            border-top: none !important;
+            border-right: none !important;
+            border-bottom: none !important;
+            border-left: none !important;
+        }
+        .stat-card :not(#x):not(#y):not(#z):not(#w):not(#v):not(#u):not(#t):not(#s) {
+            color: #fff !important;
+        }
         </style>
     </head>
     <body>
@@ -297,15 +385,15 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 ?>
 
                 <div class="col-md-3 mb-3">
-                    <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card border-left-primary shadow stat-card h-100">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
+                            <div class="row no-gutters align-items-center justify-content-between w-100">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Pelanggan</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jumlah_pelanggan?></div>
+                                    <div class="stat-label">Total Pelanggan</div>
+                                    <div class="stat-value"><?=$jumlah_pelanggan?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fa fa-users fa-2x text-gray-300"></i>
+                                    <i class="fa fa-users stat-icon"></i>
                                 </div>
                             </div>
                         </div>
@@ -313,15 +401,15 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card border-left-success shadow stat-card h-100">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
+                            <div class="row no-gutters align-items-center justify-content-between w-100">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Jenis Pembayaran</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jumlah_jenisbayar?></div>
+                                    <div class="stat-label">Jenis Pembayaran</div>
+                                    <div class="stat-value"><?=$jumlah_jenisbayar?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fa fa-credit-card fa-2x text-gray-300"></i>
+                                    <i class="fa fa-credit-card stat-icon"></i>
                                 </div>
                             </div>
                         </div>
@@ -329,15 +417,15 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card border-left-info shadow stat-card h-100">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
+                            <div class="row no-gutters align-items-center justify-content-between w-100">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Transaksi</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800"><?=$jumlah_transaksi?></div>
+                                    <div class="stat-label">Total Transaksi</div>
+                                    <div class="stat-value"><?=$jumlah_transaksi?></div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fa fa-shopping-cart fa-2x text-gray-300"></i>
+                                    <i class="fa fa-shopping-cart stat-icon"></i>
                                 </div>
                             </div>
                         </div>
@@ -345,19 +433,19 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 </div>
 
                 <div class="col-md-3 mb-3">
-                    <div class="card border-left-<?=$saldo_border_class?> shadow h-100 py-2">
+                    <div class="card border-left-<?=$saldo_border_class?> shadow stat-card h-100">
                         <div class="card-body">
-                            <div class="row no-gutters align-items-center">
+                            <div class="row no-gutters align-items-center justify-content-between w-100">
                                 <div class="col mr-2">
-                                    <div class="text-xs font-weight-bold <?=$saldo_text_class?> text-uppercase mb-1">Saldo Akhir</div>
-                                    <div class="h5 mb-0 font-weight-bold text-gray-800">Rp <?=number_format($total_saldo, 0, ',', '.')?></div>
-                                    <div class="small <?=$saldo_text_class?>" style="font-weight: 600;">
+                                    <div class="stat-label">Saldo Akhir</div>
+                                    <div class="stat-value">Rp <?=number_format($total_saldo, 0, ',', '.')?></div>
+                                    <div class="stat-status">
                                         <i class="fa fa-<?=$total_saldo < 0 ? 'exclamation-triangle' : ($total_saldo < 100000 ? 'exclamation-circle' : 'check-circle')?>"></i>
                                         <?=$saldo_status_text?>
                                     </div>
                                 </div>
                                 <div class="col-auto">
-                                    <i class="fa fa-wallet fa-2x text-gray-300"></i>
+                                    <i class="fa fa-money-bill-alt stat-icon"></i>
                                 </div>
                             </div>
                         </div>
