@@ -26,9 +26,13 @@ DirectoryIndex index.php
 
     # Path "folder/namafile" sama dengan nama folder: Apache sering anggap -d di segmen
     # pertama sehingga aturan generik di bawah tidak jalan. Paksa ke file .php.
+    RewriteRule ^pelanggan/?$ pelanggan/pelanggan.php [L]
     RewriteRule ^pelanggan/pelanggan/?$ pelanggan/pelanggan.php [L]
+    RewriteRule ^saldo/?$ saldo/saldo.php [L]
     RewriteRule ^saldo/saldo/?$ saldo/saldo.php [L]
+    RewriteRule ^transaksi/?$ transaksi/transaksi.php [L]
     RewriteRule ^transaksi/transaksi/?$ transaksi/transaksi.php [L]
+    RewriteRule ^user/?$ user/user.php [L]
     RewriteRule ^user/user/?$ user/user.php [L]
 
     # URL tanpa .php -> file .php jika ada
