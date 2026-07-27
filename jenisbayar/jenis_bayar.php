@@ -2472,7 +2472,7 @@ if ($table_exists) {
                                     <button type="button" class="btn btn-danger btn-sm mr-2 mb-2" id="btnHapusMultiple" disabled onclick="hapusMultiple()">
                                         <i class="fa fa-trash"></i> Hapus Terpilih
                                     </button>
-                                    <button type="button" class="btn btn-warning btn-sm mr-2 mb-2" id="btnEditMultiple" disabled onclick="editMultiple()">
+                                    <button type="button" class="btn btn-warning btn-sm mr-2 mb-2 text-white" id="btnEditMultiple" disabled onclick="editMultiple()">
                                         <i class="fa fa-edit"></i> Edit Terpilih
                                     </button>
                                     <button type="button" class="btn btn-success btn-sm mr-2 mb-2" data-toggle="modal" data-target="#modalImportProduk">
@@ -2530,7 +2530,7 @@ if ($table_exists) {
                                                 <?php endif; ?>
                                             </td>
                                             <td align="center">
-                                                <a href="#" data-toggle="modal" data-target="#modalEditProduk<?=$produk['id_produk']?>" class="btn btn-warning btn-sm">
+                                                <a href="#" data-toggle="modal" data-target="#modalEditProduk<?=$produk['id_produk']?>" class="btn btn-warning btn-sm text-white">
                                                     <i class="fa fa-edit"></i> Edit
                                                 </a>
                                                 <a href="#" onclick="hapusProduk(<?=$produk['id_produk']?>, '<?=htmlspecialchars($produk['kode'], ENT_QUOTES)?>'); return false;" class="btn btn-danger btn-sm">
@@ -3556,7 +3556,7 @@ if ($table_exists) {
                             </div>
                             <hr>
                             <div class="text-center">
-                                <button class="btn btn-warning btn-sm" onclick="editProduk(${prod.id_produk}); $('#modalProdukDetail').modal('hide');">
+                                <button class="btn btn-warning btn-sm text-white" onclick="editProduk(${prod.id_produk}); $('#modalProdukDetail').modal('hide');">
                                     <i class="fa fa-edit"></i> Edit Produk
                                 </button>
                                 <button class="btn btn-danger btn-sm" onclick="hapusProduk(${prod.id_produk}, '${prod.kode.replace(/'/g, "\\'")}'); $('#modalProdukDetail').modal('hide');">

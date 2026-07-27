@@ -97,7 +97,7 @@ include_once('../header.php');
                                 <button type="button" class="btn btn-danger btn-sm mr-2 mb-2" id="btnHapusMultiple" disabled onclick="hapusMultiple()">
                                     <i class="fa fa-trash"></i> Hapus Terpilih
                                 </button>
-                                <button type="button" class="btn btn-warning btn-sm mr-2 mb-2" id="btnEditMultiple" disabled onclick="editMultiple()">
+                                <button type="button" class="btn btn-warning btn-sm mr-2 mb-2 text-white" id="btnEditMultiple" disabled onclick="editMultiple()">
                                     <i class="fa fa-edit"></i> Edit Terpilih
                                 </button>
                                 <button type="button" class="btn btn-primary btn-sm mb-2" data-toggle="modal"
@@ -149,7 +149,7 @@ include_once('../header.php');
                                         <td align="center">
                                             <a data-toggle="modal"
                                                 data-target="#modaledit<?=$data['id_pelanggan']; ?>"><button
-                                                    class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</button>
+                                                    class="btn btn-warning btn-sm text-white"><i class="fa fa-edit"></i> Edit</button>
                                             </a>
                                             <a href="hapus.php?id=<?=$data['id_pelanggan']; ?>"
                                                 onclick="return swalConfirmDelete(this.href, 'Yakin Hapus Pelanggan?', 'Data pelanggan ini akan dihapus secara permanen!')"

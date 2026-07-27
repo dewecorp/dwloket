@@ -18,6 +18,7 @@ $tgl = $data['tgl'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Transaksi</title>
     <style>
+        .btn i, .btn i:before { color: #fff !important; }
         .detail-card {
             border: none;
             border-radius: 15px;
@@ -264,7 +265,7 @@ $tgl = $data['tgl'];
                             <i class="fa fa-bolt text-warning"></i> Quick Actions
                         </h5>
                         <div class="d-grid gap-2">
-                            <a href="<?=base_url('transaksi/edit.php?id=' . $data['id_transaksi'])?>" class="btn btn-warning">
+                            <a href="<?=base_url('transaksi/edit.php?id=' . $data['id_transaksi'])?>" class="btn btn-warning text-white">
                                 <i class="fa fa-edit"></i> Edit Transaksi
                             </a>
                         </div>

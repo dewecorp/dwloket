@@ -74,6 +74,9 @@
     border-bottom: 1px solid #f0f0f0;
 }
 
+/* Force icon putih di semua tombol */
+.btn i, .btn i:before { color: #fff !important; }
+
 /* Button Modern Styles */
 .btn-modern {
     border-radius: 10px;

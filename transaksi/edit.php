@@ -271,6 +271,7 @@ if ($sql_jenis) {
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
+        .btn i, .btn i:before { color: #fff !important; }
         .jenis-bayar-card {
             cursor: pointer !important;
             transition: all 0.3s;
@@ -427,7 +428,7 @@ if ($sql_jenis) {
                             <h4>
                                 <i class="fa fa-edit"></i> Edit Transaksi
                             </h4>
-                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern">
+                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern text-white">
                                 <i class="fa fa-arrow-left"></i> Kembali
                             </a>
                         </div>

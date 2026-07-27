@@ -165,6 +165,7 @@ include_once('../header.php');
 
 <style>
     /* CSS internal untuk halaman transaksi */
+    .btn i, .btn i:before { color: #fff !important; }
     .filter-box-modern select.filter-dropdown,
     .filter-box-modern .filter-dropdown {
         font-size: 0.8rem !important;
@@ -530,9 +531,9 @@ include_once('../header.php');
                                         </span>
                                     </td>
                                     <td>
-                                        <a href="detail_transaksi.php?id=<?=$data['id_transaksi']?>" class="btn btn-sm btn-info" title="Detail"><i class="fa fa-eye"></i></a>
-                                        <a href="edit.php?id=<?=$data['id_transaksi']?>" class="btn btn-sm btn-success" title="Edit"><i class="fa fa-edit"></i></a>
-                                        <button type="button" class="btn btn-sm btn-danger btn-hapus-single" data-id="<?=$data['id_transaksi']?>" title="Hapus"><i class="fa fa-trash"></i></button>
+                                        <a href="detail_transaksi.php?id=<?=$data['id_transaksi']?>" class="btn btn-sm btn-info" title="Detail"><i class="fa fa-eye" style="color:#fff!important"></i></a>
+                                        <a href="edit.php?id=<?=$data['id_transaksi']?>" class="btn btn-sm btn-success" title="Edit"><i class="fa fa-edit" style="color:#fff!important"></i></a>
+                                        <button type="button" class="btn btn-sm btn-danger btn-hapus-single" data-id="<?=$data['id_transaksi']?>" title="Hapus"><i class="fa fa-trash" style="color:#fff!important"></i></button>
                                     </td>
                                 </tr>
                                 <?php endwhile; else: ?>

@@ -239,7 +239,7 @@ if (isset($_POST['update_multiple'])) {
                                 <div class="row mt-4">
                                     <div class="col-12">
                                         <div class="d-flex justify-content-end align-items-center">
-                                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2">
+                                            <a href="<?=base_url('transaksi/transaksi.php')?>" class="btn btn-warning btn-modern mr-2 text-white">
                                                 <i class="fa fa-arrow-left"></i> Kembali
                                             </a>
                                             <button type="submit" class="btn btn-success btn-modern">

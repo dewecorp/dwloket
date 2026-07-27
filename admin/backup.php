@@ -607,7 +607,7 @@ if (count($backups) > 0) {
                                             <a href="?download=<?=urlencode($backup['filename'])?>" class="btn btn-sm btn-info" title="Download" target="_blank">
                                                 <i class="fa fa-download"></i> Download
                                             </a>
-                                            <button type="button" class="btn btn-sm btn-warning" onclick="confirmRestoreFile('<?=addslashes($backup['filename'])?>', '<?=urlencode($backup['filename'])?>')" title="Restore">
+                                            <button type="button" class="btn btn-sm btn-warning text-white" onclick="confirmRestoreFile('<?=addslashes($backup['filename'])?>', '<?=urlencode($backup['filename'])?>')" title="Restore">
                                                 <i class="fa fa-upload"></i>
                                             </button>
                                             <button type="button" class="btn btn-sm btn-danger" onclick="confirmDeleteBackup('<?=addslashes($backup['filename'])?>', '<?=urlencode($backup['filename'])?>')" title="Hapus">

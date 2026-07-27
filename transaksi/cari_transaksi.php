@@ -40,7 +40,7 @@ $sql = $koneksi->query("SELECT * FROM transaksi WHERE id_transaksi='$id'");
                         <div class="table-responsive">
 							<div class="float-right">
 							<a href="<?=base_url('laporan/cetak_filter.php')?>" class="btn btn-secondary btn-sm" target="_blank"><i class="fa fa-print"></i> Cetak</a>
-								<a href="<?=base_url('transaksi')?>" class="btn btn-warning btn-sm"><i class="fa fa-arrow-left"></i> Kembali</a>
+								<a href="<?=base_url('transaksi')?>" class="btn btn-warning btn-sm text-white"><i class="fa fa-arrow-left"></i> Kembali</a>
 							</div>
 							<div class="float-left">
 								<form action="#" method="POST">

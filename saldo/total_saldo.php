@@ -64,7 +64,7 @@ include_once('../header.php');
                                         <td align="center">
                                             <a data-toggle="modal"
                                                 data-target="#modaledit<?=$data['id_total_saldo']; ?>"><button
-                                                    class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</button></a>
+                                                    class="btn btn-warning btn-sm text-white"><i class="fa fa-edit"></i> Edit</button></a>
                                             <a href="hapus_saldo.php?id=<?=$data['id_total_saldo']; ?>"
                                                 onclick="return swalConfirmDelete(this.href, 'Yakin Hapus Saldo?', 'Data saldo ini akan dihapus secara permanen!')"
                                                 class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a>
