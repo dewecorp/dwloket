@@ -38,8 +38,9 @@ if (@$_POST['tambah']) {
     $tgl   = $_POST['tgl'];
     $saldo = $_POST['saldo'];
     
-    $stmt = $koneksi->prepare("INSERT INTO tb_saldo (tgl, saldo) VALUES (?, ?)");
-    $stmt->bind_param("ss", $tgl, $saldo);
+    $keterangan = 'Tambah manual';
+    $stmt = $koneksi->prepare("INSERT INTO tb_saldo (tgl, saldo, keterangan) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $tgl, $saldo, $keterangan);
     $result = $stmt->execute();
     $stmt->close();
     

@@ -58,7 +58,7 @@ switch ($page) {
 
     case 'saldo':
         $query = "SELECT * FROM tb_saldo ORDER BY tgl DESC";
-        $headers = ['No', 'Tanggal Deposit', 'Jumlah Saldo'];
+        $headers = ['No', 'Tanggal Deposit', 'Jumlah Saldo', 'Keterangan'];
         $filename = 'saldo';
         break;
 
@@ -165,7 +165,8 @@ while ($row = $result->fetch_assoc()) {
             $row_data = [
                 $no++,
                 date('d/m/Y', strtotime($row['tgl'])),
-                number_format($row['saldo'], 0, ',', '.')
+                number_format($row['saldo'], 0, ',', '.'),
+                $row['keterangan'] ?? ''
             ];
             break;
 

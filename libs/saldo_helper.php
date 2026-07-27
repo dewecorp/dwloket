@@ -218,11 +218,12 @@ function tambah_saldo($koneksi, $jumlah, $keterangan = '', $id_transaksi = null)
         return ['success' => false, 'message' => 'Parameter tidak valid'];
     }
 
-    // Tambahkan record saldo masuk
     $tgl = date('Y-m-d');
-    $ket = !empty($keterangan) ? mysqli_real_escape_string($koneksi, $keterangan) : 'Pengembalian Transaksi #' . ($id_transaksi ?? '');
+    $ket = !empty($keterangan) ? $keterangan : 'Pengembalian Transaksi #' . ($id_transaksi ?? '');
+    $ket_esc = mysqli_real_escape_string($koneksi, $ket);
+    $jumlah_esc = mysqli_real_escape_string($koneksi, (string)$jumlah);
 
-    $query = "INSERT INTO tb_saldo (tgl, saldo) VALUES ('$tgl', '$jumlah')";
+    $query = "INSERT INTO tb_saldo (tgl, saldo, keterangan) VALUES ('$tgl', '$jumlah_esc', '$ket_esc')";
 
     if ($koneksi->query($query)) {
         // Log aktivitas

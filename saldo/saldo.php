@@ -63,6 +63,7 @@ include_once('../header.php');
                                             <th style="width: 5px;">No</th>
                                             <th>Tanggal Deposit</th>
                                             <th>Jumlah Saldo</th>
+                                            <th>Keterangan</th>
                                             <th style="text-align: center;">Aksi</th>
                                         </tr>
                                     </thead>
@@ -82,6 +83,7 @@ include_once('../header.php');
                                             <td><?=$no++.'.'?></td>
                                             <td><?=date('d/m/Y', strtotime($tgl));?></td>
                                             <td>Rp. <?=number_format($data['saldo'], 0, ",", ".");?></td>
+                                            <td><?=htmlspecialchars($data['keterangan'] ?? '', ENT_QUOTES, 'UTF-8');?></td>
                                             <td align="center">
                                                 <a data-toggle="modal"
                                                     data-target="#modaledit<?=$data['id_saldo']; ?>"><button
