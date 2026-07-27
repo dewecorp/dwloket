@@ -135,6 +135,55 @@ function swalInfo(message, title) {
     });
 }
 
+// Fungsi update sistem dengan CSRF token
+<?php
+if (!isset($_SESSION['update_token'])) {
+	$_SESSION['update_token'] = bin2hex(random_bytes(32));
+}
+?>
+const UPDATE_CSRF_TOKEN = '<?=$_SESSION['update_token']?>';
+function updateSistem() {
+	Swal.fire({
+		title: 'Update Sistem',
+		text: 'Apakah Anda yakin ingin memperbarui sistem? Semua perubahan lokal akan ditimpa.',
+		icon: 'question',
+		showCancelButton: true,
+		confirmButtonColor: '#28a745',
+		cancelButtonColor: '#3085d6',
+		confirmButtonText: 'Ya, Update!',
+		cancelButtonText: 'Batal',
+		reverseButtons: true
+	}).then((result) => {
+		if (!result.isConfirmed) return;
+		Swal.fire({
+			title: 'Memperbarui Sistem',
+			text: 'Sedang mengunduh dan memasang pembaruan. Harap tunggu...',
+			icon: 'info',
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			showConfirmButton: false,
+			didOpen: () => { Swal.showLoading(); }
+		});
+		$.ajax({
+			url: '<?=base_url('update/update_sistem.php')?>',
+			method: 'POST',
+			data: { _token: UPDATE_CSRF_TOKEN },
+			dataType: 'json',
+			success: function(res) {
+				if (res.success) {
+					Swal.fire({ icon: 'success', title: 'Berhasil!', text: res.message, confirmButtonColor: '#28a745', timer: 5000, timerProgressBar: true });
+				} else {
+					Swal.fire({ icon: 'error', title: 'Gagal!', text: res.message, confirmButtonColor: '#dc3545' });
+				}
+			},
+			error: function(xhr, status, error) {
+				Swal.fire({ icon: 'error', title: 'Gagal!', text: 'Terjadi kesalahan: ' + (error || 'Tidak dapat terhubung ke server'), confirmButtonColor: '#dc3545' });
+			}
+		});
+	});
+	return false;
+}
+
 // Fungsi untuk confirm logout dengan SweetAlert
 function confirmLogout() {
     Swal.fire({

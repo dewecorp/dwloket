@@ -540,6 +540,10 @@ if ($id > 0) {
                                         data-feather="user" class="svg-icon mr-2 ml-1"></i>
                                     My Profile</a>
                                 <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="javascript:void(0)" onclick="updateSistem()"><i data-feather="upload"
+                                        class="svg-icon mr-2 ml-1"></i>
+                                    Update Sistem</a>
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="javascript:void(0)" onclick="confirmLogout()"><i data-feather="power"
                                         class="svg-icon mr-2 ml-1"></i>
                                     Logout</a>
