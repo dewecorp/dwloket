@@ -199,7 +199,7 @@ $tgl = $data['tgl'];
                                         data-placement="top"
                                         title="Copy ID/PEL"
                                         id="copyBtnDetail">
-                                    <i class="fa fa-copy"></i>
+                                    <i class="fa fa-copy" style="color:#007bff !important"></i>
                                 </button>
                                 <span class="copy-feedback ml-2" id="copyFeedbackDetail" style="display: none; color: #28a745; font-size: 0.85rem; font-weight: 500;">
                                     <i class="fa fa-check"></i> Sudah Disalin
@@ -265,8 +265,8 @@ $tgl = $data['tgl'];
                             <i class="fa fa-bolt text-warning"></i> Quick Actions
                         </h5>
                         <div class="d-grid gap-2">
-                            <a href="<?=base_url('transaksi/edit.php?id=' . $data['id_transaksi'])?>" class="btn btn-warning text-white">
-                                <i class="fa fa-edit"></i> Edit Transaksi
+                            <a href="<?=base_url('transaksi/edit.php?id=' . $data['id_transaksi'])?>" class="btn btn-warning text-white" title="Edit Transaksi">
+                                <i class="fa fa-edit"></i>
                             </a>
                         </div>
                     </div>

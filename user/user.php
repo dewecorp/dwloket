@@ -113,11 +113,11 @@ include_once('../header.php');
                                     <td><?=$level?></td>
                                     <td align="center">
                                         <a data-toggle="modal" data-target="#modaledit<?=$data['id_user']; ?>">
-                                            <button class="btn btn-warning btn-sm text-white"><i class="fa fa-edit"></i> Edit</button>
+                                            <button class="btn btn-warning btn-sm text-white" title="Edit"><i class="fa fa-edit"></i></button>
                                         </a>
                                         <a href="hapus_user.php?id=<?=$data['id_user']; ?>"
                                             onclick="return swalConfirmDelete(this.href, 'Yakin Hapus User?', 'Data user ini akan dihapus secara permanen!')"
-                                            class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Hapus</a>
+                                            class="btn btn-danger btn-sm" title="Hapus"><i class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
                                 <?php } ?>

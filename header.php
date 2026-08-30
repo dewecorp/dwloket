@@ -472,6 +472,36 @@ if ($id > 0) {
             background: #fff;
             border-radius: 0 4px 4px 0;
         }
+
+        /* Tombol copy ID: paksa kontras biru (mengalahkan .btn color:#fff) */
+        button.copy-btn-detail,
+        button[id^="copyBtn"],
+        button[id^="copyBtn_"] {
+            border: 1px solid #007bff !important;
+            background-color: #ffffff !important;
+        }
+        button.copy-btn-detail i,
+        button.copy-btn-detail i:before,
+        button[id^="copyBtn"] i,
+        button[id^="copyBtn"] i:before,
+        button[id^="copyBtn_"] i,
+        button[id^="copyBtn_"] i:before {
+            color: #007bff !important;
+        }
+        button.copy-btn-detail:hover,
+        button[id^="copyBtn"]:hover,
+        button[id^="copyBtn_"]:hover {
+            border-color: #007bff !important;
+            background-color: #e7f1ff !important;
+        }
+        button.copy-btn-detail:hover i,
+        button.copy-btn-detail:hover i:before,
+        button[id^="copyBtn"]:hover i,
+        button[id^="copyBtn"]:hover i:before,
+        button[id^="copyBtn_"]:hover i,
+        button[id^="copyBtn_"]:hover i:before {
+            color: #007bff !important;
+        }
     </style>
 
 </head>
