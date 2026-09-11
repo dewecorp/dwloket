@@ -1,6 +1,7 @@
 <?php
 ob_start();
 include "../config/config.php";
+require_once "../libs/brute_force.php";
 
 // Perbaikan: Gunakan header location untuk redirect yang lebih cepat dan mencegah flicker
 if (isset($_SESSION['level']) && !empty($_SESSION['level'])) {
@@ -305,6 +306,7 @@ if (isset($_POST['login'])) {
 	// Perbaikan keamanan: Gunakan prepared statement untuk mencegah SQL Injection
 	$username = trim($_POST['user']);
 	$pass = $_POST['pass'];
+	$ip   = $_SERVER['REMOTE_ADDR'];
 
 	// Validasi input
 	if (empty($username) || empty($pass)) {
@@ -314,6 +316,46 @@ if (isset($_POST['login'])) {
 				icon: 'error',
 				title: 'Login Gagal!',
 				text: 'Username dan Password harus diisi!',
+				confirmButtonColor: '#dc3545',
+				confirmButtonText: 'OK'
+			});
+		</script>
+		<?php
+		exit();
+	}
+
+	// ============================================================
+	// 1. CEK RATE LIMIT (per IP) — maks 10 percobaan dalam 15 menit
+	// ============================================================
+	if (!checkRateLimit($ip, 10, 900)) {
+		$sisaMenit = getRateLimitRemaining($ip);
+		?>
+		<script type="text/javascript">
+			Swal.fire({
+				icon: 'warning',
+				title: 'Terlalu Banyak Percobaan!',
+				text: 'IP Anda telah diblokir sementara. Coba lagi dalam <?= $sisaMenit ?> menit.',
+				confirmButtonColor: '#dc3545',
+				confirmButtonText: 'OK'
+			});
+		</script>
+		<?php
+		exit();
+	}
+
+	// ============================================================
+	// 2. CEK ACCOUNT LOCKOUT (per username) — maks 5 gagal, kunci 15 menit
+	// ============================================================
+	if (isAccountLocked($koneksi, $username)) {
+		$sisaLock = getAccountLockRemaining($koneksi, $username);
+		// Tetap catat sebagai rate limit agar IP juga terhitung
+		recordRateLimitAttempt($ip, 10, 900);
+		?>
+		<script type="text/javascript">
+			Swal.fire({
+				icon: 'warning',
+				title: 'Akun Dikunci Sementara!',
+				text: 'Terlalu banyak percobaan gagal. Coba lagi dalam <?= $sisaLock ?> menit.',
 				confirmButtonColor: '#dc3545',
 				confirmButtonText: 'OK'
 			});
@@ -343,17 +385,23 @@ if (isset($_POST['login'])) {
 	}
 
 	if ($login_success) {
-		// Regenerate session ID dimatikan sementara untuk debugging
-		// if (session_status() === PHP_SESSION_ACTIVE) {
-		// 	session_regenerate_id(true);
-		// }
+		// ============================================================
+		// Login berhasil — reset semua counter brute force
+		// ============================================================
+		resetRateLimit($ip);
+		resetAccountLockout($koneksi, $username);
 
 		$_SESSION['level'] = $data['level'];
 		$_SESSION['id_user'] = $data['id_user'];
 		$_SESSION['username'] = $data['username'];
 		$_SESSION['nama'] = $data['nama'];
-		$_SESSION['login_time'] = time(); // Simpan waktu login untuk tracking
-		$_SESSION['last_activity'] = time(); // Simpan waktu aktivitas terakhir
+		$_SESSION['login_time'] = time();
+		$_SESSION['last_activity'] = time();
+
+		// Regenerate session ID untuk keamanan
+		if (session_status() === PHP_SESSION_ACTIVE) {
+			session_regenerate_id(true);
+		}
 
 		// Log aktivitas
 		require_once '../libs/log_activity.php';
@@ -376,6 +424,13 @@ if (isset($_POST['login'])) {
 		</script>
 		<?php
 	} else {
+		// ============================================================
+		// Login gagal — catat percobaan gagal untuk rate limit & lockout
+		// ============================================================
+		recordRateLimitAttempt($ip, 10, 900);
+		if ($user_found >= 1) {
+			recordFailedLogin($koneksi, $username, 5, 15);
+		}
 		?>
 		<script type="text/javascript">
 			Swal.fire({
