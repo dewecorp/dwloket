@@ -131,7 +131,7 @@ include_once('../header.php');
                                         <td><?=htmlspecialchars($data['nama']);?></td>
                                         <td>
                                             <div class="d-flex align-items-center">
-                                                <code class="mr-2"><?=htmlspecialchars($data['no_idpel']);?></code>
+                                                <code class="mr-2" style="font-size: 1rem; font-weight: 600;"><?=htmlspecialchars($data['no_idpel']);?></code>
                                                 <button class="btn btn-xs btn-outline-primary"
                                                         onclick="copyIdPel('<?=htmlspecialchars($data['no_idpel'], ENT_QUOTES)?>', this)"
                                                         data-toggle="tooltip"
