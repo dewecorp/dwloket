@@ -614,6 +614,45 @@
 }
 
 /* Responsive */
+@media (max-width: 576px) {
+    /* Kartu 2 kolom: kurangi padding antar kolom agar tidak mepet */
+    .col-6.col-md-3 {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .col-6.col-md-3 .stat-card .card-body,
+    .col-6.col-md-3 .stat-card-bs .card-body {
+        padding: 0.65rem 0.6rem !important;
+    }
+
+    .col-6.col-md-3 .stat-card .stat-value,
+    .col-6.col-md-3 .stat-card-bs .stat-card-bs__value {
+        font-size: 1.05rem !important;
+    }
+
+    .col-6.col-md-3 .stat-card .stat-label,
+    .col-6.col-md-3 .stat-card-bs .stat-card-bs__label {
+        font-size: 0.62rem !important;
+    }
+
+    /* Ikon kartu lebih kecil */
+    .col-6.col-md-3 .stat-icon {
+        font-size: 2.2rem !important;
+    }
+
+    .col-6.col-md-3 .stat-card-bs__icon i,
+    .col-6.col-md-3 .stat-card-bs__icon i:before {
+        font-size: 2.5rem !important;
+    }
+
+    /* Teks saldo tidak overflow */
+    .col-6.col-md-3 .stat-value {
+        font-size: 0.9rem !important;
+        word-break: break-all;
+    }
+}
+
 @media (max-width: 768px) {
     .modern-card {
         border-radius: 10px;

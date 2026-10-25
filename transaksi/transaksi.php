@@ -292,7 +292,7 @@ include_once('../header.php');
         $saldo_color = $total_saldo < 0 ? '#dc3545' : ($total_saldo < 100000 ? '#ffc107' : '#28a745');
         $saldo_status = $total_saldo < 0 ? 'Saldo Negatif!' : ($total_saldo < 100000 ? 'Saldo Rendah' : 'Saldo Aktif');
         ?>
-        <div class="col-md-3 mb-3">
+        <div class="col-6 col-md-3 mb-3">
             <div class="card stat-card-bs shadow-sm <?=$total_saldo < 0 ? 'stat-card-bs--warning' : 'stat-card-bs--success'?>">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
@@ -309,7 +309,7 @@ include_once('../header.php');
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
+        <div class="col-6 col-md-3 mb-3">
             <div class="card stat-card-bs stat-card-bs--primary shadow-sm">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
@@ -322,7 +322,7 @@ include_once('../header.php');
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
+        <div class="col-6 col-md-3 mb-3">
             <div class="card stat-card-bs stat-card-bs--success shadow-sm">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>
@@ -335,7 +335,7 @@ include_once('../header.php');
                 </div>
             </div>
         </div>
-        <div class="col-md-3 mb-3">
+        <div class="col-6 col-md-3 mb-3">
             <div class="card stat-card-bs stat-card-bs--info shadow-sm">
                 <div class="card-body d-flex align-items-center justify-content-between">
                     <div>

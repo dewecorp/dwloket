@@ -384,7 +384,7 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 $saldo_status_text = $total_saldo < 0 ? 'Saldo Negatif!' : ($total_saldo < 100000 ? 'Saldo Rendah' : 'Saldo Aktif');
                 ?>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-6 col-md-3 mb-3">
                     <div class="card border-left-primary shadow stat-card h-100">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center justify-content-between w-100">
@@ -400,7 +400,7 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                     </div>
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-6 col-md-3 mb-3">
                     <div class="card border-left-success shadow stat-card h-100">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center justify-content-between w-100">
@@ -416,7 +416,7 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                     </div>
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-6 col-md-3 mb-3">
                     <div class="card border-left-info shadow stat-card h-100">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center justify-content-between w-100">
@@ -432,7 +432,7 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                     </div>
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-6 col-md-3 mb-3">
                     <div class="card border-left-<?=$saldo_border_class?> shadow stat-card h-100">
                         <div class="card-body">
                             <div class="row no-gutters align-items-center justify-content-between w-100">
