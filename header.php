@@ -359,6 +359,45 @@ if ($id > 0) {
             }
         }
 
+        /* Mobile: sidebar diganti section grid menu */
+        @media (max-width: 767.98px) {
+            #main-wrapper .left-sidebar {
+                display: none !important;
+            }
+
+            #main-wrapper .page-wrapper {
+                margin-left: 0 !important;
+            }
+
+            /* Logo di kiri */
+            #main-wrapper .topbar .navbar-header .navbar-brand {
+                padding-left: 14px !important;
+                padding-right: 8px !important;
+            }
+
+            /* Foto user di kanan navbar */
+            #main-wrapper .topbar .mobile-nav-right {
+                margin-left: auto;
+                gap: 2px;
+                padding-right: 8px;
+            }
+
+            #main-wrapper .topbar .mobile-user-avatar {
+                display: inline-flex;
+                align-items: center;
+                margin-right: 4px;
+            }
+
+            #main-wrapper .topbar .mobile-user-avatar img {
+                width: 34px !important;
+                height: 34px !important;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid rgba(255, 255, 255, 0.85);
+                display: block;
+            }
+        }
+
         /* Navbar gradasi biru tua */
         #main-wrapper .topbar,
         #main-wrapper .topbar .top-navbar,
@@ -518,9 +557,6 @@ if ($id > 0) {
         <header class="topbar" data-navbarbg="skin6">
             <nav class="navbar top-navbar navbar-expand-md">
                 <div class="navbar-header" data-logobg="skin6">
-                    <!-- This is for the sidebar toggle which is visible on mobile only -->
-                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i
-                            class="ti-menu ti-close"></i></a>
                     <!-- ============================================================== -->
                     <!-- Logo -->
                     <!-- ============================================================== -->
@@ -536,10 +572,35 @@ if ($id > 0) {
                         </a>
                     </div>
 
-                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
-                        data-toggle="collapse" data-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i
-                            class="ti-more"></i></a>
+                    <!-- Kanan (mobile): foto user + dropdown menu akun -->
+                    <div class="mobile-nav-right d-flex align-items-center d-md-none">
+                        <div class="dropdown mobile-user-dropdown">
+                            <a href="javascript:void(0)" class="mobile-user-avatar" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false" aria-label="Menu akun">
+                                <img src="<?=base_url()?>/files/assets/images/<?=htmlspecialchars($tampil['foto'] ?? 'default.png', ENT_QUOTES, 'UTF-8'); ?>"
+                                    alt="user">
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right mobile-user-menu">
+                                <div class="mobile-user-menu-head">
+                                    <img src="<?=base_url()?>/files/assets/images/<?=htmlspecialchars($tampil['foto'] ?? 'default.png', ENT_QUOTES, 'UTF-8'); ?>"
+                                        alt="user">
+                                    <div>
+                                        <span class="mobile-user-menu-name"><?=htmlspecialchars($tampil['nama'] ?? 'User', ENT_QUOTES, 'UTF-8'); ?></span>
+                                        <span class="mobile-user-menu-role"><?=htmlspecialchars(ucfirst($tampil['level'] ?? ''), ENT_QUOTES, 'UTF-8'); ?></span>
+                                    </div>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item mobile-user-menu-item"
+                                    href="<?=base_url('user/profil_user.php?id=' . (int)($tampil['id_user'] ?? 0))?>">
+                                    <i class="fa fa-user"></i> Profil Saya
+                                </a>
+                                <a class="dropdown-item mobile-user-menu-item mobile-logout-item" href="javascript:void(0)"
+                                    onclick="confirmLogout(); return false;">
+                                    <i class="fa fa-power-off"></i> Log Out
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Logo -->
@@ -658,3 +719,10 @@ if ($id > 0) {
             <!-- End Sidebar scroll-->
         </aside>
         <div class="page-wrapper">
+        <?php
+        // Menu grid khusus mobile.
+        // Dashboard (home) menaruh menu sendiri setelah kartu & box pendapatan.
+        if ($current_dir !== 'home'):
+            include __DIR__ . '/mobile_menu.php';
+        endif;
+        ?>

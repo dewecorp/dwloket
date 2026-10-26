@@ -615,7 +615,7 @@
 
 /* Responsive */
 @media (max-width: 576px) {
-    /* Kartu 2 kolom: kurangi padding antar kolom agar tidak mepet */
+    /* Kartu 2 kolom: padding rapat agar tidak mepet */
     .col-6.col-md-3 {
         padding-left: 6px;
         padding-right: 6px;
@@ -623,33 +623,40 @@
 
     .col-6.col-md-3 .stat-card .card-body,
     .col-6.col-md-3 .stat-card-bs .card-body {
-        padding: 0.65rem 0.6rem !important;
+        padding: 0.65rem 0.55rem !important;
     }
 
-    .col-6.col-md-3 .stat-card .stat-value,
-    .col-6.col-md-3 .stat-card-bs .stat-card-bs__value {
-        font-size: 1.05rem !important;
+    /* Nilai kartu: jangan sampai angka terpotong */
+    .col-6.col-md-3 .stat-card .stat-value:not(#x),
+    .col-6.col-md-3 .stat-card-bs:not(#x) .stat-card-bs__value {
+        font-size: 0.95rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap;
+        word-break: normal !important;
+        overflow-wrap: normal;
     }
 
-    .col-6.col-md-3 .stat-card .stat-label,
-    .col-6.col-md-3 .stat-card-bs .stat-card-bs__label {
-        font-size: 0.62rem !important;
+    .col-6.col-md-3 .stat-card .stat-label:not(#x),
+    .col-6.col-md-3 .stat-card-bs:not(#x) .stat-card-bs__label {
+        font-size: 0.6rem !important;
+        letter-spacing: 0.3px;
+        line-height: 1.25 !important;
     }
 
-    /* Ikon kartu lebih kecil */
-    .col-6.col-md-3 .stat-icon {
+    .col-6.col-md-3 .stat-card .stat-status:not(#x),
+    .col-6.col-md-3 .stat-card-bs:not(#x) .stat-card-bs__sub {
+        font-size: 0.65rem !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Ikon kartu lebih kecil agar tidak menabrak angka */
+    .col-6.col-md-3 .stat-card .stat-icon:not(#x) {
+        font-size: 1.9rem !important;
+    }
+
+    .col-6.col-md-3 .stat-card-bs:not(#x) .stat-card-bs__icon i,
+    .col-6.col-md-3 .stat-card-bs:not(#x) .stat-card-bs__icon i:before {
         font-size: 2.2rem !important;
-    }
-
-    .col-6.col-md-3 .stat-card-bs__icon i,
-    .col-6.col-md-3 .stat-card-bs__icon i:before {
-        font-size: 2.5rem !important;
-    }
-
-    /* Teks saldo tidak overflow */
-    .col-6.col-md-3 .stat-value {
-        font-size: 0.9rem !important;
-        word-break: break-all;
     }
 }
 
@@ -676,6 +683,445 @@
 
     .modal-body {
         padding: 20px;
+    }
+}
+
+/* =============================================
+   MOBILE MENU SECTION (grid menu, pengganti sidebar)
+   ============================================= */
+.mobile-menu-section {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .mobile-menu-section {
+        display: block;
+        margin: 12px 12px 0;
+        padding: 12px;
+        background: #ffffff;
+        border-radius: 14px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+    }
+
+    /* Padding konten lebih rapat di mobile */
+    .page-wrapper > .container-fluid {
+        padding: 12px !important;
+    }
+
+    /* Menu di dashboard berada di dalam container: samakan dengan tepi kartu */
+    .container-fluid > .mobile-menu-section {
+        margin-left: 6px;
+        margin-right: 6px;
+    }
+
+    .mobile-menu-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        font-size: 0.72rem !important;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: #764ba2 !important;
+    }
+
+    .mobile-menu-head i {
+        font-size: 0.85rem;
+        color: #764ba2;
+    }
+
+    .mobile-menu-head span {
+        font-size: 0.72rem !important;
+        font-weight: 700;
+        color: #764ba2 !important;
+    }
+
+    .mobile-menu-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    #main-wrapper .mobile-menu-section .mobile-menu-tile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 72px;
+        padding: 8px 6px;
+        background: #f6f7fb;
+        border: 1px solid #eceef5;
+        border-radius: 12px;
+        text-decoration: none !important;
+        text-align: center;
+        transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    #main-wrapper .mobile-menu-section .mobile-menu-tile:active {
+        transform: scale(0.96);
+    }
+
+    /* Ikon */
+    #main-wrapper .mobile-menu-section .mobile-menu-tile svg,
+    #main-wrapper .mobile-menu-section .mobile-menu-tile .mobile-menu-icon {
+        width: 24px !important;
+        height: 24px !important;
+        margin: 0 !important;
+        stroke: #764ba2 !important;
+        color: #764ba2 !important;
+        flex-shrink: 0;
+    }
+
+    /* Label */
+    #main-wrapper .mobile-menu-section .mobile-menu-tile span {
+        display: block;
+        width: 100%;
+        font-size: 0.68rem !important;
+        font-weight: 600 !important;
+        line-height: 1.25 !important;
+        color: #343a40 !important;
+        white-space: normal !important;
+        word-break: break-word;
+    }
+
+    /* Menu aktif */
+    #main-wrapper .mobile-menu-section .mobile-menu-tile.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(118, 75, 162, 0.3);
+    }
+
+    #main-wrapper .mobile-menu-section .mobile-menu-tile.active svg,
+    #main-wrapper .mobile-menu-section .mobile-menu-tile.active .mobile-menu-icon {
+        stroke: #ffffff !important;
+        color: #ffffff !important;
+    }
+
+    #main-wrapper .mobile-menu-section .mobile-menu-tile.active span {
+        color: #ffffff !important;
+    }
+}
+
+/* =============================================
+   BOTTOM NAVIGATION (mobile)
+   ============================================= */
+.mobile-bottom-nav {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .mobile-bottom-nav {
+        display: flex;
+        align-items: stretch;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1030;
+        background: #ffffff;
+        border-top: 1px solid #eceef5;
+        box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    }
+
+    #main-wrapper .mobile-bottom-nav .mobile-bottom-item {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: 5px 2px;
+        border-radius: 10px;
+        text-decoration: none !important;
+        color: #8a94a6 !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    #main-wrapper .mobile-bottom-nav .mobile-bottom-item:active {
+        background: #f3f1fb;
+    }
+
+    #main-wrapper .mobile-bottom-nav .mobile-bottom-item svg {
+        width: 21px !important;
+        height: 21px !important;
+        stroke: currentColor !important;
+        flex-shrink: 0;
+    }
+
+    #main-wrapper .mobile-bottom-nav .mobile-bottom-item span {
+        display: block;
+        width: 100%;
+        font-size: 0.6rem !important;
+        font-weight: 600 !important;
+        line-height: 1.2 !important;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #main-wrapper .mobile-bottom-nav .mobile-bottom-item.active {
+        color: #764ba2 !important;
+    }
+
+    #main-wrapper .mobile-bottom-nav .mobile-bottom-item.active span {
+        color: #764ba2 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Ruang agar konten tidak tertutup navigasi bawah */
+    .page-wrapper {
+        padding-bottom: 72px !important;
+    }
+
+    /* Footer disembunyikan di mobile */
+    footer.footer,
+    .footer {
+        display: none !important;
+    }
+}
+
+/* =============================================
+   TABLE -> CARD STACK (mobile)
+   Ditambahkan lewat JS (initMobileTables) dengan
+   data-label dari <thead>.
+   ============================================= */
+@media (max-width: 767.98px) {
+    .table-responsive {
+        overflow-x: visible !important;
+    }
+
+    table.mobile-stack {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    table.mobile-stack > thead {
+        display: none !important;
+    }
+
+    table.mobile-stack > tbody {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    table.mobile-stack > tbody > tr {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 10px;
+        padding: 8px 12px;
+        background: #ffffff;
+        border: 1px solid #e9ecf3;
+        border-radius: 12px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    table.mobile-stack > tbody > tr:last-child {
+        margin-bottom: 0;
+    }
+
+    table.mobile-stack > tbody > tr > td {
+        display: flex !important;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 10px;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 7px 0 !important;
+        border: 0 !important;
+        border-bottom: 1px dashed #eef0f5 !important;
+        text-align: right;
+        white-space: normal !important;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        background: transparent !important;
+    }
+
+    table.mobile-stack > tbody > tr > td:last-child {
+        border-bottom: 0 !important;
+    }
+
+    table.mobile-stack > tbody > tr > td::before {
+        content: attr(data-label);
+        flex: 0 0 40%;
+        max-width: 40%;
+        text-align: left;
+        font-size: 0.66rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        line-height: 1.6;
+        color: #8a94a6 !important;
+    }
+
+    table.mobile-stack > tbody > tr > td.mobile-stack-nolabel::before {
+        display: none;
+    }
+
+    table.mobile-stack > tbody > tr > td.mobile-stack-nolabel {
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    table.mobile-stack > tbody > tr > td.mobile-stack-hide {
+        display: none !important;
+    }
+
+    table.mobile-stack > tbody > tr > td code {
+        font-size: 0.85rem !important;
+    }
+
+    /* Kolom aksi: tombol rata kanan dan boleh turun baris */
+    table.mobile-stack > tbody > tr > td.mobile-stack-action {
+        flex-wrap: wrap;
+    }
+
+    table.mobile-stack > tbody > tr > td.mobile-stack-action > * {
+        flex-shrink: 0;
+    }
+
+    table.mobile-stack > tbody > tr > td .d-flex {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    /* DataTables: info & pagination di tengah */
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        float: none !important;
+        text-align: center !important;
+        padding-top: 10px !important;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter {
+        float: none !important;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 4px 9px !important;
+    }
+}
+
+/* =============================================
+   MOBILE USER DROPDOWN (klik foto user di navbar)
+   ============================================= */
+@media (max-width: 767.98px) {
+    #main-wrapper .topbar .mobile-user-dropdown {
+        position: relative;
+        line-height: normal;
+    }
+
+    #main-wrapper .topbar .mobile-user-dropdown .mobile-user-menu {
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        left: auto;
+        min-width: 210px;
+        max-width: 82vw;
+        margin: 0;
+        padding: 6px;
+        background: #ffffff;
+        border: 0;
+        border-radius: 12px;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+        z-index: 1060;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px 6px;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu-head img {
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu-name {
+        display: block;
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        color: #212529 !important;
+        line-height: 1.25;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu-role {
+        display: block;
+        font-size: 0.7rem !important;
+        color: #8a94a6 !important;
+        text-transform: capitalize;
+        line-height: 1.25;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu .dropdown-divider {
+        margin: 6px 4px;
+        border-top-color: #eef0f5;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-user-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        color: #343a40 !important;
+        line-height: 1.3;
+        white-space: normal;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-user-menu-item i {
+        width: 16px;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #764ba2 !important;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-user-menu-item:hover,
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-user-menu-item:focus,
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-user-menu-item:active {
+        background: #f3f1fb !important;
+        color: #764ba2 !important;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-logout-item,
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-logout-item i {
+        color: #dc3545 !important;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-logout-item:hover,
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-logout-item:focus {
+        background: #fdecec !important;
+        color: #c82333 !important;
+    }
+
+    #main-wrapper .topbar .mobile-user-menu .dropdown-item.mobile-logout-item:hover i {
+        color: #c82333 !important;
     }
 }
 

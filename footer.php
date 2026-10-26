@@ -3,6 +3,16 @@
 <footer class="footer text-center text-muted">
     All Rights Reserved by DW LOKET JEPARA @ <?=date('Y'); ?>
 </footer>
+
+<?php $mobile_nav_items = require __DIR__ . '/mobile_menu_items.php'; ?>
+<nav class="mobile-bottom-nav d-md-none" aria-label="Navigasi utama">
+    <?php foreach (array_slice($mobile_nav_items, 0, 5) as $ni): ?>
+    <a class="mobile-bottom-item<?= $current_dir === $ni['dir'] ? ' active' : '' ?>" href="<?= $ni['url'] ?>">
+        <i data-feather="<?= $ni['icon'] ?>"></i>
+        <span><?= htmlspecialchars($ni['short']) ?></span>
+    </a>
+    <?php endforeach; ?>
+</nav>
 <!-- ============================================================== -->
 <!-- End footer -->
 <!-- ============================================================== -->
@@ -70,6 +80,84 @@ $(document).ready(function() {
 </script>
 <script src="<?=base_url()?>/files/assets/extra-libs/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="<?=base_url()?>/files/dist/js/pages/datatable/datatable-basic.init.js"></script>
+
+<!-- Tabel responsif: baris menjadi kartu di mobile (tanpa geser kanan-kiri) -->
+<script>
+function initMobileTables() {
+    var tables = document.querySelectorAll('table');
+    for (var t = 0; t < tables.length; t++) {
+        var table = tables[t];
+        if (table.hasAttribute('data-no-stack') || table.classList.contains('no-mobile-stack')) {
+            continue;
+        }
+
+        var head = table.querySelector('thead');
+        if (!head) {
+            continue;
+        }
+
+        var headerRows = head.querySelectorAll('tr');
+        if (!headerRows.length) {
+            continue;
+        }
+
+        var ths = headerRows[headerRows.length - 1].querySelectorAll('th');
+        if (!ths.length) {
+            continue;
+        }
+
+        table.classList.add('mobile-stack');
+
+        var labels = [];
+        for (var i = 0; i < ths.length; i++) {
+            var label = (ths[i].textContent || '').replace(/\s+/g, ' ').trim();
+            if (!label && ths[i].querySelector('input[type="checkbox"]')) {
+                label = 'Pilih';
+            }
+            labels.push(label);
+        }
+
+        var rows = table.querySelectorAll('tbody > tr');
+        for (var r = 0; r < rows.length; r++) {
+            var cells = rows[r].children;
+            for (var c = 0; c < cells.length; c++) {
+                var cell = cells[c];
+                if (cell.tagName !== 'TD') {
+                    continue;
+                }
+
+                var label = labels[c] || '';
+                if (cell.colSpan && cell.colSpan > 1) {
+                    label = '';
+                }
+
+                cell.setAttribute('data-label', label);
+
+                if (!label) {
+                    cell.classList.add('mobile-stack-nolabel');
+                } else if (/aksi|action/i.test(label)) {
+                    cell.classList.add('mobile-stack-action');
+                } else if (/^no\.?$/i.test(label)) {
+                    cell.classList.add('mobile-stack-hide');
+                }
+            }
+        }
+    }
+}
+
+if (window.jQuery) {
+    jQuery(function() {
+        initMobileTables();
+
+        // DataTables menggambar ulang baris (sort/filter/page) -> label ulang
+        jQuery(document).on('draw.dt', function() {
+            initMobileTables();
+        });
+    });
+} else {
+    document.addEventListener('DOMContentLoaded', initMobileTables);
+}
+</script>
 
 <!-- SweetAlert Helper Functions -->
 <script>

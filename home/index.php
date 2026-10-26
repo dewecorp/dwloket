@@ -372,6 +372,23 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
         .stat-card :not(#x):not(#y):not(#z):not(#w):not(#v):not(#u):not(#t):not(#s) {
             color: #fff !important;
         }
+
+        /* Mobile: sembunyikan grafik, sisakan ringkasan pendapatan */
+        @media (max-width: 767.98px) {
+            .dashboard-chart-row .chart-transaksi-col {
+                display: none !important;
+            }
+            #chart-pendapatan {
+                display: none !important;
+            }
+            .dashboard-chart-row .col-lg-4 .modern-card-body {
+                padding-bottom: 18px;
+            }
+            /* Sembunyikan data aktivitas di mobile */
+            .dashboard-activity-row {
+                display: none !important;
+            }
+        }
         </style>
     </head>
     <body>
@@ -453,8 +470,8 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 </div>
             </div>
             <!-- Grafik Transaksi dan Pendapatan -->
-            <div class="row mb-2">
-                <div class="col-lg-8">
+            <div class="row mb-2 dashboard-chart-row">
+                <div class="col-lg-8 chart-transaksi-col">
                     <div class="modern-card">
                         <div class="modern-card-header">
                             <h4>
@@ -484,8 +501,11 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                 </div>
             </div>
 
+            <!-- Menu grid khusus mobile: di bawah kartu & box pendapatan -->
+            <?php include __DIR__ . '/../mobile_menu.php'; ?>
+
             <!-- Aktivitas Terbaru -->
-            <div class="row">
+            <div class="row dashboard-activity-row">
                 <div class="col-lg-12">
                     <div class="modern-card">
                         <div class="modern-card-header">
@@ -619,6 +639,9 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
         // Grafik Transaksi per Bulan
         var chartTransaksi;
         function initChartTransaksi() {
+            // Grafik disembunyikan di mode mobile
+            if (window.matchMedia('(max-width: 767.98px)').matches) return;
+
             var container = document.getElementById('chart-transaksi');
             if (!container) return;
 
@@ -744,6 +767,9 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
         // Grafik Pendapatan per Bulan
         var chartPendapatan;
         function initChartPendapatan() {
+            // Grafik disembunyikan di mode mobile
+            if (window.matchMedia('(max-width: 767.98px)').matches) return;
+
             var container = document.getElementById('chart-pendapatan');
             if (!container) return;
 
@@ -860,6 +886,17 @@ $total_pendapatan_bulan_ini = $pendapatan_bulan_ini['total'] ?: 0;
                     }
                 }
             }, 250);
+        });
+
+        // Muat grafik saat layar melebar dari mobile ke desktop
+        var chartInitTimer;
+        window.addEventListener('resize', function() {
+            if (window.matchMedia('(max-width: 767.98px)').matches) return;
+            clearTimeout(chartInitTimer);
+            chartInitTimer = setTimeout(function() {
+                if (!chartTransaksi) initChartTransaksi();
+                if (!chartPendapatan) initChartPendapatan();
+            }, 300);
         });
         </script>
     </body>
