@@ -151,6 +151,5 @@ $stats = get_old_transactions_stats($koneksi);
         return true;
     }
     </script>
-</body>
-</html>
+<?php include_once('../footer.php'); ?>
 

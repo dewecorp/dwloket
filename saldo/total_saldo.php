@@ -63,9 +63,9 @@ include_once('../header.php');
                                         <td>Rp. <?=number_format($data['saldo'], 0, ",", ".");?></td>
                                         <td align="center">
                                             <a data-toggle="modal"
-                                                data-target="#modaledit<?=$data['id_total_saldo']; ?>"><button
+                                                data-target="#modaledit<?=$data['id_saldo']; ?>"><button
                                                     class="btn btn-warning btn-sm text-white" title="Edit"><i class="fa fa-edit"></i></button></a>
-                                            <a href="hapus_saldo.php?id=<?=$data['id_total_saldo']; ?>"
+                                            <a href="hapus_saldo.php?id=<?=$data['id_saldo']; ?>"
                                                 onclick="return swalConfirmDelete(this.href, 'Yakin Hapus Saldo?', 'Data saldo ini akan dihapus secara permanen!')"
                                                 class="btn btn-danger btn-sm" title="Hapus"><i class="fa fa-trash"></i></a>
                                         </td>
@@ -87,5 +87,6 @@ include_once('../header.php');
 </html>
 <?php
 
+include "modal_edit.php";
 include_once('../footer.php');
 ?>

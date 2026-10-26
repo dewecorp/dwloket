@@ -14,9 +14,15 @@ include_once('../config/config.php');
 $phpspreadsheet_available = false;
 $autoload_path = __DIR__ . '/../vendor/autoload.php';
 if (file_exists($autoload_path)) {
-    require_once $autoload_path;
-    if (class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
-        $phpspreadsheet_available = true;
+    try {
+        require_once $autoload_path;
+        if (class_exists('PhpOffice\PhpSpreadsheet\IOFactory')) {
+            $phpspreadsheet_available = true;
+        }
+    } catch (Throwable $e) {
+        // Vendor tidak lengkap (mis. paket symfony polyfill hilang).
+        // Jangan hentikan halaman: impor CSV tetap bisa dipakai.
+        $phpspreadsheet_available = false;
     }
 }
 

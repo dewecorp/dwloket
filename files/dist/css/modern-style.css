@@ -901,6 +901,37 @@
         margin-bottom: 0 !important;
         border: 0 !important;
         background: transparent !important;
+        overflow: visible !important;
+    }
+
+    /* Info/pencarian di dalam .table-responsive jangan melebar keluar */
+    #main-wrapper .table-responsive > div {
+        max-width: 100% !important;
+    }
+
+    #main-wrapper .table-responsive > .float-left,
+    #main-wrapper .table-responsive > .float-right {
+        float: none !important;
+    }
+
+    /* Form filter (mis. cari_transaksi) ditumpuk agar input tidak terpotong */
+    #main-wrapper .table-responsive > .float-left > form > table,
+    #main-wrapper .table-responsive > .float-left > form > table > tbody,
+    #main-wrapper .table-responsive > .float-left > form > table > tbody > tr {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    #main-wrapper .table-responsive > .float-left > form > table td {
+        display: block !important;
+        width: 100% !important;
+        padding: 0 0 8px !important;
+    }
+
+    #main-wrapper .table-responsive > .float-left .input-group,
+    #main-wrapper .table-responsive > .float-left .form-control {
+        width: 100% !important;
+        max-width: 100% !important;
     }
 
     table.mobile-stack > thead {
@@ -927,13 +958,14 @@
         margin-bottom: 0;
     }
 
-    table.mobile-stack > tbody > tr > td {
+    #main-wrapper table.mobile-stack > tbody > tr > td {
         display: flex !important;
         align-items: flex-start;
         justify-content: space-between;
         gap: 10px;
         width: 100% !important;
         max-width: 100% !important;
+        box-sizing: border-box !important;
         padding: 7px 0 !important;
         border: 0 !important;
         border-bottom: 1px dashed #eef0f5 !important;
@@ -942,6 +974,13 @@
         word-break: break-word;
         overflow-wrap: anywhere;
         background: transparent !important;
+    }
+
+    /* Halaman tertentu (mis. user.php) memakai padding !important dengan selector ID.
+       Samakan padding di mobile agar baris tidak melebar keluar kartu. */
+    #main-wrapper table.mobile-stack#zero_config > tbody > tr > td {
+        padding: 7px 0 !important;
+        box-sizing: border-box !important;
     }
 
     table.mobile-stack > tbody > tr > td:last-child {
@@ -1007,13 +1046,61 @@
         margin-bottom: 10px;
     }
 
-    .dataTables_wrapper .dataTables_filter input {
+    /* DataTables memaksa label "Search:" nowrap; di mobile harus boleh turun baris
+       supaya kolom pencarian tidak menonjol keluar kartu. */
+    #main-wrapper .dataTables_wrapper .dataTables_filter {
         width: 100% !important;
+        max-width: 100% !important;
+        text-align: left !important;
+    }
+
+    #main-wrapper .dataTables_wrapper .dataTables_filter label {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        white-space: normal !important;
+    }
+
+    #main-wrapper .dataTables_wrapper .dataTables_filter input {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin-left: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    #main-wrapper .dataTables_wrapper .dataTables_length label {
+        white-space: normal !important;
+    }
+
+    #main-wrapper .dataTables_wrapper .dataTables_info,
+    #main-wrapper .dataTables_wrapper .dataTables_paginate,
+    #main-wrapper .dataTables_wrapper .dataTables_paginate ul.pagination {
+        white-space: normal !important;
     }
 
     .dataTables_wrapper .dataTables_paginate .paginate_button {
         padding: 4px 9px !important;
+        margin: 2px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate ul.pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 0;
+    }
+
+    /* Pengaman umum: tidak ada elemen yang boleh melebar keluar layar */
+    #main-wrapper .container-fluid,
+    #main-wrapper .modern-card,
+    #main-wrapper .modern-card-body,
+    #main-wrapper .card,
+    #main-wrapper .card-body {
+        max-width: 100%;
+    }
+
+    #main-wrapper img {
+        max-width: 100%;
     }
 }
 
